@@ -1,0 +1,14 @@
+{
+  "embed": {
+    "title": {
+      "default": "Oh ! A wild *Furry Card* spawn !",
+      "fr": "Oh ! Une *Carte Furry* sauvage vien d'apparaitre !"
+    }
+  },
+  "button": {
+    "text": {
+      "default": "Catch Me !",
+      "fr": "Attrape moi !"
+    }
+  }
+}

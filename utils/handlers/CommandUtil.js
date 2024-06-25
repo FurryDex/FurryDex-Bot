@@ -1,0 +1,232 @@
+const { PermissionFlagsBits, ApplicationCommandType } = require("discord.js");
+const { glob } = require("glob");
+const { promisify, isNull } = require("util");
+const Logger = require("../Logger");
+const process = require("process");
+
+const pGlob = promisify(glob);
+
+module.exports = async (client) => {
+  (await pGlob(`./commands/*/*.js`)).map(async (cmdFile) => {
+    const cmd = require(cmdFile.replace(".", process.cwd()));
+    if (!cmd.name) return Logger.warn(`Nom Non Definie\nFichier: ${cmdFile}`);
+    if (!cmd.description) return Logger.warn(`Description Non Definie\nFichier: ${cmdFile}`);
+    if (!cmd.dm_permission) cmd.dm_permission = false;
+    if (!cmd.category) return Logger.warn(`Catégorie Non Definie\nFichier: ${cmdFile}`);
+
+    if (cmd.permissions != null) {
+      cmd.default_member_permissions = cmd.permissions;
+    }
+
+    if (cmd.fullyTranslated) {
+      try {
+        let locales = require(`../../locales/commands/${cmd.name}.json`);
+        cmd.nameLocalizations = locales.name;
+        cmd.descriptionLocalizations = locales.description;
+        if (cmd.options) {
+          cmd.options.forEach((option, index) => {
+            option.nameLocalizations = locales.options[index].name;
+            option.descriptionLocalizations = locales.options[index].description;
+            if (option.choices) {
+              suboption.choices.forEach((optionchoices, indexchoices) => {
+                optionchoices.nameLocalizations = locales.options[index].choices[indexchoices].name;
+              });
+            }
+            if (option.options) {
+              option.options.forEach((suboption, subindex) => {
+                suboption.nameLocalizations = locales.options[index].options[subindex].name;
+                suboption.descriptionLocalizations = locales.options[index].options[subindex].description;
+                if (option.choices) {
+                  suboption.choices.forEach((suboptionchoices, subindexchoices) => {
+                    suboptionchoices.nameLocalizations = locales.options[index].options[subindex].choices[subindexchoices].name;
+                  });
+                }
+              });
+            }
+          });
+        }
+      } catch {}
+    }
+
+    client.commands.set(cmd.name, cmd);
+    Logger.command(`Chargé: ${cmd.name}`);
+  });
+};
+
+const permissionList = [
+  "CREATE_INSTANT_INVITE",
+  "KICK_MEMBERS",
+  "BAN_MEMBERS",
+  "ADMINISTRATOR",
+  "MANAGE_CHANNELS",
+  "MANAGE_GUILD",
+  "ADD_REACTIONS",
+  "VIEW_AUDIT_LOG",
+  "PRIORITY_SPEAKER",
+  "STREAM",
+  "VIEW_CHANNEL",
+  "SEND_MESSAGES",
+  "SEND_TTS_MESSAGES",
+  "MANAGE_MESSAGES",
+  "EMBED_LINKS",
+  "ATTACH_FILES",
+  "READ_MESSAGE_HISTORY",
+  "MENTION_EVERYONE",
+  "USE_EXTERNAL_EMOJIS",
+  "VIEW_GUILD_INSIGHTS",
+  "CONNECT",
+  "SPEAK",
+  "MUTE_MEMBERS",
+  "DEAFEN_MEMBERS",
+  "MOVE_MEMBERS",
+  "USE_VAD",
+  "CHANGE_NICKNAME",
+  "MANAGE_NICKNAMES",
+  "MANAGE_ROLES",
+  "MANAGE_WEBHOOKS",
+  "MANAGE_EMOJIS_AND_STICKERS",
+  "USE_APPLICATION_COMMANDS",
+  "REQUEST_TO_SPEAK",
+  "MANAGE_EVENTS",
+  "MANAGE_THREADS",
+  "USE_PUBLIC_THREADS",
+  "CREATE_PUBLIC_THREADS",
+  "USE_PRIVATE_THREADS",
+  "CREATE_PRIVATE_THREADS",
+  "USE_EXTERNAL_STICKERS",
+  "SEND_MESSAGES_IN_THREADS",
+  "START_EMBEDDED_ACTIVITIES",
+  "MODERATE_MEMBERS",
+];
+
+const permissionArray = {
+  CREATE_INSTANT_INVITE: {
+    BigInt: PermissionFlagsBits.CreateInstantInvite,
+  },
+  KICK_MEMBERS: {
+    BigInt: PermissionFlagsBits.KickMembers,
+  },
+  BAN_MEMBERS: {
+    BigInt: PermissionFlagsBits.BanMembers,
+  },
+  ADMINISTRATOR: {
+    BigInt: PermissionFlagsBits.Administrator,
+  },
+  MANAGE_CHANNELS: {
+    BigInt: PermissionFlagsBits.ManageChannels,
+  },
+  MANAGE_GUILD: {
+    BigInt: PermissionFlagsBits.ManageGuild,
+  },
+  ADD_REACTIONS: {
+    BigInt: PermissionFlagsBits.AddReactions,
+  },
+  VIEW_AUDIT_LOG: {
+    BigInt: PermissionFlagsBits.ViewAuditLog,
+  },
+  PRIORITY_SPEAKER: {
+    BigInt: PermissionFlagsBits.PrioritySpeaker,
+  },
+  STREAM: {
+    BigInt: PermissionFlagsBits.Stream,
+  },
+  VIEW_CHANNEL: {
+    BigInt: PermissionFlagsBits.ViewChannel,
+  },
+  SEND_MESSAGES: {
+    BigInt: PermissionFlagsBits.SendMessages,
+  },
+  SEND_TTS_MESSAGES: {
+    BigInt: PermissionFlagsBits.SendTTSMessages,
+  },
+  MANAGE_MESSAGES: {
+    BigInt: PermissionFlagsBits.ManageMessages,
+  },
+  EMBED_LINKS: {
+    BigInt: PermissionFlagsBits.EmbedLinks,
+  },
+  ATTACH_FILES: {
+    BigInt: PermissionFlagsBits.AttachFiles,
+  },
+  READ_MESSAGE_HISTORY: {
+    BigInt: PermissionFlagsBits.ReadMessageHistory,
+  },
+  MENTION_EVERYONE: {
+    BigInt: PermissionFlagsBits.MentionEveryone,
+  },
+  USE_EXTERNAL_EMOJIS: {
+    BigInt: PermissionFlagsBits.UseExternalEmojis,
+  },
+  VIEW_GUILD_INSIGHTS: {
+    BigInt: PermissionFlagsBits.ViewGuildInsights,
+  },
+  CONNECT: {
+    BigInt: PermissionFlagsBits.Connect,
+  },
+  SPEAK: {
+    BigInt: PermissionFlagsBits.Speak,
+  },
+  MUTE_MEMBERS: {
+    BigInt: PermissionFlagsBits.MuteMembers,
+  },
+  DEAFEN_MEMBERS: {
+    BigInt: PermissionFlagsBits.DeafenMembers,
+  },
+  MOVE_MEMBERS: {
+    BigInt: PermissionFlagsBits.MoveMembers,
+  },
+  USE_VAD: {
+    BigInt: PermissionFlagsBits.UseVAD,
+  },
+  CHANGE_NICKNAME: {
+    BigInt: PermissionFlagsBits.ChangeNickname,
+  },
+  MANAGE_NICKNAMES: {
+    BigInt: PermissionFlagsBits.ManageNicknames,
+  },
+  MANAGE_ROLES: {
+    BigInt: PermissionFlagsBits.ManageRoles,
+  },
+  MANAGE_WEBHOOKS: {
+    BigInt: PermissionFlagsBits.ManageWebhooks,
+  },
+  MANAGE_EMOJIS_AND_STICKERS: {
+    BigInt: PermissionFlagsBits.ManageEmojisAndStickers,
+  },
+  USE_APPLICATION_COMMANDS: {
+    BigInt: PermissionFlagsBits.UseApplicationCommands,
+  },
+  REQUEST_TO_SPEAK: {
+    BigInt: PermissionFlagsBits.RequestToSpeak,
+  },
+  MANAGE_EVENTS: {
+    BigInt: PermissionFlagsBits.ManageEvents,
+  },
+  MANAGE_THREADS: {
+    BigInt: PermissionFlagsBits.ManageThreads,
+  },
+  USE_PUBLIC_THREADS: {
+    BigInt: null,
+  },
+  CREATE_PUBLIC_THREADS: {
+    BigInt: PermissionFlagsBits.CreatePublicThreads,
+  },
+  USE_PRIVATE_THREADS: {
+    BigInt: null,
+  },
+  CREATE_PRIVATE_THREADS: {
+    BigInt: PermissionFlagsBits.CreatePrivateThreads,
+  },
+  USE_EXTERNAL_STICKERS: {
+    BigInt: PermissionFlagsBits.UseExternalStickers,
+  },
+  SEND_MESSAGES_IN_THREADS: {
+    BigInt: PermissionFlagsBits.SendMessagesInThreads,
+  },
+  START_EMBEDDED_ACTIVITIES: {
+    BigInt: PermissionFlagsBits.START_EMBEDDED_ACTIVITIES,
+  },
+  MODERATE_MEMBERS: {
+    BigInt: PermissionFlagsBits.ModerateMembers,
+  },
+};

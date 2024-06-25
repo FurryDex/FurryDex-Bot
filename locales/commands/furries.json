@@ -1,0 +1,76 @@
+{
+  "name": {
+    "fr": "furries"
+  },
+  "description": {
+    "fr": "Base de commande pour tout ce qui est furry."
+  },
+  "options": [
+    {
+      "name": {
+        "fr": "liste"
+      },
+      "description": {
+        "fr": "Liste de toute tes carte furries."
+      }
+    },
+    {
+      "name": {
+        "fr": "collection"
+      },
+      "description": {
+        "fr": "Montre votre collection actuel du FurryDex."
+      }
+    },
+    {
+      "name": {
+        "fr": "derniere"
+      },
+      "description": {
+        "fr": "Affiche les information de votre derniere carte obtenue."
+      }
+    },
+    {
+      "name": {
+        "fr": "donner"
+      },
+      "description": {
+        "fr": "Donne une carte à un utilisateur."
+      }
+    },
+    {
+      "name": {
+        "fr": "nombre"
+      },
+      "description": {
+        "fr": "Compte ton nombre de carte."
+      }
+    },
+    {
+      "name": {
+        "fr": "info"
+      },
+      "description": {
+        "fr": "Affiche les information d'un carte specifique."
+      }
+    },
+    {
+      "name": {
+        "fr": "favorie"
+      },
+      "description": {
+        "fr": "Définir une carte en tant que favorie."
+      }
+    }
+  ],
+  "run": {
+    "no-furry": {
+      "default": "You have `0` furry in your dex",
+      "fr": "Vous avez `0` furry dans votre dex"
+    },
+    "list": {
+      "default": "ATK: %attacks%% • HP: %live%% • Caught on %date%",
+      "fr": "ATQ: %attacks%% • Vie: %live%% • Récupéré le %date%"
+    }
+  }
+}

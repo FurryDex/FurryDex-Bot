@@ -1,0 +1,178 @@
+{
+  "name": {
+    "fr": "configuration"
+  },
+  "description": {
+    "fr": "Base de commande pour tout ce qui est configuration."
+  },
+  "options": [
+    {
+      "name": {
+        "fr": "active"
+      },
+      "description": {
+        "fr": "Activé ou desactivé l'apparition de carte."
+      },
+      "options": [
+        {
+          "name": {
+            "fr": "active"
+          },
+          "description": {
+            "fr": "Activé ou desactivé l'apparition de carte."
+          }
+        }
+      ]
+    },
+    {
+      "name": {
+        "fr": "salon"
+      },
+      "description": {
+        "fr": "Choisir le salon où les cartes apparaitrons"
+      },
+      "options": [
+        {
+          "name": {
+            "fr": "salon"
+          },
+          "description": {
+            "fr": "Choisir le salon où les cartes apparaitrons"
+          }
+        }
+      ]
+    },
+    {
+      "name": {
+        "fr": "langue"
+      },
+      "description": {
+        "fr": "Definir la langue de base du serveur"
+      },
+      "options": [
+        {
+          "name": {
+            "fr": "language"
+          },
+          "description": {
+            "fr": "Definir la langue de base du serveur"
+          },
+          "choices": [
+            {
+              "name": {
+                "fr": "Allemand"
+              }
+            },
+            {
+              "name": {
+                "fr": "Anglais"
+              }
+            },
+            {
+              "name": {
+                "fr": "Espagnole"
+              }
+            },
+            {
+              "name": {
+                "fr": "Francais"
+              }
+            },
+            {
+              "name": {
+                "fr": "Italien"
+              }
+            },
+            {
+              "name": {
+                "fr": "Néerlandais"
+              }
+            },
+            {
+              "name": {
+                "fr": "Norvegien"
+              }
+            },
+            {
+              "name": {
+                "fr": "Polonais"
+              }
+            },
+            {
+              "name": {
+                "fr": "Portugais"
+              }
+            },
+            {
+              "name": {
+                "fr": "Roumain"
+              }
+            },
+            {
+              "name": {
+                "fr": "Finlandais"
+              }
+            },
+            {
+              "name": {
+                "fr": "Suédois"
+              }
+            },
+            {
+              "name": {
+                "fr": "Bulgare"
+              }
+            },
+            {
+              "name": {
+                "fr": "Russe"
+              }
+            },
+            {
+              "name": {
+                "fr": "Urkainien"
+              }
+            },
+            {
+              "name": {
+                "fr": "Chinois"
+              }
+            },
+            {
+              "name": {
+                "fr": "Japonais"
+              }
+            },
+            {
+              "name": {
+                "fr": "Koréen"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": {
+        "fr": "auto-langue"
+      },
+      "description": {
+        "fr": "Definir la langue de base du serveur automatiquement"
+      }
+    }
+  ],
+  "run": {
+    "changed": {
+      "default": "The language have been set to `%lang%`",
+      "fr": "La langue a été définie sur `%lang%`"
+    },
+    "changedChan": {
+      "default": "The channel have been set to `%channel%`",
+      "fr": "Le salon a été définie sur `%channel%`"
+    },
+    "changedEna": {
+      "default": "The bot is now `%enable%`",
+      "fr": "Le bot est desormais `%enable%`"
+    }
+  }
+}
