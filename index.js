@@ -40,27 +40,6 @@ const manager = new GiveawaysManager(client, {
 });
 
 client.giveawaysManager = manager;
-let date = new Date();
-
-let nothing = {};
-
-fs.writeFile(`./BackUp/BU-${date.getDate()}-${date.getMonth() + 1}-${date.getFullYear()}`, JSON.stringify(nothing), (err) => {
-  if (err) {
-    Logger.error(err);
-  }
-});
-
-//#
-//#  ["temp", "ticket", "users"].forEach((x) => {
-//#  let info = require(`./DB/${x}.json`);
-//#  let backUp = require(`./BackUp/BU-${date.getDate()}-${date.getMonth() + 1}-${date.getFullYear()}`);
-//#  backUp[x] = info;
-//#  fs.writeFile(`./BackUp/BU-${date.getDate()}-${date.getMonth() + 1}-${date.getFullYear()}`, JSON.stringify(backUp), (err) => {
-//#    if (err) {
-//#      Logger.error(err);
-//#    }
-//#  });
-//#});
 
 ["commands", "buttons", "selects", "modals", "blacklist_guild"].forEach((x) => (client[x] = new Collection()));
 ["CommandUtil", "EventUtil", "ButtonUtil", "ModalUtil", "SelectMenuUtil"].forEach((handler) => {
