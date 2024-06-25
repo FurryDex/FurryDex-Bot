@@ -50,6 +50,22 @@
           "date": 1718812264895,
           "live": "-10",
           "attacks": "+1"
+        },
+        {
+          "id": "lxqahgtv1b6wkgq8nc1",
+          "cardid": "6",
+          "guilds": "1139590285203083365",
+          "date": 1719070994803,
+          "live": "+20",
+          "attacks": "-20"
+        },
+        {
+          "id": "lxqjtzfymb4lw7gqgv",
+          "cardid": "7",
+          "guilds": "1139590285203083365",
+          "date": 1719086695342,
+          "live": "-10",
+          "attacks": "+25"
         }
       ]
     },
@@ -116,6 +132,30 @@
           "date": 1718908017360,
           "live": "-13",
           "attacks": "-5"
+        },
+        {
+          "id": "lxpvolfy1anmvzvzwxc",
+          "cardid": "2",
+          "guilds": "1139590285203083365",
+          "date": 1719046133134,
+          "live": "-6",
+          "attacks": "-20"
+        },
+        {
+          "id": "lxq20ewqz1b7fijpiz",
+          "cardid": "5",
+          "guilds": "1139590285203083365",
+          "date": 1719056762234,
+          "live": "+12",
+          "attacks": "-24"
+        },
+        {
+          "id": "lxs2i2fxeh208w020ed",
+          "cardid": "7",
+          "guilds": "1139590285203083365",
+          "date": 1719178518237,
+          "live": "-23",
+          "attacks": "-4"
         }
       ]
     },
@@ -193,6 +233,70 @@
           "date": 1718904357555,
           "live": "-10",
           "attacks": "-16"
+        },
+        {
+          "id": "lxpy1h97ds1onjs0e5l",
+          "cardid": "2",
+          "guilds": "1139590285203083365",
+          "date": 1719050093467,
+          "live": "+4",
+          "attacks": "-19"
+        },
+        {
+          "id": "lxqkmryqmpplsbgt8g",
+          "cardid": "6",
+          "guilds": "1139590285203083365",
+          "date": 1719088038674,
+          "live": "+4",
+          "attacks": "+8"
+        },
+        {
+          "id": "lxqknnum2sq7fog2fa9",
+          "cardid": "3",
+          "guilds": "1139590285203083365",
+          "date": 1719088079998,
+          "live": "+2",
+          "attacks": "-6"
+        },
+        {
+          "id": "lxqkqvlpgpeeinzzo9j",
+          "cardid": "1",
+          "guilds": "1139590285203083365",
+          "date": 1719088230013,
+          "live": "-8",
+          "attacks": "-25"
+        },
+        {
+          "id": "lxr4cncz2j8sz5c0ujl",
+          "cardid": "6",
+          "guilds": "1139590285203083365",
+          "date": 1719121158467,
+          "live": "+20",
+          "attacks": "+23"
+        },
+        {
+          "id": "lxrhjfn76pq2t3z3weq",
+          "cardid": "5",
+          "guilds": "1139590285203083365",
+          "date": 1719143310067,
+          "live": "-10",
+          "attacks": "-13"
+        },
+        {
+          "id": "lxrjrx57k0bhkxr2m3g",
+          "cardid": "3",
+          "guilds": "1139590285203083365",
+          "date": 1719147065227,
+          "live": "-20",
+          "attacks": "+12"
+        },
+        {
+          "id": "lxsg7ff2uup1t9g5kqh",
+          "cardid": "2",
+          "guilds": "1139590285203083365",
+          "date": 1719201536462,
+          "live": "+0",
+          "attacks": "-14"
         }
       ]
     },
@@ -246,6 +350,22 @@
           "date": 1718896423042,
           "live": "-6",
           "attacks": "+3"
+        },
+        {
+          "id": "lxrr8yq0q5ws5t5rmbh",
+          "cardid": "7",
+          "guilds": "1139590285203083365",
+          "date": 1719159617736,
+          "live": "+4",
+          "attacks": "+4"
+        },
+        {
+          "id": "lxsqshu1vhmg4q7ut2o",
+          "cardid": "1",
+          "guilds": "1139590285203083365",
+          "date": 1719219315529,
+          "live": "-7",
+          "attacks": "+20"
         }
       ]
     },
@@ -259,6 +379,14 @@
           "date": 1718778824450,
           "live": "+6",
           "attacks": "-2"
+        },
+        {
+          "id": "lxt199q2ivmg7qpjknn",
+          "cardid": "1",
+          "guilds": "1139590285203083365",
+          "date": 1719236894330,
+          "live": "+7",
+          "attacks": "+15"
         }
       ]
     },
@@ -288,6 +416,88 @@
           "date": 1718892297623,
           "live": "+13",
           "attacks": "-22"
+        },
+        {
+          "id": "lxsjd5wmpvssc4ib7k",
+          "cardid": "2",
+          "guilds": "1139590285203083365",
+          "date": 1719206842918,
+          "live": "+20",
+          "attacks": "+10"
+        },
+        {
+          "id": "lxt4xqnljd6c3whaksr",
+          "cardid": "7",
+          "guilds": "1139590285203083365",
+          "date": 1719243074865,
+          "live": "+6",
+          "attacks": "-24"
+        }
+      ]
+    },
+    "1068578885484154881": {
+      "id": "1068578885484154881",
+      "cards": [
+        {
+          "id": "lxnmj4nlgdtyvev3gkl",
+          "cardid": "2",
+          "guilds": "1139590285203083365",
+          "date": 1718909829201,
+          "live": "-11",
+          "attacks": "-13"
+        },
+        {
+          "id": "lxnp3z7pxvyj0mpxjec",
+          "cardid": "5",
+          "guilds": "1139590285203083365",
+          "date": 1718914161157,
+          "live": "+15",
+          "attacks": "+20"
+        }
+      ]
+    },
+    "907630212383133716": {
+      "id": "907630212383133716",
+      "cards": [
+        {
+          "id": "lxrdpvf9sdf5c66uwbs",
+          "cardid": "5",
+          "guilds": "1139590285203083365",
+          "date": 1719136891989,
+          "live": "+22",
+          "attacks": "-12"
+        },
+        {
+          "id": "lxs42kzjg9p4bqza8ck",
+          "cardid": "3",
+          "guilds": "1139590285203083365",
+          "date": 1719181155007,
+          "live": "-14",
+          "attacks": "+10"
+        },
+        {
+          "id": "lxsseoc7xdxeiavclwl",
+          "cardid": "2",
+          "guilds": "1139590285203083365",
+          "date": 1719222030007,
+          "live": "-7",
+          "attacks": "+5"
+        },
+        {
+          "id": "lxt8xi33amsjob9rzk",
+          "cardid": "2",
+          "guilds": "1139590285203083365",
+          "date": 1719249782223,
+          "live": "-13",
+          "attacks": "+17"
+        },
+        {
+          "id": "lxtci30ka9pt4pa304g",
+          "cardid": "5",
+          "guilds": "1139590285203083365",
+          "date": 1719255781316,
+          "live": "-25",
+          "attacks": "+15"
         }
       ]
     }
