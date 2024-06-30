@@ -43,7 +43,7 @@
   },
   "3": {
     "rarity": 0.75,
-    "emoji": "❌",
+    "emoji": "<:Halfboy:1257024230109741086>",
     "id": "3",
     "image": "https://cdn.discordapp.com/attachments/1251615387947106354/1252324092749680680/Sans_titre_6_20231214204441.png",
     "card": "https://cdn.discordapp.com/attachments/1251615387947106354/1252324092749680680/Sans_titre_6_20231214204441.png",
@@ -85,7 +85,7 @@
   },
   "6": {
     "rarity": 0.5,
-    "emoji": "❌",
+    "emoji": "<:kayzen:1257023679146233938>",
     "id": "6",
     "image": "https://cdn.discordapp.com/attachments/1251615387947106354/1254096964036067378/VRChat_2023-01-15_17-30-51.884_1920x1080.png",
     "card": "https://cdn.discordapp.com/attachments/1251615387947106354/1254096964036067378/VRChat_2023-01-15_17-30-51.884_1920x1080.png",
@@ -95,14 +95,14 @@
     "live": 200,
     "attacks": 658,
     "color": "#5b11a5",
-    "possibleName": ["kayzen", "kayzen wolf", "kayzen_wolf", "kayzenwolf", "drift cartoon"]
+    "possibleName": ["kayzen", "kayzen wolf", "kayzen_wolf", "kayzenwolf"]
   },
   "7": {
     "rarity": 0.75,
-    "emoji": "❌",
+    "emoji": "<:stephouille:1257023159585210458>",
     "id": "7",
-    "image": "https://cdn.discordapp.com/attachments/1251615387947106354/1254120146893803640/image.png",
-    "card": "https://cdn.discordapp.com/attachments/1251615387947106354/1254120146893803640/image.png",
+    "image": "https://cdn.discordapp.com/attachments/1251615387947106354/1257021787443695750/image.png",
+    "card": "https://cdn.discordapp.com/attachments/1251615387947106354/1257021787737292830/Moi_68_002.png",
     "name": "Stephouille",
     "author": "Stephouille",
     "authorId": "990581637697904661",

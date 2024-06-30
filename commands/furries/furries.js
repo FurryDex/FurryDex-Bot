@@ -34,7 +34,7 @@ module.exports = {
       options: [
         {
           name: "user",
-          description: "The user who you wan't to see card",
+          description: "The user who you wan't to see completion",
           required: false,
           type: ApplicationCommandOptionType.User,
         },
