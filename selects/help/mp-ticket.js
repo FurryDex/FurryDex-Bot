@@ -34,13 +34,13 @@ const cardModal = new ModalBuilder()
         .setCustomId("title")
         .setLabel("Information Nécessaire")
         .setPlaceholder(
-          `Rareté: 1 = Commun, 0.75 = Peu commun ...
+          `Rareté:
 Nom: 
 Auteur: 
-Vie: 0 - 1000
-Attaque: 0 - 1000
-Couleur: # Code HEX
-Nom possible: en MINUSCULE`
+Vie:
+Attaque:
+Couleur:
+Nom possible:`
         )
         .setRequired(true)
         .setStyle(TextInputStyle.Paragraph).setValue(`Rareté: 0.75
