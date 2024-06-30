@@ -58,7 +58,7 @@ Nom possible: flyzar73 / flyzar / fly / flyzar_off`)
         .setLabel("Information Suplémentaire")
         .setPlaceholder("Expliquez-nous comment on peut mieu vous comprendre")
         .setRequired(true)
-        .setStyle(TextInputStyle.Paragraph)
+        .setStyle(TextInputStyle.Short)
     )
   );
 

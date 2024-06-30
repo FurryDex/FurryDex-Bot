@@ -110,5 +110,19 @@
     "attacks": 75,
     "color": "#274e72",
     "possibleName": ["stephouille", "steph", "stef", "moi", "moi_68", "moi 68"]
+  },
+  "8": {
+    "rarity": 0.65,
+    "emoji": "<:JeffreyMiller:1257042784033050745>",
+    "id": "8",
+    "image": "https://cdn.discordapp.com/attachments/1251615387947106354/1257042384974516284/Sans_titre_287_1.png",
+    "card": "https://cdn.discordapp.com/attachments/1251615387947106354/1257042384974516284/Sans_titre_287_1.png",
+    "name": "Jeffrey Miller",
+    "author": "Jeffrey Miller",
+    "authorId": "1068578885484154881",
+    "live": 280,
+    "attacks": 350,
+    "color": "#883fe7",
+    "possibleName": ["jeffrey miller", "jeffrey", "jefurry", "jeff"]
   }
 }
