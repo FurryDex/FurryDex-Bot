@@ -20,48 +20,43 @@ const modal = new ModalBuilder()
         .setCustomId("description")
         .setLabel("Des information suplémentaire ?")
         .setPlaceholder("Donnez-nous des informations si besoin.")
-        .setRequired(false)
+        .setRequired(true)
         .setStyle(TextInputStyle.Short)
     )
   );
 
 const cardModal = new ModalBuilder()
   .setTitle("Créer une Carte")
-  .setCustomId("mp-card")
+  .setCustomId("mp-ticket")
   .setComponents(
     new ActionRowBuilder().addComponents(
-      new TextInputBuilder().setCustomId("name").setLabel("Nom de la carte").setPlaceholder("Flyzar73").setRequired(true).setStyle(TextInputStyle.Short)
-    ),
-    new ActionRowBuilder().addComponents(
-      new TextInputBuilder().setCustomId("author").setLabel("Autheur de la carte").setPlaceholder("Flyzar_Off").setRequired(true).setStyle(TextInputStyle.Short)
-    ),
-    new ActionRowBuilder().addComponents(
-      new TextInputBuilder().setCustomId("live").setLabel("Vie de la carte - entre 0 et 1000").setPlaceholder("250").setRequired(true).setStyle(TextInputStyle.Short)
-    ),
-    new ActionRowBuilder().addComponents(
-      new TextInputBuilder().setCustomId("attacks").setLabel("Attaque de la carte - entre 0 et 1000").setPlaceholder("275").setRequired(true).setStyle(TextInputStyle.Short)
-    ),
-    new ActionRowBuilder().addComponents(
       new TextInputBuilder()
-        .setCustomId("color")
-        .setLabel("Couleur de la carte - en HEX si possible")
-        .setPlaceholder("#883fe7")
+        .setCustomId("title")
+        .setLabel("Information Nécessaire")
+        .setPlaceholder(
+          `Rareté: 1 = Commun, 0.75 = Peu commun ...
+Nom: 
+Auteur: 
+Vie: 0 - 1000
+Attaque: 0 - 1000
+Couleur: # Code HEX
+Nom possible: en MINUSCULE`
+        )
         .setRequired(true)
-        .setStyle(TextInputStyle.Short)
+        .setStyle(TextInputStyle.Paragraph).setValue(`Rareté: 0.75
+Nom: Flyzar
+Auteur: Flyzar73
+Vie: 250
+Attaque: 275
+Couleur: #883fe7
+Nom possible: flyzar73 / flyzar / fly / flyzar_off`)
     ),
+
     new ActionRowBuilder().addComponents(
       new TextInputBuilder()
-        .setCustomId("rarity")
-        .setLabel("Rareté - 1 = Commun, 0.75 = peu commun, ...")
-        .setPlaceholder("0.75")
-        .setRequired(true)
-        .setStyle(TextInputStyle.Short)
-    ),
-    new ActionRowBuilder().addComponents(
-      new TextInputBuilder()
-        .setCustomId("names")
-        .setLabel("Nom possible")
-        .setPlaceholder("Flyzar / Fly / Flyzou / FlyzarOff / ...")
+        .setCustomId("description")
+        .setLabel("Information Suplémentaire")
+        .setPlaceholder("Expliquez-nous comment on peut mieu vous comprendre")
         .setRequired(true)
         .setStyle(TextInputStyle.Paragraph)
     )
