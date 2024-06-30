@@ -33,12 +33,7 @@ const cardModal = new ModalBuilder()
       new TextInputBuilder().setCustomId("name").setLabel("Nom de la carte").setPlaceholder("Flyzar73").setRequired(true).setStyle(TextInputStyle.Short)
     ),
     new ActionRowBuilder().addComponents(
-      new TextInputBuilder()
-        .setCustomId("author")
-        .setLabel("Autheur de la carte - Si ce n'est pas vous, mettez un ID")
-        .setPlaceholder("Flyzar_Off")
-        .setRequired(true)
-        .setStyle(TextInputStyle.Short)
+      new TextInputBuilder().setCustomId("author").setLabel("Autheur de la carte").setPlaceholder("Flyzar_Off").setRequired(true).setStyle(TextInputStyle.Short)
     ),
     new ActionRowBuilder().addComponents(
       new TextInputBuilder().setCustomId("live").setLabel("Vie de la carte - entre 0 et 1000").setPlaceholder("250").setRequired(true).setStyle(TextInputStyle.Short)
