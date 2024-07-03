@@ -103,6 +103,8 @@ async function win(client, message) {
           );
         });
         msg.edit({ embeds: interaction.message.embeds, components: newComponents });
+        serverConfig.last_Card = null;
+        fs.writeFileSync(dbFilePath, JSON.stringify(guildConfig, null, 2));
       }, 300_000);
     });
   }, Math.floor(Math.random() * (15000 - 5000 + 1)) + 5000);
