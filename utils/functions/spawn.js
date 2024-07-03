@@ -93,7 +93,18 @@ async function win(client, message) {
     );
     let title = locales.embed.title[serverConfig.locale] ?? locales.embed.title.default;
     const embed = new EmbedBuilder().setTitle(title).setImage(card.image).setColor("Red");
-    channel.send({ embeds: [embed], components: [button] });
+    channel.send({ embeds: [embed], components: [button] }).then((msg) => {
+      setTimeout(() => {
+        const newComponents = msg.components.map((row) => {
+          return new ActionRowBuilder().addComponents(
+            row.components.map((button) => {
+              return new ButtonBuilder().setCustomId(button.customId).setLabel(button.label).setStyle(button.style).setDisabled(true); // Toggle the disabled state
+            })
+          );
+        });
+        msg.edit({ embeds: interaction.message.embeds, components: newComponents });
+      }, 300_000);
+    });
   }, Math.floor(Math.random() * (15000 - 5000 + 1)) + 5000);
 }
 
