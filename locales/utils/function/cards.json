@@ -1,8 +1,12 @@
 {
   "embed": {
     "description": {
-      "default": "%emoji_1% • Card by `@%author%`\n%emoji_2% • ID: `#%id%`\n%emoji_3% • Name: `%name%`\n%emoji_4% • Caught on %time%\n\n%emoji_5% • HP: `%live%` (`%live_2%%`)\n%emoji_6% • ATK: `%attacks%` (`%attacks_2%%`)",
-      "fr": "%emoji_1% • Carte par `@%author%`\n%emoji_2% • ID: `#%id%`\n%emoji_3% • Nom: `%name%`\n%emoji_4% • Récupéré le %time%\n\n%emoji_5% • Vie: `%live%` (`%live_2%%`)\n%emoji_6% • ATQ: `%attacks%` (`%attacks_2%%`)"
+      "default": "%emoji_1% • Card by `@%author%`\n%emoji_2% • ID: `#%id%`\n%emoji_3% • Name: `%name%`\n%emoji_4% • Caught on %time%%gived%\n%emoji_5% • HP: `%live%` (`%live_2%%`)\n%emoji_6% • ATK: `%attacks%` (`%attacks_2%%`)",
+      "fr": "%emoji_1% • Carte par `@%author%`\n%emoji_2% • ID: `#%id%`\n%emoji_3% • Nom: `%name%`\n%emoji_4% • Récupéré le %time%%gived%\n%emoji_5% • Vie: `%live%` (`%live_2%%`)\n%emoji_6% • ATQ: `%attacks%` (`%attacks_2%%`)"
+    },
+    "giveBy": {
+      "default": "%emoji% • Offered by `@%giver%`",
+      "fr": "%emoji% • Offert par `@%giver%`"
     }
   }
 }
