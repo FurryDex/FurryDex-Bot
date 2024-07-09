@@ -28,7 +28,7 @@ module.exports = {
 
       cmd.runSlash(client, interaction);
     } else if (interaction.isButton()) {
-      customId = interaction.customId.replace(/\d+/, "*");
+      customId = interaction.customId.replace(/\d+/, "x");
       const btn = client.buttons.get(customId);
       if (!btn) {
         Logger.warn(`Button "${interaction.customId}" dosn't exist`);

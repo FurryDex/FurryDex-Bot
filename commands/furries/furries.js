@@ -81,7 +81,6 @@ module.exports = {
     const user = interaction.options.getUser("user") ?? interaction.user;
     let cardsBDD = JSON.parse(fs.readFileSync("./DB/cards.json", "utf8"));
     let cardlistBDD = JSON.parse(fs.readFileSync("./DB/cardlist.json", "utf8"));
-    const list = new StringSelectMenuBuilder().setCustomId("cards").setPlaceholder("Make a choice").setMinValues(1).setMaxValues(1);
 
     if (subcommand == "list") {
       if (!cardsBDD.users[user.id]) {
@@ -113,7 +112,7 @@ module.exports = {
         });
       });
 
-      sendMenu(AllOptions, interaction, false, 0, 25);
+      sendMenu(AllOptions, interaction, user.id, false, 0, 25);
     } else if (subcommand == "completion") {
       let havedCards = [];
       let notHavedCards = [];
@@ -155,7 +154,7 @@ function hasCard(userCards, wantedId) {
   else return false;
 }
 
-async function sendMenu(options, interaction, edit = false, page = 0, chunkSize = 25) {
+async function sendMenu(options, interaction, id, edit = false, page = 0, chunkSize = 25) {
   const chunkedOptions = chunkArray(options, chunkSize);
   const currentOptions = chunkedOptions[page];
 
@@ -163,19 +162,19 @@ async function sendMenu(options, interaction, edit = false, page = 0, chunkSize 
 
   const buttonRow = new ActionRowBuilder().addComponents(
     new ButtonBuilder()
-      .setCustomId(`prev_${page - 1}`)
+      .setCustomId(`prev_${id}_${page - 1}`)
       .setLabel("◀️")
       .setStyle(ButtonStyle.Primary)
       .setDisabled(page === 0),
     new ButtonBuilder()
-      .setCustomId(`next_${page + 1}`)
+      .setCustomId(`next_${id}_${page + 1}`)
       .setLabel("▶️")
       .setStyle(ButtonStyle.Primary)
       .setDisabled(page === chunkedOptions.length - 1)
   );
 
   if (!edit) {
-    await interaction.reply({ content: "Please select a card: (Button are not working)", components: [row, buttonRow] });
+    await interaction.reply({ content: "Please select a card:", components: [row, buttonRow] });
   } else {
     await interaction.update({ components: [row, buttonRow] });
   }
