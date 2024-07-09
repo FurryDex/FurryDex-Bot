@@ -11,7 +11,7 @@ function cardEmbed(cardId, locale) {
   let description = locales.embed.description[locale] ?? locales.embed.description.default;
   description = description
     .replace("%emoji_1%", "<:atlanta_crown:598174064183607317>")
-    .replace("%author%", originalCardF.author)
+    .replace("%author%", `<@${originalCardF.author}`)
     .replace("%emoji_2%", "<:atlanta_id:598162717232332811>")
     .replace("%id%", cardF.id)
     .replace("%emoji_3%", "🪪")
@@ -35,7 +35,7 @@ function cardEmbed(cardId, locale) {
   if (cardF.gived) {
     description.replace(
       "%gived%",
-      `\n${(locales.embed.giveBy[locale] ?? locales.embed.giveBy.default).replace("%emoji%", "<:atlanta_add:598176235700355083>").replace("%author%", cardF.giveBy)}\n`
+      `\n${(locales.embed.giveBy[locale] ?? locales.embed.giveBy.default).replace("%emoji%", "<:atlanta_add:598176235700355083>").replace("%author%", `<@${cardF.gived}>`)}\n`
     );
   } else {
     description.replace("%gived", "");
