@@ -11,7 +11,7 @@ function cardEmbed(cardId, locale) {
   let description = locales.embed.description[locale] ?? locales.embed.description.default;
   description = description
     .replace("%emoji_1%", "<:atlanta_crown:598174064183607317>")
-    .replace("%author%", `<@${originalCardF.author}`)
+    .replace("%author%", `<@${originalCardF.authorId}>`)
     .replace("%emoji_2%", "<:atlanta_id:598162717232332811>")
     .replace("%id%", cardF.id)
     .replace("%emoji_3%", "🪪")
@@ -24,7 +24,7 @@ function cardEmbed(cardId, locale) {
       cardF.live < 0 ? originalCardF.live - (originalCardF.live * cardF.live.replace("-", "")) / 100 : originalCardF.live + (originalCardF.live * cardF.live) / 100
     ) //cardF.live < 0 ? originalCardF.live-(originalCardF.live*cardF.live/100) : originalCardF.live+(originalCardF.live*cardF.live/100)
     .replace("%live_2%", cardF.live)
-    .replace("%emoji_6%", " <:atlanta_minecraft:598170502963396620>")
+    .replace("%emoji_6%", "<:atlanta_minecraft:598170502963396620>")
     .replace(
       "%attacks%",
       cardF.attacks < 0
@@ -33,12 +33,12 @@ function cardEmbed(cardId, locale) {
     ) //cardF.attacks < 0 ? originalCardF.attacks-(originalCardF.attacks*cardF.attacks/100) : originalCardF.attacks+(originalCardF.attacks*cardF.attacks/100)
     .replace("%attacks_2%", cardF.attacks);
   if (cardF.gived) {
-    description.replace(
+    description = description.replace(
       "%gived%",
-      `\n${(locales.embed.giveBy[locale] ?? locales.embed.giveBy.default).replace("%emoji%", "<:atlanta_add:598176235700355083>").replace("%author%", `<@${cardF.gived}>`)}\n`
+      `${(locales.embed.giveBy[locale] ?? locales.embed.giveBy.default).replace("%emoji%", "<:atlanta_add:598176235700355083>").replace("%giver%", `<@${cardF.gived}>`)}\n`
     );
   } else {
-    description.replace("%gived", "");
+    description = description.replace("%gived%", ``);
   }
   let embed = new EmbedBuilder()
     .setColor(originalCardF.color)

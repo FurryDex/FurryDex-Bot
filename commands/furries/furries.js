@@ -1,4 +1,4 @@
-const { ApplicationCommandOptionType, StringSelectMenuBuilder, ActionRowBuilder, EmbedBuilder } = require("discord.js");
+const { ApplicationCommandOptionType, StringSelectMenuBuilder, ActionRowBuilder, EmbedBuilder, ButtonBuilder, ButtonStyle } = require("discord.js");
 const fs = require("fs");
 const locales = require("../../locales/commands/furries.json");
 
@@ -97,26 +97,23 @@ module.exports = {
       }
       if (!cardsBDD.users[user.id].cards || cardsBDD.users[user.id].cards == [])
         return interaction.reply({ content: locales.run["no-furry"][interaction.locale] ?? locales.run["no-furry"].default, ephemeral: true });
-
+      AllOptions = [];
       cardsBDD.users[user.id].cards.forEach((card) => {
         let date = new Date(card.date);
         cd = (num) => num.toString().padStart(2, 0);
         let description = locales.run.list[interaction.locale] ?? locales.run.list.default;
-        list.addOptions([
-          {
-            label: `(#${card.id}) ${cardlistBDD[card.cardid].name}`,
-            value: `${card.id}`,
-            emoji: `${cardlistBDD[card.cardid].emoji}`,
-            description: description
-              .replace("%attacks%", card.attacks)
-              .replace("%live%", card.live)
-              .replace("%date%", `${cd(date.getDate())}/${cd(date.getMonth())}/${cd(date.getFullYear())} ${cd(date.getHours())}H${cd(date.getMinutes())}`),
-          },
-        ]);
+        AllOptions.push({
+          label: `(#${card.id}) ${cardlistBDD[card.cardid].name}`,
+          value: `${card.id}`,
+          emoji: `${cardlistBDD[card.cardid].emoji}`,
+          description: description
+            .replace("%attacks%", card.attacks)
+            .replace("%live%", card.live)
+            .replace("%date%", `${cd(date.getDate())}/${cd(date.getMonth())}/${cd(date.getFullYear())} ${cd(date.getHours())}H${cd(date.getMinutes())}`),
+        });
       });
-      const ActionRowList = new ActionRowBuilder().addComponents(list);
 
-      interaction.reply({ components: [ActionRowList], content: interaction.options.getUser("user") ? `Card of <@${interaction.options.getUser("user").id}>` : "" });
+      sendMenu(AllOptions, interaction, false, 0, 25);
     } else if (subcommand == "completion") {
       let havedCards = [];
       let notHavedCards = [];
@@ -158,4 +155,39 @@ function hasCard(userCards, wantedId) {
   else return false;
 }
 
+async function sendMenu(options, interaction, edit = false, page = 0, chunkSize = 25) {
+  const chunkedOptions = chunkArray(options, chunkSize);
+  const currentOptions = chunkedOptions[page];
+
+  const row = new ActionRowBuilder().addComponents(new StringSelectMenuBuilder().setCustomId(`select_${page}`).setPlaceholder("Select a card").addOptions(currentOptions));
+
+  const buttonRow = new ActionRowBuilder().addComponents(
+    new ButtonBuilder()
+      .setCustomId(`prev_${page - 1}`)
+      .setLabel("◀️")
+      .setStyle(ButtonStyle.Primary)
+      .setDisabled(page === 0),
+    new ButtonBuilder()
+      .setCustomId(`next_${page + 1}`)
+      .setLabel("▶️")
+      .setStyle(ButtonStyle.Primary)
+      .setDisabled(page === chunkedOptions.length - 1)
+  );
+
+  if (!edit) {
+    await interaction.reply({ content: "Please select a card: (Button are not working)", components: [row, buttonRow] });
+  } else {
+    await interaction.update({ components: [row, buttonRow] });
+  }
+}
+
 // carte / carteTotal * 100
+function chunkArray(array, chunkSize = 25) {
+  const chunks = [];
+  for (let i = 0; i < array.length; i += chunkSize) {
+    chunks.push(array.slice(i, i + chunkSize));
+  }
+  return chunks;
+}
+
+//(3 - card.rarity) * 10
