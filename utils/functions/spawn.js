@@ -95,6 +95,15 @@ async function win(client, message) {
     const embed = new EmbedBuilder().setTitle(title).setImage(card.image).setColor("Red");
     channel.send({ embeds: [embed], components: [button] }).then((msg) => {
       setTimeout(() => {
+        // Charger la configuration du serveur à partir du fichier JSON
+        let guildConfig = JSON.parse(fs.readFileSync(dbFilePath, "utf8"));
+
+        const date = new Date();
+
+        // Trouver la configuration pour le serveur actuel
+        let serverConfig = guildConfig.find((config) => config.guild_id === message.guild.id);
+        serverConfig.last_Card = null;
+        fs.writeFileSync(dbFilePath, JSON.stringify(guildConfig, null, 2));
         const newComponents = msg.components.map((row) => {
           return new ActionRowBuilder().addComponents(
             row.components.map((button) => {
@@ -102,9 +111,7 @@ async function win(client, message) {
             })
           );
         });
-        msg.edit({ embeds: interaction.message.embeds, components: newComponents });
-        serverConfig.last_Card = null;
-        fs.writeFileSync(dbFilePath, JSON.stringify(guildConfig, null, 2));
+        msg.edit({ embeds: msg.embeds, components: newComponents }).catch(() => {});
       }, 300_000);
     });
   }, Math.floor(Math.random() * (15000 - 5000 + 1)) + 5000);

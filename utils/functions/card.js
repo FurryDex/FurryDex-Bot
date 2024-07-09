@@ -1,6 +1,6 @@
 const { EmbedBuilder, time, TimestampStyles } = require("discord.js");
 const fs = require("fs");
-const client = require("../../index.js");
+const client = require("../../bot.js");
 const locales = require("../../locales/utils/function/cards.json");
 
 function cardEmbed(cardId, locale) {

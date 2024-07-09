@@ -124,5 +124,19 @@
     "attacks": 350,
     "color": "#883fe7",
     "possibleName": ["jeffrey miller", "jeffrey", "jefurry", "jeff"]
+  },
+  "9": {
+    "rarity": 0.5,
+    "emoji": "<:JeffreyMiller:1257042784033050745>",
+    "id": "9",
+    "image": "https://cdn.discordapp.com/attachments/1251615387947106354/1257042384974516284/Sans_titre_287_1.png",
+    "card": "https://cdn.discordapp.com/attachments/1251615387947106354/1257042384974516284/Sans_titre_287_1.png",
+    "name": "XLan",
+    "author": "XLan",
+    "authorId": "1092035628843151380",
+    "live": 550,
+    "attacks": 150,
+    "color": "#883fe7",
+    "possibleName": ["xlan", "x-lan", "xlan957", "ixlan", "xlanytb"]
   }
 }

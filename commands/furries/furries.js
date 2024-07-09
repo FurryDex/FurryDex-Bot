@@ -34,7 +34,7 @@ module.exports = {
       options: [
         {
           name: "user",
-          description: "The user who you wan't to see completion",
+          description: "The user who you wan't to see card",
           required: false,
           type: ApplicationCommandOptionType.User,
         },
@@ -121,7 +121,7 @@ module.exports = {
       let havedCards = [];
       let notHavedCards = [];
       let cards = 0;
-      userCards = cardsBDD.users[user.id].cards;
+      userCards = cardsBDD.users[user.id].cards ?? [];
       for (const [id, card] of Object.entries(cardlistBDD)) {
         let hasCardorNot = hasCard(userCards, card.id) ?? false;
         if (hasCardorNot) {
