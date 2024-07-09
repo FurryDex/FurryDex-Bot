@@ -33,17 +33,6 @@ module.exports = {
   },
 };
 
-function hasCard(userCards, wantedId) {
-  let yes = false;
-  userCards.forEach((card) => {
-    if (card.cardid == wantedId) {
-      yes = true;
-    }
-  });
-  if (yes) return true;
-  else return false;
-}
-
 async function sendMenu(options, interaction, id, edit = false, page = 0, chunkSize = 25) {
   const chunkedOptions = chunkArray(options, chunkSize);
   const currentOptions = chunkedOptions[page];
@@ -52,15 +41,20 @@ async function sendMenu(options, interaction, id, edit = false, page = 0, chunkS
 
   const buttonRow = new ActionRowBuilder().addComponents(
     new ButtonBuilder()
-      .setCustomId(`prev_${id}_${page - 1}`)
-      .setLabel("◀️")
+      .setCustomId(`prev_${id}_${Number(page) - 1}`)
+      .setLabel("«")
       .setStyle(ButtonStyle.Primary)
-      .setDisabled(page === 0),
+      .setDisabled(page == 0),
     new ButtonBuilder()
-      .setCustomId(`next_${id}_${page + 1}`)
-      .setLabel("▶️")
+      .setCustomId(`nothing`)
+      .setLabel(`${Number(page) + 1}`)
+      .setStyle(ButtonStyle.Success)
+      .setDisabled(chunkedOptions.length == 1),
+    new ButtonBuilder()
+      .setCustomId(`next_${id}_${Number(page) + 1}`)
+      .setLabel("»")
       .setStyle(ButtonStyle.Primary)
-      .setDisabled(page === chunkedOptions.length - 1)
+      .setDisabled(page == chunkedOptions.length - 1)
   );
 
   if (!edit) {
