@@ -1,11 +1,12 @@
-const { StringSelectMenuBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle } = require("discord.js");
+const { StringSelectMenuBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle, StringSelectMenuOptionBuilder } = require("discord.js");
 const fs = require("fs");
 const locales = require("../../locales/commands/furries.json");
 
 module.exports = {
   name: "prev_x_x",
   run: (client, interaction) => {
-    const args = interaction.customId.split("_").shift;
+    const args = interaction.customId.toString().split("_");
+    args.shift();
     const userId = args[0];
     let cardsBDD = JSON.parse(fs.readFileSync("./DB/cards.json", "utf8"));
     let cardlistBDD = JSON.parse(fs.readFileSync("./DB/cardlist.json", "utf8"));
@@ -28,7 +29,7 @@ module.exports = {
       });
     });
 
-    sendMenu(AllOptions, interaction, userId, false, args[1], 25);
+    sendMenu(AllOptions, interaction, userId, true, args[1], 25);
   },
 };
 
@@ -47,7 +48,7 @@ async function sendMenu(options, interaction, id, edit = false, page = 0, chunkS
   const chunkedOptions = chunkArray(options, chunkSize);
   const currentOptions = chunkedOptions[page];
 
-  const row = new ActionRowBuilder().addComponents(new StringSelectMenuBuilder().setCustomId(`select_${page}`).setPlaceholder("Select a card").addOptions(currentOptions));
+  const row = new ActionRowBuilder().addComponents(new StringSelectMenuBuilder().setCustomId(`cards`).setPlaceholder("Select a card").addOptions(currentOptions));
 
   const buttonRow = new ActionRowBuilder().addComponents(
     new ButtonBuilder()

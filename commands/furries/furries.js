@@ -158,7 +158,7 @@ async function sendMenu(options, interaction, id, edit = false, page = 0, chunkS
   const chunkedOptions = chunkArray(options, chunkSize);
   const currentOptions = chunkedOptions[page];
 
-  const row = new ActionRowBuilder().addComponents(new StringSelectMenuBuilder().setCustomId(`select_${page}`).setPlaceholder("Select a card").addOptions(currentOptions));
+  const row = new ActionRowBuilder().addComponents(new StringSelectMenuBuilder().setCustomId(`cards`).setPlaceholder("Select a card").addOptions(currentOptions));
 
   const buttonRow = new ActionRowBuilder().addComponents(
     new ButtonBuilder()
