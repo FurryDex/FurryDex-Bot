@@ -3,8 +3,8 @@
     "guild_id": "1235970684556021890",
     "spawn_channel": "1235970684556021893",
     "enabled": true,
-    "time": 1720108324481,
-    "First_Check": 1720104724481,
+    "time": 1720704163193,
+    "First_Check": 1720700563193,
     "locale": "en-US",
     "last_Card": null,
     "premium": true
@@ -13,8 +13,8 @@
     "guild_id": "1231289498286035054",
     "spawn_channel": "1238938261045641287",
     "enabled": true,
-    "time": 1720159842044,
-    "First_Check": 1720156242044,
+    "time": 1720647616185,
+    "First_Check": 1720644019200,
     "locale": "fr",
     "last_Card": null,
     "premium": false
@@ -23,8 +23,8 @@
     "guild_id": "1139590285203083365",
     "spawn_channel": "1253039989466599555",
     "enabled": true,
-    "time": 1720199968054,
-    "First_Check": 1720199968054,
+    "time": 1720704062516,
+    "First_Check": 1720700462931,
     "locale": "fr",
     "last_Card": null,
     "premium": true
@@ -36,7 +36,8 @@
     "time": 0,
     "First_Check": 0,
     "locale": "en-US",
-    "last_Card": null
+    "last_Card": null,
+    "premium": false
   },
   {
     "guild_id": "1036985538839838760",
@@ -45,6 +46,7 @@
     "time": 0,
     "First_Check": 0,
     "locale": "en-US",
-    "last_Card": null
+    "last_Card": null,
+    "premium": false
   }
 ]

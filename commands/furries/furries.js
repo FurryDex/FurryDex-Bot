@@ -83,17 +83,7 @@ module.exports = {
     let cardlistBDD = JSON.parse(fs.readFileSync("./DB/cardlist.json", "utf8"));
 
     if (subcommand == "list") {
-      if (!cardsBDD.users[user.id]) {
-        cardsBDD.users[user.id] = {
-          id: user.id,
-          cards: [],
-        };
-        fs.writeFile(`./DB/cards.json`, JSON.stringify(cardsBDD), (err) => {
-          if (err) {
-            Logger.error(err);
-          }
-        });
-      }
+      if (!cardsBDD.users[user.id]) return interaction.reply({ content: locales.run["no-furry"][interaction.locale] ?? locales.run["no-furry"].default, ephemeral: true });
       if (!cardsBDD.users[user.id].cards || cardsBDD.users[user.id].cards == [])
         return interaction.reply({ content: locales.run["no-furry"][interaction.locale] ?? locales.run["no-furry"].default, ephemeral: true });
       AllOptions = [];
@@ -114,6 +104,9 @@ module.exports = {
 
       sendMenu(AllOptions, interaction, user.id, false, 0, 25);
     } else if (subcommand == "completion") {
+      if (!cardsBDD.users[user.id]) return interaction.reply({ content: locales.run["no-furry"][interaction.locale] ?? locales.run["no-furry"].default, ephemeral: true });
+      if (!cardsBDD.users[user.id].cards || cardsBDD.users[user.id].cards == [])
+        return interaction.reply({ content: locales.run["no-furry"][interaction.locale] ?? locales.run["no-furry"].default, ephemeral: true });
       let havedCards = [];
       let notHavedCards = [];
       let cards = 0;

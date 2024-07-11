@@ -60,6 +60,33 @@ if (!debug) {
     Logger.error(`${"unhandledRejection".toUpperCase()}: ${reason}\n${promise}`);
   });
   process.on("warning", (...args) => Logger.warn(...args));
+  client.rest.on("rateLimited", (rateLimited) => {
+    Logger.warn(`${"rateLimited".toUpperCase()}: ${rateLimited}`);
+  });
+  client.rest.on("invalidRequestWarning", (invalidRequestWarningData) => {
+    Logger.warn(`${"invalidRequestWarning".toUpperCase()}: ${invalidRequestWarningData}`);
+  });
+  client.on("warn", (info) => {
+    Logger.warn(`${"warn".toUpperCase()}: ${info}`);
+  });
+  client.on("error", (info) => {
+    Logger.error(`${"error".toUpperCase()}: ${info}`);
+  });
+  client.on("shardDisconnect", (event, id) => {
+    Logger.shard(`${"shardDisconnect".toUpperCase()} - ID: ${id}: ${event}`);
+  });
+  client.on("shardError", (event, id) => {
+    Logger.error(`${"shardError".toUpperCase()} - ID: ${id}: ${event}`);
+  });
+  client.on("shardReady", (event, id) => {
+    Logger.shard(`${"shardReady".toUpperCase()} - ID: ${id}: ${event}`);
+  });
+  client.on("shardReconnecting", (id) => {
+    Logger.shard(`${"shardReconnecting".toUpperCase()} - ID: ${id}`);
+  });
+  client.on("shardResume", (id, event) => {
+    Logger.shard(`${"shardResume".toUpperCase()} - ID: ${id}: ${event}`);
+  });
 }
 
 client.login(process.env.DISCORD_TOKEN);

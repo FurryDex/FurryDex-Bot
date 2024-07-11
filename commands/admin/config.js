@@ -150,7 +150,11 @@ module.exports = {
       let guildConfig = JSON.parse(fs.readFileSync(dbFilePath, "utf8"));
       let serverConfig = guildConfig.find((config) => config.guild_id === interaction.guild.id);
       serverConfig.enabled = interaction.options.getString("enable") == "true" ? true : false;
-      fs.writeFileSync(dbFilePath, JSON.stringify(guildConfig, null, 2));
+      if (serverConfig.spawn_channel != null) {
+        fs.writeFileSync(dbFilePath, JSON.stringify(guildConfig, null, 2));
+      } else {
+        interaction.reply("Cannot enable bot if the channel is not set, use `/config channel <channel>`");
+      }
       let message = locales.run.changedEna[interaction.locale] ?? locales.run.changedEna.default;
       interaction.reply(message.replace("%enable%", interaction.options.getString("enable") == "true" ? "Enable" : "Disable"));
     }

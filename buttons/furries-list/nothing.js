@@ -2,8 +2,8 @@ const { ModalBuilder, TextInputStyle, ActionRowBuilder, TextInputBuilder } = req
 const locales = require("../../locales/buttons/catch.json");
 
 module.exports = {
-  name: "catch",
+  name: "nothing",
   run: async (client, interaction) => {
-    interaction.reply({ content: `Eh ! J'ai un secret a te raconté !\n\n||Ca ne sert a rien de cliquer sur son bouton, Il ne fais rien||`, ephemeral: true });
+    interaction.reply({ content: `Eh! I have a secret told you!\n\n||There is no point in pressing a button in this range||`, ephemeral: true });
   },
 };

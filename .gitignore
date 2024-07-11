@@ -474,4 +474,7 @@ dist
 # End of https://mrkandreev.name/snippets/gitignore-generator/#vs,Node
 
 # Flyzar
-.DB/*
+DB*/
+DB/
+DB*/*
+DB/*

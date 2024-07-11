@@ -65,8 +65,8 @@
   ],
   "run": {
     "no-furry": {
-      "default": "You have `0` furry in your dex",
-      "fr": "Vous avez `0` furry dans votre dex"
+      "default": "`0` furry in this dex",
+      "fr": "Il n'y a `0` furry dans ce dex"
     },
     "list": {
       "default": "ATK: %attacks%% • HP: %live%% • Caught on %date%",

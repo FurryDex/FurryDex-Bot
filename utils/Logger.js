@@ -12,7 +12,7 @@ function warn(content) {
 }
 
 function typo(content) {
-  write(content, "black", "bgCyan", "TYPO", false);
+  write(content, "black", "bgCyan", "TYP0", false);
 }
 
 function command(content) {

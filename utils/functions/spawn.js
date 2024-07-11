@@ -98,8 +98,6 @@ async function win(client, message) {
         // Charger la configuration du serveur à partir du fichier JSON
         let guildConfig = JSON.parse(fs.readFileSync(dbFilePath, "utf8"));
 
-        const date = new Date();
-
         // Trouver la configuration pour le serveur actuel
         let serverConfig = guildConfig.find((config) => config.guild_id === message.guild.id);
         serverConfig.last_Card = null;
