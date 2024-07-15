@@ -8,6 +8,6 @@ module.exports = {
   ownerOnly: true,
   run: (client, message, args) => {},
   runSlash: (client, interaction) => {
-    interaction.reply(`Guild: \n${client.guilds.map((guild, index) => `> [${index}] ${guild.name}`)}`);
+    interaction.reply(`Guild: \n${client.guilds.cache.map((guild, index) => `> [${index}] ${guild.name}`)}`);
   },
 };
