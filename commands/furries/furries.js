@@ -34,7 +34,7 @@ module.exports = {
       options: [
         {
           name: "user",
-          description: "The user who you wan't to see card",
+          description: "The user who you wan't to see completion",
           required: false,
           type: ApplicationCommandOptionType.User,
         },
@@ -60,6 +60,14 @@ module.exports = {
       description: "Count how many card you have.",
       descriptionLocalizations: locales.options[4].description,
       type: ApplicationCommandOptionType.Subcommand,
+      options: [
+        {
+          name: "user",
+          description: "The user who you wan't to know the number of card",
+          required: false,
+          type: ApplicationCommandOptionType.User,
+        },
+      ],
     },
     {
       name: "info",
@@ -132,6 +140,14 @@ module.exports = {
         .setTimestamp();
 
       interaction.reply({ embeds: [embed] });
+    } else if (subcommand == "count") {
+      if (!cardsBDD.users[user.id]) return interaction.reply({ content: locales.run["no-furry"][interaction.locale] ?? locales.run["no-furry"].default, ephemeral: true });
+      if (!cardsBDD.users[user.id].cards || cardsBDD.users[user.id].cards == [])
+        return interaction.reply({ content: locales.run["no-furry"][interaction.locale] ?? locales.run["no-furry"].default, ephemeral: true });
+      let cards = 0;
+      userCards = cardsBDD.users[user.id].cards ?? [];
+      userCards.forEach(() => cards++);
+      return interaction.reply({ content: `The deck got \`%number%\` cards`.replace("%number%", cards) });
     }
   },
 };
@@ -157,7 +173,7 @@ async function sendMenu(options, interaction, id, edit = false, page = 0, chunkS
     new ButtonBuilder()
       .setCustomId(`prev_${id}_${Number(page) - 1}`)
       .setLabel("«")
-      .setStyle(ButtonStyle.Primary)
+      .setStyle(page == 0 ? ButtonStyle.Primary : ButtonStyle.Danger)
       .setDisabled(page == 0),
     new ButtonBuilder()
       .setCustomId(`nothing`)
@@ -167,7 +183,7 @@ async function sendMenu(options, interaction, id, edit = false, page = 0, chunkS
     new ButtonBuilder()
       .setCustomId(`next_${id}_${Number(page) + 1}`)
       .setLabel("»")
-      .setStyle(ButtonStyle.Primary)
+      .setStyle(page == chunkedOptions.length - 1 ? ButtonStyle.Primary : ButtonStyle.Danger)
       .setDisabled(page == chunkedOptions.length - 1)
   );
 

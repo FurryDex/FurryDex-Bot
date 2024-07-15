@@ -11,7 +11,6 @@ module.exports = {
   once: true,
   async execute(client) {
     Logger.client("Je suis prêt !");
-    Logger.succes("Bot démaré avec succès !");
 
     //const rest = new REST().setToken(token);
     //await rest.put(Routes.applicationCommands(clientId), { body: client.commands });
@@ -30,5 +29,7 @@ module.exports = {
     });
 
     fs.writeFileSync(dbFilePath, JSON.stringify(guildConfig, null, 2));
+
+    Logger.succes("Bot démaré avec succès !");
   },
 };

@@ -61,7 +61,16 @@ async function win(client, message) {
   const channel = await guild.channels.cache.get(serverConfig.spawn_channel);
   const logGuild = await client.guilds.cache.get(config.server.ID);
   const logChannel = await logGuild.channels.cache.get(config.server.log);
-  const card = IsAuthorInGuild(guild);
+
+  let card = [];
+
+  do {
+    if (serverConfig.spawnAllCards) {
+      card = randomCard();
+    } else {
+      card = IsAuthorInGuild(guild);
+    }
+  } while (!card);
 
   if (!card) return console.log("No Author in Guild");
 
@@ -93,13 +102,16 @@ async function win(client, message) {
     );
     let title = locales.embed.title[serverConfig.locale] ?? locales.embed.title.default;
     const embed = new EmbedBuilder().setTitle(title).setImage(card.image).setColor("Red");
-    channel.send({ embeds: [embed], components: [button] }).then((msg) => {
-      setTimeout(() => {
+    channel.send({ embeds: [embed], components: [button] }).then(async (message) => {
+      let channel = await guild.channels.cache.get(message.channelId);
+      setTimeout(async () => {
+        let msg = await channel.messages.fetch(message.id);
+
         // Charger la configuration du serveur à partir du fichier JSON
         let guildConfig = JSON.parse(fs.readFileSync(dbFilePath, "utf8"));
 
         // Trouver la configuration pour le serveur actuel
-        let serverConfig = guildConfig.find((config) => config.guild_id === message.guild.id);
+        let serverConfig = guildConfig.find((config) => config.guild_id === guild.id);
         serverConfig.last_Card = null;
         fs.writeFileSync(dbFilePath, JSON.stringify(guildConfig, null, 2));
         const newComponents = msg.components.map((row) => {
@@ -137,20 +149,6 @@ function randomCard() {
 }
 
 function IsAuthorInGuild(guild) {
-  //  let i = 0;
-  //  let carte = {};
-  //  while (i != 21) {
-  //    if ((i = 20)) {
-  //      return false;
-  //    }
-  //    carte = new randomCard();
-  //    if (guild.members.cache.get(carte.authorId) || carte.authorId == "0") {
-  //      return carte;
-  //    } else console.log(`Author: ${carte.author}, is not in guild: ${guild.name}`);
-  //    i++;
-  //    carte = {};
-  //  }
-
   do {
     card = randomCard();
     member = guild.members.cache.get(card.authorId);
