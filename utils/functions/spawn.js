@@ -65,7 +65,7 @@ async function win(client, message) {
   let card = [];
 
   do {
-    if (serverConfig.spawnAllCards) {
+    if (serverConfig.spawnAllCards && serverConfig.premium) {
       card = randomCard();
     } else {
       card = IsAuthorInGuild(guild);
@@ -102,6 +102,7 @@ async function win(client, message) {
     );
     let title = locales.embed.title[serverConfig.locale] ?? locales.embed.title.default;
     const embed = new EmbedBuilder().setTitle(title).setImage(card.image).setColor("Red");
+    if (!channel) return;
     channel.send({ embeds: [embed], components: [button] }).then(async (message) => {
       let channel = await guild.channels.cache.get(message.channelId);
       setTimeout(async () => {
@@ -111,9 +112,11 @@ async function win(client, message) {
         let guildConfig = JSON.parse(fs.readFileSync(dbFilePath, "utf8"));
 
         // Trouver la configuration pour le serveur actuel
-        let serverConfig = guildConfig.find((config) => config.guild_id === guild.id);
-        serverConfig.last_Card = null;
-        fs.writeFileSync(dbFilePath, JSON.stringify(guildConfig, null, 2));
+        do {
+          let serverConfig = guildConfig.find((config) => config.guild_id === guild.id);
+          serverConfig.last_Card = null;
+          fs.writeFileSync(dbFilePath, JSON.stringify(guildConfig, null, 2));
+        } while (JSON.parse(fs.readFileSync(dbFilePath, "utf8")).find((config) => config.guild_id === guild.id).last_Card != null);
         const newComponents = msg.components.map((row) => {
           return new ActionRowBuilder().addComponents(
             row.components.map((button) => {
