@@ -28,7 +28,7 @@ module.exports = {
 
       cmd.runSlash(client, interaction);
     } else if (interaction.isButton()) {
-      customId = interaction.customId.replace(/\d+/g, "x");
+      customId = interaction.customId.replace(/\d+/g, "x").replace(/{.*}/g, "y");
       const btn = client.buttons.get(customId);
       if (!btn) {
         Logger.warn(`Button "${interaction.customId}" or "${customId}" dosn't exist`);
@@ -37,6 +37,7 @@ module.exports = {
           ephemeral: true,
         });
       }
+      interaction.customId = interaction.customId.replace(/{*}*/g, "");
       btn.run(client, interaction);
     } else if (interaction.type === InteractionType.ModalSubmit) {
       const modal = client.modals.get(interaction.customId);

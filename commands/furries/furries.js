@@ -53,6 +53,14 @@ module.exports = {
       description: "Give a card to a user.",
       descriptionLocalizations: locales.options[3].description,
       type: ApplicationCommandOptionType.Subcommand,
+      options: [
+        {
+          name: "give-to",
+          description: "The user who you wan't to give a card",
+          required: true,
+          type: ApplicationCommandOptionType.User,
+        },
+      ],
     },
     {
       name: "count",
@@ -86,7 +94,7 @@ module.exports = {
   ],
   runSlash: (client, interaction) => {
     const subcommand = interaction.options.getSubcommand();
-    const user = interaction.options.getUser("user") ?? interaction.user;
+    let user = interaction.options.getUser("user") ?? interaction.user;
     let cardsBDD = JSON.parse(fs.readFileSync("./DB/cards.json", "utf8"));
     let cardlistBDD = JSON.parse(fs.readFileSync("./DB/cardlist.json", "utf8"));
 
@@ -110,7 +118,7 @@ module.exports = {
         });
       });
 
-      sendMenu(AllOptions, interaction, user.id, false, 0, 25);
+      sendMenu(AllOptions, interaction, user.id, false, 0, 25, "cards");
     } else if (subcommand == "completion") {
       if (!cardsBDD.users[user.id]) return interaction.reply({ content: locales.run["no-furry"][interaction.locale] ?? locales.run["no-furry"].default, ephemeral: true });
       if (!cardsBDD.users[user.id].cards || cardsBDD.users[user.id].cards == [])
@@ -148,6 +156,33 @@ module.exports = {
       userCards = cardsBDD.users[user.id].cards ?? [];
       userCards.forEach(() => cards++);
       return interaction.reply({ content: `The deck got \`%number%\` cards`.replace("%number%", cards) });
+    } else if (subcommand == "give!") {
+      if (!cardsBDD.users[user.id]) return interaction.reply({ content: locales.run["no-furry"][interaction.locale] ?? locales.run["no-furry"].default, ephemeral: true });
+      if (!cardsBDD.users[user.id].cards || cardsBDD.users[user.id].cards == [])
+        return interaction.reply({ content: locales.run["no-furry"][interaction.locale] ?? locales.run["no-furry"].default, ephemeral: true });
+      let giveto = interaction.options.getUser("give-to");
+      AllOptions = [];
+      cardsBDD.users[user.id].cards.forEach((card) => {
+        let date = new Date(card.date);
+        cd = (num) => num.toString().padStart(2, 0);
+        let description = locales.run.list[interaction.locale] ?? locales.run.list.default;
+        AllOptions.push({
+          label: `(#${card.id}) ${cardlistBDD[card.cardid].name}`,
+          value: `${giveto.id}_${user.id}_${card.date}`,
+          emoji: `${cardlistBDD[card.cardid].emoji}`,
+          description: description
+            .replace("%attacks%", card.attacks)
+            .replace("%live%", card.live)
+            .replace("%date%", `${cd(date.getDate())}/${cd(date.getMonth())}/${cd(date.getFullYear())} ${cd(date.getHours())}H${cd(date.getMinutes())}`),
+        });
+      });
+
+      sendMenu(AllOptions, interaction, user.id, false, 0, 25, "giveTo");
+    } else {
+      return interaction.reply({
+        content: "Sorry, this *command* is disable. Er0r: 403",
+        ephemerel: true,
+      });
     }
   },
 };
@@ -163,15 +198,15 @@ function hasCard(userCards, wantedId) {
   else return false;
 }
 
-async function sendMenu(options, interaction, id, edit = false, page = 0, chunkSize = 25) {
+async function sendMenu(options, interaction, id, edit = false, page = 0, chunkSize = 25, customId) {
   const chunkedOptions = chunkArray(options, chunkSize);
   const currentOptions = chunkedOptions[page];
 
-  const row = new ActionRowBuilder().addComponents(new StringSelectMenuBuilder().setCustomId(`cards`).setPlaceholder("Select a card").addOptions(currentOptions));
+  const row = new ActionRowBuilder().addComponents(new StringSelectMenuBuilder().setCustomId(customId).setPlaceholder("Select a card").addOptions(currentOptions));
 
   const buttonRow = new ActionRowBuilder().addComponents(
     new ButtonBuilder()
-      .setCustomId(`prev_${id}_${Number(page) - 1}`)
+      .setCustomId(`prev_${id}_${Number(page) - 1}_{${customId}}`)
       .setLabel("«")
       .setStyle(page == 0 ? ButtonStyle.Primary : ButtonStyle.Danger)
       .setDisabled(page == 0),
@@ -181,7 +216,7 @@ async function sendMenu(options, interaction, id, edit = false, page = 0, chunkS
       .setStyle(ButtonStyle.Success)
       .setDisabled(chunkedOptions.length == 1),
     new ButtonBuilder()
-      .setCustomId(`next_${id}_${Number(page) + 1}`)
+      .setCustomId(`next_${id}_${Number(page) + 1}_{${customId}}`)
       .setLabel("»")
       .setStyle(page == chunkedOptions.length - 1 ? ButtonStyle.Primary : ButtonStyle.Danger)
       .setDisabled(page == chunkedOptions.length - 1)

@@ -3,39 +3,48 @@ const dayjs = require("dayjs");
 
 const format = "{tstamp} {tag} {text}";
 
-function error(content) {
+function error(...content) {
+  content = content.join(`\n`);
   write(content, "black", "bgRed", "ERROR", true);
 }
 
-function warn(content) {
+function warn(...content) {
+  content = content.join(`\n`);
   write(content, "black", "bgYellow", "WARN", false);
 }
 
-function typo(content) {
+function typo(...content) {
+  content = content.join(`\n`);
   write(content, "black", "bgCyan", "TYP0", false);
 }
 
-function command(content) {
+function command(...content) {
+  content = content.join(`\n`);
   write(content, "magenta", "bgBlack", "CMD", false);
 }
 
-function event(content) {
+function event(...content) {
+  content = content.join(`\n`);
   write(content, "green", "bgBlack", "EVT", false);
 }
 
-function client(content) {
+function client(...content) {
+  content = content.join(`\n`);
   write(content, "cyan", "bgBlack", "CLIENT", false);
 }
 
-function shard(content) {
+function shard(...content) {
+  content = content.join(`\n`);
   write(content, "red", "bgBlack", "SHARD", false);
 }
 
-function succes(content) {
+function succes(...content) {
+  content = content.join(`\n`);
   write(content, "black", "bgGreen", "SUCCES", false);
 }
 
-function info(content) {
+function info(...content) {
+  content = content.join(`\n`);
   write(content, "black", "bgBlue", "INFO", false);
 }
 

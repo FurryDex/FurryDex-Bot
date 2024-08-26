@@ -3,12 +3,14 @@ const { EmbedBuilder, ButtonStyle, ActionRowBuilder, ButtonBuilder } = require("
 const config = require("../../config");
 const Logger = require("../Logger.js");
 const locales = require("../../locales/utils/function/spawn.json");
+const { error } = require("console");
 
 // Chemin du fichier de la base de données JSON
 const dbFilePath = "./DB/guild_config.json";
 
 function isXMinutesPassed(message, client) {
   try {
+    if (message.content.length <= 4) return;
     // Charger la configuration du serveur à partir du fichier JSON
     let guildConfig = JSON.parse(fs.readFileSync(dbFilePath, "utf8"));
 
@@ -30,7 +32,11 @@ function isXMinutesPassed(message, client) {
 
     // Calculer le temps en minutes en fonction du nombre de membres
 
-    serverConfig.time = parseInt(serverConfig.time - (Math.floor(Math.random() * (60000 - 1000 + 1)) + 1000) / memberCount);
+    serverConfig.time = parseInt(serverConfig.time - ((Math.floor(Math.random() * (10000 - 1000 + 1)) + 1000) * message.content.length) / memberCount);
+
+    let dateFirstCheck10 = new Date(serverConfig.First_Check);
+    dateFirstCheck10 = dateFirstCheck10.setMinutes(dateFirstCheck10.getMinutes() + 10);
+    if (serverConfig.time < dateFirstCheck10) serverConfig.time = dateFirstCheck10;
 
     //serverConfig.time = Math.max(serverConfig.time, serverConfig.First_Check + 600000);
 
@@ -39,7 +45,7 @@ function isXMinutesPassed(message, client) {
 
     // Vérifier si X minutes se sont écoulées depuis le dernier appel
     if (serverConfig.time <= date.getTime()) {
-      serverConfig.time = date.getTime() + 3_600_000;
+      serverConfig.time = date.getTime() + 3_600_00;
       serverConfig.First_Check = date.getTime();
       fs.writeFileSync(dbFilePath, JSON.stringify(guildConfig, null, 2));
       win(client, message);
@@ -49,7 +55,7 @@ function isXMinutesPassed(message, client) {
       return false;
     }
   } catch (error) {
-    Logger.error("Error reading or writing database file:", error);
+    Logger.error(`Error reading Text: ${error}`);
     return false;
   }
 }
@@ -127,7 +133,7 @@ async function win(client, message) {
         msg.edit({ embeds: msg.embeds, components: newComponents }).catch(() => {});
       }, 300_000);
     });
-  }, Math.floor(Math.random() * (15000 - 5000 + 1)) + 5000);
+  }, Math.floor(Math.random() * (7500 - 2500 + 1)) + 2500);
 }
 
 function randomCard() {

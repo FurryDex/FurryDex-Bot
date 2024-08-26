@@ -3,7 +3,7 @@ const fs = require("fs");
 const locales = require("../../locales/commands/furries.json");
 
 module.exports = {
-  name: "next_x_x",
+  name: "next_x_x_y",
   run: (client, interaction) => {
     const args = interaction.customId.toString().split("_");
     args.shift();
@@ -29,7 +29,7 @@ module.exports = {
       });
     });
 
-    sendMenu(AllOptions, interaction, userId, true, args[1], 25);
+    sendMenu(AllOptions, interaction, userId, true, args[1], 25, args[2]);
   },
 };
 
@@ -44,17 +44,17 @@ function hasCard(userCards, wantedId) {
   else return false;
 }
 
-async function sendMenu(options, interaction, id, edit = false, page = 0, chunkSize = 25) {
+async function sendMenu(options, interaction, id, edit = false, page = 0, chunkSize = 25, customId) {
   const chunkedOptions = chunkArray(options, chunkSize);
   const currentOptions = chunkedOptions[page];
 
-  const row = new ActionRowBuilder().addComponents(new StringSelectMenuBuilder().setCustomId(`cards`).setPlaceholder("Select a card").addOptions(currentOptions));
+  const row = new ActionRowBuilder().addComponents(new StringSelectMenuBuilder().setCustomId(customId).setPlaceholder("Select a card").addOptions(currentOptions));
 
   const buttonRow = new ActionRowBuilder().addComponents(
     new ButtonBuilder()
-      .setCustomId(`prev_${id}_${Number(page) - 1}`)
+      .setCustomId(`prev_${id}_${Number(page) - 1}_{${customId}}`)
       .setLabel("«")
-      .setStyle(ButtonStyle.Primary)
+      .setStyle(page == 0 ? ButtonStyle.Primary : ButtonStyle.Danger)
       .setDisabled(page == 0),
     new ButtonBuilder()
       .setCustomId(`nothing`)
@@ -62,9 +62,9 @@ async function sendMenu(options, interaction, id, edit = false, page = 0, chunkS
       .setStyle(ButtonStyle.Success)
       .setDisabled(chunkedOptions.length == 1),
     new ButtonBuilder()
-      .setCustomId(`next_${id}_${Number(page) + 1}`)
+      .setCustomId(`next_${id}_${Number(page) + 1}_{${customId}}`)
       .setLabel("»")
-      .setStyle(ButtonStyle.Primary)
+      .setStyle(page == chunkedOptions.length - 1 ? ButtonStyle.Primary : ButtonStyle.Danger)
       .setDisabled(page == chunkedOptions.length - 1)
   );
 

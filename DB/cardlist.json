@@ -1,6 +1,6 @@
 {
   "0": {
-    "rarity": 0.1,
+    "rarity": 0.25,
     "emoji": "<:FurriesDex:1254488397628702822>",
     "id": "0",
     "image": "https://cdn.discordapp.com/attachments/1251615387947106354/1254488121010032772/bvKADZ_P.jpg",
@@ -14,7 +14,7 @@
     "possibleName": ["furries dex", "furriesdex", "furries", "dex", "furries.dex", "furries_dex", "furry dex", "furrydex", "furry", "furry.dex", "furry_dex"]
   },
   "1": {
-    "rarity": 0.5,
+    "rarity": 0.25,
     "emoji": "<:Flyzar:1235993429855703131>",
     "id": "1",
     "image": "https://cdn.discordapp.com/attachments/1251615387947106354/1251615497259319388/PDP.png",
@@ -98,18 +98,18 @@
     "possibleName": ["kayzen", "kayzen wolf", "kayzen_wolf", "kayzenwolf"]
   },
   "7": {
-    "rarity": 0.75,
-    "emoji": "<:stephouille:1257023159585210458>",
+    "rarity": 0.5,
+    "emoji": "<:Stephouille:1277348964550705183>",
     "id": "7",
     "image": "https://cdn.discordapp.com/attachments/1251615387947106354/1257021787443695750/image.png",
-    "card": "https://cdn.discordapp.com/attachments/1251615387947106354/1257021787737292830/Moi_68_002.png",
+    "card": "https://cdn.discordapp.com/attachments/1251615387947106354/1257021787443695750/image.png",
     "name": "Stephouille",
     "author": "Stephouille",
     "authorId": "990581637697904661",
-    "live": 280,
-    "attacks": 75,
+    "live": 420,
+    "attacks": 270,
     "color": "#274e72",
-    "possibleName": ["stephouille", "steph", "stef", "moi", "moi_68", "moi 68"]
+    "possibleName": ["stephouille", "steph", "stef"]
   },
   "8": {
     "rarity": 0.65,
@@ -126,17 +126,114 @@
     "possibleName": ["jeffrey miller", "jeffrey", "jefurry", "jeff"]
   },
   "9": {
-    "rarity": 0.5,
-    "emoji": "<:JeffreyMiller:1257042784033050745>",
+    "rarity": 0.75,
+    "emoji": "<:XLan:1259558593599115264>",
     "id": "9",
-    "image": "https://cdn.discordapp.com/attachments/1251615387947106354/1257042384974516284/Sans_titre_287_1.png",
-    "card": "https://cdn.discordapp.com/attachments/1251615387947106354/1257042384974516284/Sans_titre_287_1.png",
+    "image": "https://cdn.discordapp.com/attachments/1251615387947106354/1259557522105303090/Image1.png",
+    "card": "https://cdn.discordapp.com/attachments/1251615387947106354/1259557522105303090/Image1.png",
     "name": "XLan",
     "author": "XLan",
     "authorId": "1092035628843151380",
     "live": 550,
     "attacks": 150,
-    "color": "#883fe7",
+    "color": "#2f99c8",
     "possibleName": ["xlan", "x-lan", "xlan957", "ixlan", "xlanytb"]
+  },
+  "10": {
+    "rarity": 0.5,
+    "emoji": "<:Orion:1259559003680407613>",
+    "id": "10",
+    "image": "https://cdn.discordapp.com/attachments/1251615387947106354/1259557359232225342/8f67c022-d98a-4e01-802d-61cac3609d9a.png",
+    "card": "https://cdn.discordapp.com/attachments/1251615387947106354/1259557358795882507/2ed70223-d990-46f0-93ae-bb0da74bdbb1.png",
+    "name": "Orion",
+    "author": "Toxi-Toaster",
+    "authorId": "963102095408496690",
+    "live": 530,
+    "attacks": 275,
+    "color": "#a462de",
+    "possibleName": [
+      "toxi",
+      "toxic",
+      "toxicproduction",
+      "production",
+      "toxic production",
+      "toxi-toaster",
+      "toxitoaster",
+      "toxi toaster",
+      "toaster",
+      "toxicouille",
+      "toasticouille",
+      "orion"
+    ]
+  },
+  "11": {
+    "rarity": 1,
+    "emoji": "<:Lucas:1265953414177619989>",
+    "id": "11",
+    "image": "https://cdn.discordapp.com/attachments/1251615387947106354/1265951370062860351/VRChat_2024-07-23_12-58-37.png",
+    "card": "https://cdn.discordapp.com/attachments/1251615387947106354/1265951370062860351/VRChat_2024-07-23_12-58-37.png",
+    "name": "Lucas",
+    "author": "Lucas",
+    "authorId": "1122862065338548235",
+    "live": 350,
+    "attacks": 250,
+    "color": "#8e7dc6",
+    "possibleName": ["lucas", "•lucas•", "lucassunshine", "lucas_sunshine", "luca", "xxgigatacosxx", "xxgigatacosxx#euw", "biscotte60800"]
+  },
+  "12": {
+    "rarity": 0.85,
+    "emoji": "<:Wilf:1277199749505749035>",
+    "id": "12",
+    "image": "https://cdn.discordapp.com/attachments/1251615387947106354/1277200625980932116/photo_2024-08-24_19-59-03.jpg",
+    "card": "https://cdn.discordapp.com/attachments/1251615387947106354/1277200625767288832/photo_2024-08-24_19-59-01.jpg",
+    "name": "Mr_Wilf",
+    "author": "Mr_Wilf",
+    "authorId": "762289450058776586",
+    "live": 325,
+    "attacks": 325,
+    "color": "#718cdb",
+    "possibleName": ["mr_wilf", "mrwilf", "wilf", "mr_ti2k0", "mrti2k0"]
+  },
+  "13": {
+    "rarity": 0.7,
+    "emoji": "<:Reikuu:1277344355199221943>",
+    "id": "13",
+    "image": "https://cdn.discordapp.com/attachments/1251615387947106354/1277344484732178532/cheater_0011.jpg",
+    "card": "https://cdn.discordapp.com/attachments/1251615387947106354/1277344484732178532/cheater_0011.jpg",
+    "name": "Luka",
+    "author": "Reikuu",
+    "authorId": "533025223377944587",
+    "live": 330,
+    "attacks": 420,
+    "color": "#86688a",
+    "possibleName": ["reikuu", "kira", "kira beatz", "kirabeatz", "beatz", "luka"]
+  },
+  "14": {
+    "rarity": 0.75,
+    "emoji": "<:Jinma:1277208588510695474>",
+    "id": "14",
+    "image": "https://cdn.discordapp.com/attachments/1251615387947106354/1277208760682811472/20240708_195622.png",
+    "card": "https://cdn.discordapp.com/attachments/1251615387947106354/1277208760682811472/20240708_195622.png",
+    "name": "Jinma",
+    "author": "Jinma",
+    "authorId": "590941871006810113",
+    "live": 250,
+    "attacks": 275,
+    "color": "#883fe7",
+    "possibleName": ["jinma", "zera", "railey"]
+  },
+  "15": {
+    "rarity": 0.85,
+    "emoji": "<:Moi_68:1257023159585210458>",
+    "id": "15",
+    "image": "https://cdn.discordapp.com/attachments/1251615387947106354/1277347156935835689/Moi_68_002.png",
+    "card": "https://cdn.discordapp.com/attachments/1251615387947106354/1277347156935835689/Moi_68_002.png",
+    "name": "Moi_68",
+    "author": "Stephouille",
+    "authorId": "990581637697904661",
+    "live": 250,
+    "attacks": 275,
+    "color": "#883fe7",
+    "possibleName": ["moi", "moi_68", "moi 68"]
   }
 }
