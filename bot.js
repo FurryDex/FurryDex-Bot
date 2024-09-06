@@ -26,6 +26,8 @@ const client = new Client({
 const Logger = require("./utils/Logger");
 const debug = true;
 
+require("./api/server");
+
 const { GiveawaysManager } = require("discord-giveaways");
 const { isXMinutesPassed } = require("./utils/functions/spawn");
 const config = require("./config");

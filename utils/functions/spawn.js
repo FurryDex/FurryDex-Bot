@@ -32,11 +32,11 @@ function isXMinutesPassed(message, client) {
 
     // Calculer le temps en minutes en fonction du nombre de membres
 
-    serverConfig.time = parseInt(serverConfig.time - ((Math.floor(Math.random() * (10000 - 1000 + 1)) + 1000) * message.content.length) / memberCount);
+    serverConfig.time = parseInt(serverConfig.time - (Math.floor(Math.random() * (250 - 10) + 10) * (message.content.length / 15)) / memberCount);
 
     let dateFirstCheck10 = new Date(serverConfig.First_Check);
     dateFirstCheck10 = dateFirstCheck10.setMinutes(dateFirstCheck10.getMinutes() + 10);
-    if (serverConfig.time < dateFirstCheck10) serverConfig.time = dateFirstCheck10;
+    if (serverConfig.time <= dateFirstCheck10) serverConfig.time = dateFirstCheck10;
 
     //serverConfig.time = Math.max(serverConfig.time, serverConfig.First_Check + 600000);
 
@@ -133,7 +133,7 @@ async function win(client, message) {
         msg.edit({ embeds: msg.embeds, components: newComponents }).catch(() => {});
       }, 300_000);
     });
-  }, Math.floor(Math.random() * (7500 - 2500 + 1)) + 2500);
+  }, Math.floor(Math.random() * (7500 - 2500) + 2500));
 }
 
 function randomCard() {
