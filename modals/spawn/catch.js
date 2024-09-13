@@ -37,10 +37,13 @@ module.exports = {
         live: `${live < 0 ? live : `+${live}`}`,
         attacks: `${attacks < 0 ? attacks : `+${attacks}`}`,
       });
+      cards.users[interaction.user.id].cooldown = new date(new date().getTime() + 120_00).toISOString();
+      cards.users[interaction.user.id].limit = cards.users[interaction.user.id].limit + 1;
       let message = locales.congrat[serverConfig.locale] ?? locales.congrat.default;
       interaction.reply(message.replace("%cardName%", card.name).replace("%cardId%", uuid).replace("%@player%", `<@${interaction.user.id}>`));
       fs.writeFileSync(cardFilePath, JSON.stringify(cards, null, 2));
       serverConfig.last_Card = null;
+      serverConfig.lastPlayer = interaction.user.id;
       fs.writeFileSync(dbFilePath, JSON.stringify(guildConfig, null, 2));
       let msg = interaction.message;
       const newComponents = msg.components.map((row) => {

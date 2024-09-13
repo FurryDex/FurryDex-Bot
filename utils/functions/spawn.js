@@ -13,11 +13,15 @@ function isXMinutesPassed(message, client) {
     if (message.content.length <= 4) return;
     // Charger la configuration du serveur à partir du fichier JSON
     let guildConfig = JSON.parse(fs.readFileSync(dbFilePath, "utf8"));
+    let cardsBDD = JSON.parse(fs.readFileSync("./DB/cards.json", "utf8"));
 
     const date = new Date();
 
     // Trouver la configuration pour le serveur actuel
     let serverConfig = guildConfig.find((config) => config.guild_id === message.guild.id);
+    if (serverConfig.lastPlayer == message.author.id) {
+      if (message.content.length <= 60) return;
+    }
 
     if (!serverConfig || !serverConfig.enabled || serverConfig.last_Card != null) {
       return false; // Le bot n'est pas activé pour ce serveur
@@ -31,17 +35,19 @@ function isXMinutesPassed(message, client) {
     const memberCount = message.guild.memberCount;
 
     // Calculer le temps en minutes en fonction du nombre de membres
+    if (!serverConfig.lastPlayer == message.author.id) {
+      serverConfig.time = parseInt(serverConfig.time - (Math.floor(Math.random() * (250 - 10) + 10) * (message.content.length / 15)) / memberCount);
 
-    serverConfig.time = parseInt(serverConfig.time - (Math.floor(Math.random() * (250 - 10) + 10) * (message.content.length / 15)) / memberCount);
-
-    let dateFirstCheck10 = new Date(serverConfig.First_Check);
-    dateFirstCheck10 = dateFirstCheck10.setMinutes(dateFirstCheck10.getMinutes() + 10);
-    if (serverConfig.time <= dateFirstCheck10) serverConfig.time = dateFirstCheck10;
-
-    //serverConfig.time = Math.max(serverConfig.time, serverConfig.First_Check + 600000);
+      let dateFirstCheck10 = new Date(serverConfig.First_Check);
+      dateFirstCheck10 = dateFirstCheck10.setMinutes(dateFirstCheck10.getMinutes() + 10);
+      if (serverConfig.time <= dateFirstCheck10) serverConfig.time = dateFirstCheck10;
+    }
 
     // Enregistrer la configuration mise à jour dans le fichier JSON
     fs.writeFileSync(dbFilePath, JSON.stringify(guildConfig, null, 2));
+
+    if (!cardsBDD.users[message.author.id].limit) cardsBDD.users[message.author.id].limit = 0;
+    if (cardsBDD.users[message.author.id].limit >= 5) return;
 
     // Vérifier si X minutes se sont écoulées depuis le dernier appel
     if (serverConfig.time <= date.getTime()) {
@@ -69,6 +75,8 @@ async function win(client, message) {
   const logChannel = await logGuild.channels.cache.get(config.server.log);
 
   let card = [];
+
+  if (message.channel.members.size <= guild.members.size * (2 / 3)) return;
 
   do {
     if (serverConfig.spawnAllCards && serverConfig.premium) {
