@@ -1,4 +1,26 @@
 {
-  "prettier.printWidth": 175,
-  "prettier.tabWidth": 2
+	"prettier.tabWidth": 2,
+	"material-icon-theme.folders.customClones": [
+		{
+			"name": "buttons-bot",
+			"base": "generator",
+			"color": "teal-500",
+			"lightColor": "light-green-700",
+			"folderNames": ["buttons"]
+		},
+		{
+			"name": "modals-bot",
+			"base": "generator",
+			"color": "teal-500",
+			"lightColor": "light-green-700",
+			"folderNames": ["modals"]
+		},
+		{
+			"name": "selects-bot",
+			"base": "generator",
+			"color": "teal-500",
+			"lightColor": "light-green-700",
+			"folderNames": ["selects"]
+		}
+	]
 }

@@ -10,7 +10,7 @@ module.exports = {
   name: "ready",
   once: true,
   async execute(client) {
-    Logger.client("Je suis prêt !");
+    Logger.client(client, "Je suis prêt !");
 
     //const rest = new REST().setToken(token);
     //await rest.put(Routes.applicationCommands(clientId), { body: client.commands });
@@ -30,6 +30,6 @@ module.exports = {
 
     fs.writeFileSync(dbFilePath, JSON.stringify(guildConfig, null, 2));
 
-    Logger.succes("Bot démaré avec succès !");
+    Logger.succes(client, "Bot démaré avec succès !");
   },
 };

@@ -1,61 +1,71 @@
-const chalk = require("chalk");
-const dayjs = require("dayjs");
+const chalk = require('chalk');
+const dayjs = require('dayjs');
 
-const format = "{tstamp} {tag} {text}";
+const format = '{tstamp} {tag} {text}';
 
-function error(...content) {
-  content = content.join(`\n`);
-  write(content, "black", "bgRed", "ERROR", true);
+function error(client, ...content) {
+	content = content.join(`\n`);
+	write(client, content, 'black', 'bgRed', 'ERROR', true);
 }
 
-function warn(...content) {
-  content = content.join(`\n`);
-  write(content, "black", "bgYellow", "WARN", false);
+function warn(client, ...content) {
+	content = content.join(`\n`);
+	write(client, content, 'black', 'bgYellow', 'WARN', false);
 }
 
-function typo(...content) {
-  content = content.join(`\n`);
-  write(content, "black", "bgCyan", "TYP0", false);
+function typo(client, ...content) {
+	content = content.join(`\n`);
+	write(client, content, 'black', 'bgCyan', 'TYP0', false);
 }
 
-function command(...content) {
-  content = content.join(`\n`);
-  write(content, "magenta", "bgBlack", "CMD", false);
+function command(client, ...content) {
+	content = content.join(`\n`);
+	write(client, content, 'magenta', 'bgBlack', 'CMD', false);
 }
 
-function event(...content) {
-  content = content.join(`\n`);
-  write(content, "green", "bgBlack", "EVT", false);
+function event(client, ...content) {
+	content = content.join(`\n`);
+	write(client, content, 'green', 'bgBlack', 'EVT', false);
 }
 
-function client(...content) {
-  content = content.join(`\n`);
-  write(content, "cyan", "bgBlack", "CLIENT", false);
+function client(client, ...content) {
+	content = content.join(`\n`);
+	write(client, content, 'cyan', 'bgBlack', 'CLIENT', false);
 }
 
-function shard(...content) {
-  content = content.join(`\n`);
-  write(content, "red", "bgBlack", "SHARD", false);
+function shard(client, ...content) {
+	content = content.join(`\n`);
+	write(client, content, 'red', 'bgBlack', 'SHARD', false);
 }
 
-function succes(...content) {
-  content = content.join(`\n`);
-  write(content, "black", "bgGreen", "SUCCES", false);
+function succes(client, ...content) {
+	content = content.join(`\n`);
+	write(client, content, 'black', 'bgGreen', 'SUCCES', false);
 }
 
-function info(...content) {
-  content = content.join(`\n`);
-  write(content, "black", "bgBlue", "INFO", false);
+function info(client, ...content) {
+	content = content.join(`\n`);
+	write(client, content, 'black', 'bgBlue', 'INFO', false);
 }
 
-function write(content, tagColor = "black", bgTagColor, tag, error = false) {
-  const timestamp = `[${dayjs().format("DD/MM - HH:mm:ss")}]`;
-  const logTag = `[${tag}]`;
-  const stream = error ? process.stderr : process.stdout;
+function write(client, content, tagColor = 'black', bgTagColor, tag, error = false) {
+	const timestamp = `[${dayjs().format('DD/MM - HH:mm:ss')}]`;
+	const logTag = `[${tag}]`;
+	const stream = error ? process.stderr : process.stdout;
 
-  const item = format.replace("{tstamp}", chalk.gray(timestamp)).replace("{tag}", chalk[bgTagColor][tagColor](logTag)).replace("{text}", chalk.white(content));
+	const item = format.replace('{tstamp}', chalk.gray(timestamp)).replace('{tag}', chalk[bgTagColor][tagColor](logTag)).replace('{text}', chalk.white(content));
 
-  stream.write(item + "\n");
+	stream.write(item + '\n');
+
+	color = bgTagColor.replace('bg', 'light');
+
+	if (color == 'Black' || color == 'lightBlack') {
+		color = tagColor;
+	}
+
+	if (client) {
+		require('./functions/DiscordLogger').write(client, { category: 'other', channel: '1284433362307780658' }, { tag: tag, color: color, description: '', info: [{ name: 'Write in host console', value: 'Yes' }], content: content });
+	}
 }
 
 module.exports = { error, warn, command, event, typo, client, shard, succes, info };

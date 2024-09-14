@@ -8,7 +8,7 @@ module.exports = {
     if (interaction.type === InteractionType.ApplicationCommand) {
       const cmd = client.commands.get(interaction.commandName);
       if (!cmd) {
-        Logger.warn(`Command "${interaction.commandName}" dosn't exist`);
+        Logger.warn(client, `Command "${interaction.commandName}" dosn't exist`);
         return interaction.reply({
           content: "Sorry, this *command* dosn't exit. Er0r: 404",
           ephemerel: true,
@@ -31,7 +31,7 @@ module.exports = {
       customId = interaction.customId.replace(/\d+/g, "x").replace(/{.*}/g, "y");
       const btn = client.buttons.get(customId);
       if (!btn) {
-        Logger.warn(`Button "${interaction.customId}" or "${customId}" dosn't exist`);
+        Logger.warn(client, `Button "${interaction.customId}" or "${customId}" dosn't exist`);
         return interaction.reply({
           content: "Sorry, this *button* dosn't exit. Er0r: 404",
           ephemeral: true,
@@ -42,7 +42,7 @@ module.exports = {
     } else if (interaction.type === InteractionType.ModalSubmit) {
       const modal = client.modals.get(interaction.customId);
       if (!modal) {
-        Logger.warn(`Modal "${interaction.customId}" dosn't exist`);
+        Logger.warn(client, `Modal "${interaction.customId}" dosn't exist`);
         return interaction.reply({
           content: "Sorry, this *form* dosn't exit. Er0r: 404",
           ephemeral: true,
@@ -52,7 +52,7 @@ module.exports = {
     } else if (interaction.isStringSelectMenu()) {
       const select = client.selects.get(interaction.customId);
       if (!select) {
-        Logger.warn(`Select "${interaction.customId}" dosn't exist`);
+        Logger.warn(client, `Select "${interaction.customId}" dosn't exist`);
         return interaction.reply({
           content: "Sorry, this *select menu* dosn't exit. Er0r: 404",
           ephemeral: true,
