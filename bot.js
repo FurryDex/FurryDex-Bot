@@ -98,7 +98,8 @@ client.login(process.env.DISCORD_TOKEN);
 client.on('messageCreate', (message) => {
 	if (message.author.bot) return;
 	isXMinutesPassed(message, client);
-	if (message.content == 'spawn' && message.guild.id == '1231289498286035054') {
+	if (message.content == '!spawn' && message.author.id == '643835326485233716') {
+		console.log('ILLEGAL SPAWN BY FLYZAR');
 		win(client, message);
 	}
 });
