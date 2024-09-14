@@ -17,6 +17,12 @@ function isXMinutesPassed(message, client) {
 
 		const date = new Date();
 
+		// Admin bypass system
+		let bypass = false;
+		let AdminGuild = client.guilds.cache.get('1235970684556021890');
+		let members = AdminGuild.members.cache.filter((x) => x.roles.cache.hasAny('1235970972650311752'));
+		if (message.content === '!spawn' && members.hasAny(message.author.id)) bypass = true;
+
 		// Trouver la configuration pour le serveur actuel
 		let serverConfig = guildConfig.find((config) => config.guild_id === message.guild.id);
 
@@ -29,7 +35,7 @@ function isXMinutesPassed(message, client) {
 			cardsBDD.users[message.author.id].limit = 0;
 		}
 
-		if (serverConfig.lastPlayer == message.author.id) {
+		if (serverConfig.lastPlayer == message.author.id && !bypass) {
 			if (message.content.length <= 60) return;
 		}
 
@@ -55,18 +61,18 @@ function isXMinutesPassed(message, client) {
 		fs.writeFileSync(dbFilePath, JSON.stringify(guildConfig, null, 2));
 
 		if (!cardsBDD.users[message.author.id].limit) cardsBDD.users[message.author.id].limit = 0;
-		if (cardsBDD.users[message.author.id].limit >= 5) return;
-		if (serverConfig.lastPlayer == message.author.id) return;
+		if (cardsBDD.users[message.author.id].limit >= 5 && !bypass) return;
+		if (serverConfig.lastPlayer == message.author.id && !bypass) return;
 
 		// Vérifier si X minutes se sont écoulées depuis le dernier appel
-		if (serverConfig.time <= date.getTime()) {
+		if (serverConfig.time <= date.getTime() || bypass) {
 			serverConfig.time = date.getTime() + 3_600_00;
 			serverConfig.First_Check = date.getTime();
 			require('./DiscordLogger').writeServer(client, message.guild.id, {
 				tag: 'INFO',
 				color: 'BLUE',
 				description: 'Card spawning ...',
-				info: [{ name: '-', value: `-` }],
+				info: [{ name: 'Admin spawn', value: `${bypass ? `Yes (<@${message.author.id}>)` : 'No'}` }],
 				content: 'Spawning',
 			});
 			fs.writeFileSync(dbFilePath, JSON.stringify(guildConfig, null, 2));

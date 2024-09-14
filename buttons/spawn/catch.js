@@ -26,7 +26,7 @@ module.exports = {
 			}
 		}
 
-		const penalityByLimit = { 0: 0, 1: 0, 2: 0, 3: 5, 4: 7.5, 5: 10, 6: 15 };
+		const penalityByLimit = { 0: 0, 1: 0, 2: 0, 3: 5, 4: 7.5, 5: 10, 6: 15, 7: 0, 8: 1000000 };
 
 		if (!cardsBDD.users[interaction.user.id].limit) cardsBDD.users[interaction.user.id].limit = 0;
 		let Penality_time = penalityByLimit[cardsBDD.users[interaction.user.id].limit] + (serverConfig.lastPlayer == interaction.user.id ? 2.5 : 0);
