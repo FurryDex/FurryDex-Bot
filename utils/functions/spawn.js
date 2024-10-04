@@ -30,8 +30,10 @@ function isXMinutesPassed(message, client) {
 			cardsBDD.users[message.author.id] = { id: message.author.id, cards: [], limit: 0, limitDay: 'AAAA-MM-JJ' };
 		}
 
-		if (!cardsBDD.users[message.author.id].limitDay == date.toISOString()) {
-			cardsBDD.users[message.author.id].limitDay = date.toISOString();
+		let ActualLimitDay = date.toISOString().split('T')[0];
+
+		if (cardsBDD.users[message.author.id].limitDay !== ActualLimitDay) {
+			cardsBDD.users[message.author.id].limitDay = ActualLimitDay;
 			cardsBDD.users[message.author.id].limit = 0;
 		}
 
@@ -43,7 +45,7 @@ function isXMinutesPassed(message, client) {
 			return false; // Le bot n'est pas activé pour ce serveur
 		}
 		if (!serverConfig.time || serverConfig.time == 0) {
-			serverConfig.time = date.getTime() + 3_600_00;
+			serverConfig.time = date.getTime() + 3_600_000;
 			serverConfig.First_Check = date.getTime();
 		}
 
@@ -59,6 +61,7 @@ function isXMinutesPassed(message, client) {
 
 		// Enregistrer la configuration mise à jour dans le fichier JSON
 		fs.writeFileSync(dbFilePath, JSON.stringify(guildConfig, null, 2));
+		fs.writeFileSync('./DB/cards.json', JSON.stringify(cardsBDD, null, 2));
 
 		if (!cardsBDD.users[message.author.id].limit) cardsBDD.users[message.author.id].limit = 0;
 		if (cardsBDD.users[message.author.id].limit >= 5 && !bypass) return;
@@ -66,13 +69,16 @@ function isXMinutesPassed(message, client) {
 
 		// Vérifier si X minutes se sont écoulées depuis le dernier appel
 		if (serverConfig.time <= date.getTime() || bypass) {
-			serverConfig.time = date.getTime() + 3_600_00;
+			serverConfig.time = date.getTime() + 3_600_000;
 			serverConfig.First_Check = date.getTime();
 			require('./DiscordLogger').writeServer(client, message.guild.id, {
 				tag: 'INFO',
 				color: 'BLUE',
 				description: 'Card spawning ...',
-				info: [{ name: 'Admin spawn', value: `${bypass ? `Yes (<@${message.author.id}>)` : 'No'}` }],
+				info: [
+					{ name: 'Admin spawn', value: `${bypass ? `Yes` : 'No'}` },
+					{ name: 'User', value: `<@${message.author.id}> (${message.author.id})` },
+				],
 				content: 'Spawning',
 			});
 			fs.writeFileSync(dbFilePath, JSON.stringify(guildConfig, null, 2));

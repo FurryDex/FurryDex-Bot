@@ -30,6 +30,7 @@ require('./api/server');
 
 const { GiveawaysManager } = require('discord-giveaways');
 const { isXMinutesPassed, win } = require('./utils/functions/spawn');
+const mysql = require('mysql');
 const config = require('./config');
 const manager = new GiveawaysManager(client, {
 	storage: './giveaways.json',
@@ -90,6 +91,21 @@ if (!debug) {
 		Logger.shard(client, `${'shardResume'.toUpperCase()} - ID: ${id}: ${event}`);
 	});
 }
+
+var pool = mysql.createPool({
+	host: '192.168.1.10',
+	user: 'u3_7W9sdG1Kt9',
+	password: '^qH2=.pyCLecAJshZomjjqdM',
+	database: 's3_furriesdex',
+});
+
+pool.getConnection(function (err, connection) {
+	if (err) throw err; // not connected!
+
+	Logger.client('Base de données connecté !');
+});
+
+client.database = pool;
 
 client.login(process.env.DISCORD_TOKEN);
 

@@ -52,7 +52,20 @@ module.exports = {
 				info: [
 					{ name: 'Card', value: `${card.name} (${card.id})` },
 					{ name: 'UUID', value: uuid },
-					{ name: 'Guild', value: interaction.guild.name },
+					{ name: 'Guild', value: `${interaction.guild.name} (${interaction.guild.id})` },
+					{ name: 'Live', value: `${live < 0 ? live : `+${live}`}` },
+					{ name: 'Attacks', value: `${attacks < 0 ? attacks : `+${attacks}`}` },
+				],
+				content: 'Catch',
+			});
+			require('../../utils/functions/DiscordLogger').writeServer(client, interaction.guild.id, {
+				tag: 'SUCCES',
+				color: 'GREEN',
+				description: 'Card catch',
+				info: [
+					{ name: 'Card', value: `${card.name} (${card.id})` },
+					{ name: 'UUID', value: uuid },
+					{ name: 'User', value: `${interaction.user.displayName} (${interaction.user.id})` },
 					{ name: 'Live', value: `${live < 0 ? live : `+${live}`}` },
 					{ name: 'Attacks', value: `${attacks < 0 ? attacks : `+${attacks}`}` },
 				],

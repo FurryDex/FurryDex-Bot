@@ -30,7 +30,7 @@ module.exports = {
 
 		if (!cardsBDD.users[interaction.user.id].limit) cardsBDD.users[interaction.user.id].limit = 0;
 		let Penality_time = penalityByLimit[cardsBDD.users[interaction.user.id].limit] + (serverConfig.lastPlayer == interaction.user.id ? 2.5 : 0);
-		let penality = new Date(interaction.message.createdTimestamp);
+		let penality = new Date(interaction.message.createdAt);
 		penality.setSeconds(penality.getSeconds() + Penality_time);
 		penality.toISOString();
 
