@@ -481,4 +481,4 @@ DB/*
 db/
 .json
 DB/*.json
-config.*
+config.json
