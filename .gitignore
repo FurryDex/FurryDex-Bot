@@ -482,3 +482,4 @@ db/
 .json
 DB/*.json
 config.json
+config.js
