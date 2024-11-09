@@ -92,20 +92,9 @@ if (!debug) {
 	});
 }
 
-var pool = mysql.createPool({
-	host: '192.168.1.10',
-	user: 'u3_7W9sdG1Kt9',
-	password: '^qH2=.pyCLecAJshZomjjqdM',
-	database: 's3_furriesdex',
-});
+client.knex = require('knex')(require('./config.json').connection);
 
-pool.getConnection(function (err, connection) {
-	if (err) throw err; // not connected!
-
-	Logger.client('Base de données connecté !');
-});
-
-client.database = pool;
+client.data = client.knex;
 
 client.login(process.env.DISCORD_TOKEN);
 
