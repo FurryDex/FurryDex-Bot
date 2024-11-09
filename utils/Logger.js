@@ -64,7 +64,7 @@ function write(client, content, tagColor = 'black', bgTagColor, tag, error = fal
 	}
 
 	if (client && client != null && client != undefined) {
-		require('./functions/DiscordLogger').write(client, { category: 'other', channel: '1284433362307780658' }, { tag: tag, color: color, description: '', info: [{ name: 'Write in host console', value: 'Yes' }], content: content });
+		//require('./functions/DiscordLogger').write(client, { category: 'other', channel: '1284433362307780658' }, { tag: tag, color: color, description: '', info: [{ name: 'Write in host console', value: 'Yes' }], content: content });
 	}
 }
 
