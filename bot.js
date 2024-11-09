@@ -112,6 +112,9 @@ client.login(process.env.DISCORD_TOKEN);
 // --------- COG & SPAWN ----------
 
 client.on('messageCreate', (message) => {
+	if (client.user.id == config.bot.Canary) {
+		if (message.guilds.members.cache.get(config.bot.Stable)) return;
+	}
 	if (message.author.bot) return;
 	isXMinutesPassed(message, client);
 });
