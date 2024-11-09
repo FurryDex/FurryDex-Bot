@@ -96,7 +96,7 @@ client.knex = require('knex')(require('./config.json').connection);
 
 client.data = client.knex;
 
-client.login(process.env.DISCORD_TOKEN);
+client.login(require('./config.json').token);
 
 // --------- COG & SPAWN ----------
 
