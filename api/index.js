@@ -1,8 +1,8 @@
-var copyContainer = $('.copy-container'),
-	replayIcon = $('#cb-replay'),
-	copyWidth = $('.copy-container').find('h1').width();
+var $copyContainer = $('.copy-container'),
+	$replayIcon = $('#cb-replay'),
+	$copyWidth = $('.copy-container').find('h1').width();
 
-var mySplitText = new SplitText(copyContainer, { type: 'words' }),
+var mySplitText = new SplitText($copyContainer, { type: 'words' }),
 	splitTextTimeline = new TimelineMax();
 var handleTL = new TimelineMax();
 
