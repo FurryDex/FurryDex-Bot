@@ -49,27 +49,18 @@ module.exports = {
 	runSlash: (client, interaction) => {
 		let cardId = client.guilds.cache.get(interaction.options.getString('card'));
 		let user = interaction.options.getUser('user') ?? interaction.user;
-		let dateOption = interaction.options.getString('date') ?? Date.now();
+		let dateOption = interaction.options.getString('date') ?? new Date();
 		let guild = client.guilds.cache.get(interaction.options.getString('guild')) ?? interaction.guild;
 		let live = client.guilds.cache.get(interaction.options.getString('live')) ?? Math.round(Math.floor(Math.random() * (25 - -25)) + -25);
 		let attacks = client.guilds.cache.get(interaction.options.getString('attacks')) ?? Math.round(Math.floor(Math.random() * (25 - -25)) + -25);
-		let date = new Date(dateOption);
+		let date = new Date(dateOption).toISOString();
 
 		const uid = function () {
 			return date.toString(36) + Math.random().toString(36).substr(2);
 		};
-		let cards = JSON.parse(fs.readFileSync(cardFilePath, 'utf8'));
 
-		if (!cards.users[user.id]) {
-			cards.users[user.id] = { id: user.id, cards: [] };
-		}
-		cards.users[user.id].cards.push({
-			id: uid(),
-			cardid: cardId,
-			guilds: guild,
-			date: date,
-			live: `${live < 0 ? live : `+${live}`}`,
-			attacks: `${attacks < 0 ? attacks : `+${attacks}`}`,
-		});
+		knex('user_cards')
+			.insert({ id: uid(), user_id: user.id, card_id: cardId, guild: guild, date: date, live: live, attacks: attacks })
+			.catch((...err) => console.error(err));
 	},
 };

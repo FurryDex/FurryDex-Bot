@@ -1,8 +1,8 @@
 {
-  "name": {
-    "fr": "ping"
-  },
-  "description": {
-    "fr": "Ping-Pong❗ 🏓 | Envoie la latence du bot"
-  }
+	"name": {
+		"fr": "ping"
+	},
+	"description": {
+		"fr": "Ping-Pong❗ 🏓 | Envoie la latence du bot"
+	}
 }
