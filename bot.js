@@ -105,7 +105,7 @@ client.on('messageCreate', (message) => {
 		if (message.guild.members.cache.get(config.bot.Stable)) return;
 	}
 	if (message.author.bot) return;
-	isXMinutesPassed(message, client);
+	//isXMinutesPassed(message, client);
 });
 
 module.exports = { client };

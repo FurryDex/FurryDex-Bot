@@ -1,4 +1,3 @@
-const { cardEmbed } = require('../../utils/functions/card.js');
 const fs = require('fs');
 
 module.exports = {
@@ -6,7 +5,6 @@ module.exports = {
 	async run(client, interaction) {
 		const args = interaction.values[0].toString().split('_');
 		let cardsBDD = JSON.parse(fs.readFileSync('./DB/cards.json', 'utf8'));
-		let cardlistBDD = JSON.parse(fs.readFileSync('./DB/cardlist.json', 'utf8'));
 
 		if (!cardsBDD.users[args[0]]) {
 			cardsBDD.users[args[0]] = { id: [args[0]], cards: [] };

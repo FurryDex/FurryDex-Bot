@@ -59,8 +59,8 @@ p {
 	background: #ffe500;
 	width: 14px;
 	height: 30px;
-	top: 0;
-	left: 0;
+	top: 5px;
+	left: 100%;
 	margin-top: 1px;
 	position: absolute;
 }
