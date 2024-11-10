@@ -1,16 +1,16 @@
 {
-  "models": {
-    "title": {
-      "default": "Catch this Furry Card !",
-      "fr": "Attrappe cette Carte Furry !"
-    },
-    "question": {
-      "default": "Name of this Furry",
-      "fr": "Nom de ce Furry"
-    },
-    "placeholder": {
-      "default": "Your guess",
-      "fr": "Votre réponse"
-    }
-  }
+	"models": {
+		"title": {
+			"default": "Catch this Furry Card !",
+			"fr": "Attrappe cette Carte Furry !"
+		},
+		"question": {
+			"default": "Name of this Furry",
+			"fr": "Nom de ce Furry"
+		},
+		"placeholder": {
+			"default": "Your guess",
+			"fr": "Votre réponse"
+		}
+	}
 }

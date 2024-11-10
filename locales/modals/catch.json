@@ -1,14 +1,14 @@
 {
-  "no": {
-    "default": "Sorry, %@player%, this is not the right name ! Guess: `%guess%`",
-    "fr": "Désolé, %@player%, ce n'est pas le bon nom ! Guess: `%guess%`"
-  },
-  "already": {
-    "default": "Sorry, %@player%, this card was caught already!",
-    "fr": "Désolé, %@player%, cette carte à déja été attrapé"
-  },
-  "congrat": {
-    "default": "Congratulations, %@player%, you caught `%cardName%` (`#%cardId%`)",
-    "fr": "Félicitations, %@player%, tu as attrapé `%cardName%` (`#%cardId%`)"
-  }
+	"no": {
+		"default": "Sorry, %@player%, this is not the right name ! Guess: `%guess%`",
+		"fr": "Désolé, %@player%, ce n'est pas le bon nom ! Guess: `%guess%`"
+	},
+	"already": {
+		"default": "Sorry, %@player%, this card was caught already!",
+		"fr": "Désolé, %@player%, cette carte à déja été attrapé"
+	},
+	"congrat": {
+		"default": "Congratulations, %@player%, you caught `%cardName%` (`#%cardId%`)",
+		"fr": "Félicitations, %@player%, tu as attrapé `%cardName%` (`#%cardId%`)"
+	}
 }

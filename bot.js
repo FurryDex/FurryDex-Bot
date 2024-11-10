@@ -96,16 +96,16 @@ client.knex = require('knex')(require('./config.json').connection);
 
 client.data = client.knex;
 
-client.login(process.env.DISCORD_TOKEN);
+client.login(require('./config.json').token);
 
 // --------- COG & SPAWN ----------
 
 client.on('messageCreate', (message) => {
 	if (client.user.id == config.bot.Canary) {
-		if (message.guilds.members.cache.get(config.bot.Stable)) return;
+		if (message.guild.members.cache.get(config.bot.Stable)) return;
 	}
 	if (message.author.bot) return;
-	isXMinutesPassed(message, client);
+	//isXMinutesPassed(message, client);
 });
 
 module.exports = { client };

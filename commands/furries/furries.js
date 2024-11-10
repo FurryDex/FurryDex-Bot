@@ -91,79 +91,77 @@ module.exports = {
 			descriptionLocalizations: locales.options[6].description,
 			type: ApplicationCommandOptionType.Subcommand,
 		},
-		{
-			name: 'possibility',
-			//nameLocalizations: locales.options[7].name,
-			description: 'Know what you can do.',
-			//descriptionLocalizations: locales.options[7].description,
-			type: ApplicationCommandOptionType.Subcommand,
-		},
 	],
-	runSlash: (client, interaction) => {
+	runSlash: async (client, interaction) => {
+		await interaction.deferReply();
 		const subcommand = interaction.options.getSubcommand();
 		let user = interaction.options.getUser('user') ?? interaction.user;
-		let cardsBDD = JSON.parse(fs.readFileSync('./DB/cards.json', 'utf8'));
-		let cardlistBDD = JSON.parse(fs.readFileSync('./DB/cardlist.json', 'utf8'));
-		let guildBDD = JSON.parse(fs.readFileSync('./DB/guild_config.json', 'utf8'));
+		let user_cards = await client
+			.knex('user_cards')
+			.select('*')
+			.where({ user_id: user.id })
+			.catch((...err) => {
+				console.error(err);
+			});
 
 		if (subcommand == 'list') {
-			if (!cardsBDD.users[user.id]) return interaction.reply({ content: locales.run['no-furry'][interaction.locale] ?? locales.run['no-furry'].default, ephemeral: true });
-			if (!cardsBDD.users[user.id].cards || cardsBDD.users[user.id].cards == []) return interaction.reply({ content: locales.run['no-furry'][interaction.locale] ?? locales.run['no-furry'].default, ephemeral: true });
+			if (user_cards.length == 0) return interaction.editReply({ content: locales.run['no-furry'][interaction.locale] ?? locales.run['no-furry'].default, ephemeral: true });
 			AllOptions = [];
-			cardsBDD.users[user.id].cards.forEach((card) => {
+			user_cards.forEach(async (card, key) => {
 				let date = new Date(card.date);
 				cd = (num) => num.toString().padStart(2, 0);
 				let description = locales.run.list[interaction.locale] ?? locales.run.list.default;
+				let card_info = await client
+					.knex('cards')
+					.first('*')
+					.where({ id: card.card_id })
+					.catch((...err) => {
+						console.error(err);
+					});
 				AllOptions.push({
-					label: `(#${card.id}) ${cardlistBDD[card.cardid].name}`,
+					label: `(#${card.id}) ${card_info.name}`,
 					value: `${card.id}`,
-					emoji: `${cardlistBDD[card.cardid].emoji}`,
+					emoji: `${card_info.emoji}`,
 					description: description
 						.replace('%attacks%', card.attacks)
 						.replace('%live%', card.live)
 						.replace('%date%', `${cd(date.getDate())}/${cd(date.getMonth())}/${cd(date.getFullYear())} ${cd(date.getHours())}H${cd(date.getMinutes())}`),
 				});
+				if (user_cards.length == key + 1) {
+					sendMenu(AllOptions, interaction, user.id, false, 0, 25, 'cards');
+				}
 			});
-
-			sendMenu(AllOptions, interaction, user.id, false, 0, 25, 'cards');
 		} else if (subcommand == 'completion') {
-			if (!cardsBDD.users[user.id]) return interaction.reply({ content: locales.run['no-furry'][interaction.locale] ?? locales.run['no-furry'].default, ephemeral: true });
-			if (!cardsBDD.users[user.id].cards || cardsBDD.users[user.id].cards == []) return interaction.reply({ content: locales.run['no-furry'][interaction.locale] ?? locales.run['no-furry'].default, ephemeral: true });
 			let havedCards = [];
 			let notHavedCards = [];
 			let cards = 0;
-			userCards = cardsBDD.users[user.id].cards ?? [];
-			for (const [id, card] of Object.entries(cardlistBDD)) {
-				let hasCardorNot = hasCard(userCards, card.id) ?? false;
+			allCards.forEach(async (card, key) => {
+				let hasCardorNot = hasCard(user_cards, card.id) ?? false;
 				if (hasCardorNot) {
 					havedCards.push({ id: card.id, emoji: card.emoji });
 				} else {
 					notHavedCards.push({ id: card.id, emoji: card.emoji });
 				}
 				cards++;
-			}
-
-			const embed = new EmbedBuilder()
-				.setTitle(`Furry Dex Completion`)
-				.setDescription(
-					`Dex of <@${user.id}>\nFurries Dex progression: *${Math.round((havedCards.length / cards) * 100)}%*\n\n__**Owned Furries Cards**__\n${havedCards.map((card) => card.emoji).join(' ')}\n\n__**Missing Furries Cards**__\n${notHavedCards
-						.map((card) => card.emoji)
-						.join(' ')}`
-				)
-				.setColor('#FF9700')
-				.setTimestamp();
-
-			interaction.reply({ embeds: [embed] });
+				if (allCards.length == key + 1) {
+					const embed = new EmbedBuilder()
+						.setTitle(`Furry Dex Completion`)
+						.setDescription(
+							`Dex of <@${user.id}>\nFurries Dex progression: *${Math.round((havedCards.length / cards) * 100)}%*\n\n__**Owned Furries Cards**__\n${havedCards.map((card) => card.emoji).join(' ')}\n\n__**Missing Furries Cards**__\n${notHavedCards
+								.map((card) => card.emoji)
+								.join(' ')}`
+						)
+						.setColor('#FF9700')
+						.setTimestamp();
+					interaction.editReply({ embeds: [embed] });
+				}
+			});
 		} else if (subcommand == 'count') {
-			if (!cardsBDD.users[user.id]) return interaction.reply({ content: locales.run['no-furry'][interaction.locale] ?? locales.run['no-furry'].default, ephemeral: true });
-			if (!cardsBDD.users[user.id].cards || cardsBDD.users[user.id].cards == []) return interaction.reply({ content: locales.run['no-furry'][interaction.locale] ?? locales.run['no-furry'].default, ephemeral: true });
-			let cards = 0;
-			userCards = cardsBDD.users[user.id].cards ?? [];
-			userCards.forEach(() => cards++);
-			return interaction.reply({ content: `The deck got \`%number%\` cards`.replace('%number%', cards) });
+			if (user_cards.length == 0) return interaction.editReply({ content: locales.run['no-furry'][interaction.locale] ?? locales.run['no-furry'].default, ephemeral: true });
+			return interaction.editReply({ content: `The deck got \`%number%\` cards`.replace('%number%', user_cards.length) });
 		} else if (subcommand == 'give!') {
-			if (!cardsBDD.users[user.id]) return interaction.reply({ content: locales.run['no-furry'][interaction.locale] ?? locales.run['no-furry'].default, ephemeral: true });
-			if (!cardsBDD.users[user.id].cards || cardsBDD.users[user.id].cards == []) return interaction.reply({ content: locales.run['no-furry'][interaction.locale] ?? locales.run['no-furry'].default, ephemeral: true });
+			if (!cardsBDD.users[user.id]) return interaction.editReply({ content: locales.run['no-furry'][interaction.locale] ?? locales.run['no-furry'].default, ephemeral: true });
+			if (!cardsBDD.users[user.id].cards || cardsBDD.users[user.id].cards == []) return interaction.editReply({ content: locales.run['no-furry'][interaction.locale] ?? locales.run['no-furry'].default, ephemeral: true });
 			let giveto = interaction.options.getUser('give-to');
 			AllOptions = [];
 			cardsBDD.users[user.id].cards.forEach((card) => {
@@ -182,45 +180,8 @@ module.exports = {
 			});
 
 			sendMenu(AllOptions, interaction, user.id, false, 0, 25, 'giveTo');
-		} else if (subcommand == 'possibility') {
-			let spawnInThisGuild = false,
-				spawnInAllServers = false,
-				reduceTime = false,
-				cooldown = false,
-				penality = 0;
-
-			if (!cardsBDD.users[user.id]) {
-				spawnInThisGuild = true;
-				spawnInAllServers = true;
-				reduceTime = true;
-				cooldown = false;
-				penality = 0;
-			}
-			if (cardsBDD.users[user.id].limit) {
-				const penalityByLimit = { 0: 0, 1: 0, 2: 0, 3: 5, 4: 7.5, 5: 10, 6: 15, 7: 0, 8: 1000000 };
-				penality = penalityByLimit[cardsBDD.users[user.id].limit];
-				if (!cardsBDD.users[user.id].limit >= 5) {
-					spawnInAllServers = true;
-					reduceTime = true;
-				}
-			}
-			if (!guildBDD.find((x) => x.guild_id == interaction.guild.id).lastPlayer == interaction.user.id) {
-				spawnInThisGuild = true;
-			}
-
-			let embed = new EmbedBuilder()
-				.setTitle('Possibility')
-				.setDescription('You can actualy:')
-				.setFields([
-					{ name: 'Spawn card in this guild', value: spawnInThisGuild ? 'Yes' : 'No', inline: true },
-					{ name: 'Spawn card in all guild', value: spawnInAllServers ? 'Yes' : 'No', inline: true },
-					{ name: 'Reduce time before next spawn', value: reduceTime ? 'Yes' : 'No', inline: true },
-					{ name: 'You have a 2 minutes of cooldown', value: cooldown ? 'Yes' : 'No', inline: false },
-					{ name: "You got a penality due to the day's limit of", value: penality, inline: false },
-				]);
-			interaction.reply({ embeds: [embed] });
 		} else {
-			return interaction.reply({
+			return interaction.editReply({
 				content: 'Sorry, this *command* is disable. Er0r: 403',
 				ephemerel: true,
 			});
@@ -228,12 +189,10 @@ module.exports = {
 	},
 };
 
-function hasCard(userCards, wantedId) {
+async function hasCard(userCards, wantedId) {
 	let yes = false;
 	userCards.forEach((card) => {
-		if (card.cardid == wantedId) {
-			yes = true;
-		}
+		if (card.card_id == wantedId) yes = true;
 	});
 	if (yes) return true;
 	else return false;
@@ -264,7 +223,7 @@ async function sendMenu(options, interaction, id, edit = false, page = 0, chunkS
 	);
 
 	if (!edit) {
-		await interaction.reply({ content: 'Please select a card:', components: [row, buttonRow] });
+		await interaction.editReply({ content: 'Please select a card:', components: [row, buttonRow] });
 	} else {
 		await interaction.update({ components: [row, buttonRow] });
 	}
