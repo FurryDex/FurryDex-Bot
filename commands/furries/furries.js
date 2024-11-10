@@ -113,7 +113,7 @@ module.exports = {
 				let description = locales.run.list[interaction.locale] ?? locales.run.list.default;
 				let card_info = await client
 					.knex('cards')
-					.select('*')
+					.first('*')
 					.where({ id: card.card_id })
 					.catch((...err) => {
 						console.error(err);
