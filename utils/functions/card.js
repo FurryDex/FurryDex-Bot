@@ -4,10 +4,10 @@ const locales = require('../../locales/utils/function/cards.json');
 async function cardEmbed(client, cardId, locale) {
 	const cardF = {};
 	const originalCardF = {};
-	card(client, cardId).then((card) => {
+	await card(client, cardId).then((card) => {
 		cardF = card;
 	});
-	originalCard(client, cardF.card_id).then((card) => {
+	await originalCard(client, cardF.card_id).then((card) => {
 		originalCardF = card;
 	});
 	//let creator = client.users.fetch(originalCardF.author);
