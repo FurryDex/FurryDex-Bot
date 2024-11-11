@@ -23,8 +23,16 @@ async function write(client, destination, embed) {
 async function writePlayer(client, playerId, embed) {
 	let color = require('../colors.json').find((x) => x.name == embed.color.toUpperCase());
 
-	let cardsDb = JSON.parse(fs.readFileSync(CardsFilePath, 'utf8'));
-	let userDb = cardsDb.users[playerId];
+	let userDb = await client
+		.knex('users')
+		.first('*')
+		.where({ id: playerId })
+		.catch((...err) => console.error(err));
+	let cardsDb = await client
+		.knex('user_cards')
+		.select('*')
+		.where({ user_id: playerId })
+		.catch((...err) => console.error(err));
 	const user = await client.users.cache.get(playerId);
 
 	if (!userDb.premium) userDb.premium = false;
@@ -39,11 +47,11 @@ async function writePlayer(client, playerId, embed) {
 		.setFields([
 			{
 				name: '[FD] Premium',
-				value: `${userDb.premium ? 'Yes' : 'No'}`,
+				value: `${userDb.premium == 1 ? 'Yes' : 'No'}`,
 			},
 			{
 				name: '[FD] Cards',
-				value: `${(userDb.cards ?? []).length} cards`,
+				value: `${(cardsDb ?? []).length} cards`,
 			},
 			{
 				name: 'Created at',
@@ -56,9 +64,9 @@ async function writePlayer(client, playerId, embed) {
 		])
 		.setTimestamp();
 
-	let channel = await category.threads.cache.get(userDb.logChannel);
+	let channel = await category.threads.cache.get(userDb.log_channel);
 
-	if (!userDb.logChannel || !channel) {
+	if (!userDb.log_channel || !channel) {
 		await category.threads
 			.create({
 				name: `${user.displayName} (${playerId})`,
@@ -68,13 +76,22 @@ async function writePlayer(client, playerId, embed) {
 				},
 			})
 			.then((log) => {
-				userDb.logChannel = log.id;
-				fs.writeFileSync(CardsFilePath, JSON.stringify(cardsDb, null, 2));
+				client
+					.knex('users')
+					.update({ log_channel: log.id })
+					.where({ id: playerId })
+					.catch((...err) => console.error(err));
 			})
 			.catch((err) => console.log(err));
 	}
 
-	channel = await category.threads.cache.get(userDb.logChannel);
+	userDb = await client
+		.knex('users')
+		.first('*')
+		.where({ id: playerId })
+		.catch((...err) => console.error(err));
+
+	channel = await category.threads.cache.get(userDb.log_channel);
 	let message = await channel.fetchStarterMessage();
 	message.edit({ content: 'Log', embeds: [playerEmbed] });
 
@@ -90,8 +107,16 @@ async function writePlayer(client, playerId, embed) {
 async function writeServer(client, serverId, embed) {
 	let color = require('../colors.json').find((x) => x.name == embed.color.toUpperCase());
 
-	let guildConfig = JSON.parse(fs.readFileSync(dbFilePath, 'utf8'));
-	let serverConfig = guildConfig.find((config) => config.guild_id === serverId);
+	let serverConfig = await client
+		.knex('guilds')
+		.first('*')
+		.where({ id: serverId })
+		.catch((...err) => console.error(err));
+	let cardsDb = await client
+		.knex('user_cards')
+		.select('*')
+		.where({ guild: serverId })
+		.catch((...err) => console.error(err));
 	const guild = await client.guilds.cache.get(serverId);
 
 	const logGuild = await client.guilds.cache.get(config.server.ID);
@@ -104,11 +129,15 @@ async function writeServer(client, serverId, embed) {
 		.setFields([
 			{
 				name: '[FD] Enable',
-				value: `${serverConfig.enabled ? 'Yes' : 'No'}`,
+				value: `${serverConfig.enabled == 1 ? 'Yes' : 'No'}`,
 			},
 			{
 				name: '[FD] Premium',
-				value: `${serverConfig.premium ? 'Yes' : 'No'}`,
+				value: `${serverConfig.premium == 1 ? 'Yes' : 'No'}`,
+			},
+			{
+				name: '[FD] Cards',
+				value: `${(cardsDb ?? []).length} cards`,
 			},
 			{
 				name: 'Created at',
@@ -129,9 +158,9 @@ async function writeServer(client, serverId, embed) {
 		])
 		.setTimestamp();
 
-	let channel = await category.threads.cache.get(serverConfig.logChannel);
+	let channel = await category.threads.cache.get(serverConfig.log_channel);
 
-	if (!serverConfig.logChannel || !channel) {
+	if (!serverConfig.log_channel || !channel) {
 		await category.threads
 			.create({
 				name: `${guild.name} (${serverId})`,
@@ -141,13 +170,22 @@ async function writeServer(client, serverId, embed) {
 				},
 			})
 			.then((log) => {
-				serverConfig.logChannel = log.id;
-				fs.writeFileSync(dbFilePath, JSON.stringify(guildConfig, null, 2));
+				client
+					.knex('guilds')
+					.update({ log_channel: log.id })
+					.where({ id: playerId })
+					.catch((...err) => console.error(err));
 			})
 			.catch((err) => console.log(err));
 	}
 
-	channel = await category.threads.cache.get(serverConfig.logChannel);
+	serverConfig = await client
+		.knex('guilds')
+		.first('*')
+		.where({ id: serverId })
+		.catch((...err) => console.error(err));
+
+	channel = await category.threads.cache.get(serverConfig.log_channel);
 	if (!channel) return;
 	let message = await channel.fetchStarterMessage();
 	message.edit({ content: 'Log', embeds: [guildEmbed] });
