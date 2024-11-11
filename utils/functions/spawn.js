@@ -33,7 +33,7 @@ async function isXMinutesPassed(message, client) {
 		if (!user) {
 			client
 				.knex('users')
-				.insert({ user_id: message.author.id })
+				.insert({ id: message.author.id })
 				.catch((...err) => console.error(err));
 		}
 
@@ -113,7 +113,7 @@ async function win(client, message) {
 		.first('*')
 		.where({ id: message.guild.id })
 		.catch((...err) => console.error(err));
-	const guild = await client.guilds.cache.get(serverConfig.guild_id);
+	const guild = await client.guilds.cache.get(message.guild.id);
 	const channel = await guild.channels.cache.get(serverConfig.spawn_channel);
 
 	let card = [];
