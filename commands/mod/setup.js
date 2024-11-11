@@ -152,7 +152,7 @@ module.exports = {
 			let serverConfig = await client
 				.knex('guilds')
 				.first('*')
-				.where({ guild_id: interaction.guild.id })
+				.where({ id: interaction.guild.id })
 				.catch((...err) => console.error(err));
 			let guild = await client.guilds.cache.get(interaction.guild.id);
 			let channel = await guild.channels.cache.get(serverConfig.spawn_channel);
@@ -160,7 +160,7 @@ module.exports = {
 				client
 					.knex('guilds')
 					.update({ enabled: interaction.options.getString('enable') == 'true' ? true : false })
-					.where({ guild_id: interaction.guild.id })
+					.where({ id: interaction.guild.id })
 					.catch((...err) => console.error(err));
 			} else {
 				return interaction.editReply('Cannot enable bot if the channel is not set, use `/config channel <channel>`');
@@ -172,7 +172,7 @@ module.exports = {
 			await client
 				.knex('guilds')
 				.update({ spawn_channel: interaction.options.getChannel('channel').id })
-				.where({ guild_id: interaction.guild.id })
+				.where({ id: interaction.guild.id })
 				.catch((...err) => console.error(err));
 			let message = locales.run.changedChan[interaction.locale] ?? locales.run.changedChan.default;
 			interaction.editReply(message.replace('%channel%', interaction.options.getChannel('channel').name));
@@ -181,7 +181,7 @@ module.exports = {
 			await client
 				.knex('guilds')
 				.update({ locale: interaction.options.getString('lang') })
-				.where({ guild_id: interaction.guild.id })
+				.where({ id: interaction.guild.id })
 				.catch((...err) => console.error(err));
 			let message = locales.run.changed[interaction.locale] ?? locales.run.changed.default;
 			interaction.editReply(message.replace('%lang%', interaction.options.getString('lang')));
@@ -197,7 +197,7 @@ module.exports = {
 			await client
 				.knex('guilds')
 				.update({ locale: local })
-				.where({ guild_id: interaction.guild.id })
+				.where({ id: interaction.guild.id })
 				.catch((...err) => console.error(err));
 			let message = locales.run.changed[interaction.locale] ?? locales.run.changed.default;
 			interaction.editReply(message.replace('%lang%', local));
