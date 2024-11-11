@@ -24,7 +24,7 @@ module.exports = {
 	async execute(client, message) {
 		if (message.author.bot) return;
 		if (message.mentions != null) {
-			if (message.mentions.users.get('1070398623638110319')) {
+			if (message.mentions.users.get('1070398623638110319') && false) {
 				let embed = new EmbedBuilder().setTitle('How can i help you ?').setDescription('Select an option for i can help you !');
 
 				message.author.send({ embeds: [embed], components: [option] }).catch((err) => {
@@ -33,7 +33,7 @@ module.exports = {
 				});
 			}
 		}
-		if (message.channel.type == 11) {
+		if (message.channel.type == 11 && false) {
 			if (message.channel.parent.id == config.ticket.channel) {
 				if (message.content.startsWith('$')) return;
 
@@ -49,7 +49,7 @@ module.exports = {
 				}
 			}
 		}
-		if (message.channel.type == 1) {
+		if (message.channel.type == 1 && false) {
 			if (!require('../../DB/ticket.json').user[message.author.id]) return;
 			if (!require('../../DB/ticket.json').user[message.author.id].channel) return;
 			if (message.mentions != null) {

@@ -28,7 +28,7 @@ module.exports = {
 
 		let embed = new EmbedBuilder()
 			.setTitle('I am here !')
-			.setDescription(`I am \`Furries Dex Bot\`, a bot for get card of world furries.\nTo enable me, please do thaht command: \n- \`/config channel <channel>\`\n- \`/config enable <enable; true or false>\`\n\nThank you for use me !`)
+			.setDescription(`I am \`Furries Dex Bot\`, a bot for get card of world furries.\nTo enable me, please do that command: \n- \`/config channel <channel>\`\n- \`/config enable <enable; true or false>\`\n\nThank you for use me !`)
 			.setColor('Aqua');
 
 		let owner = await guild.fetchOwner();

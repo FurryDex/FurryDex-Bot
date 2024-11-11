@@ -11,40 +11,52 @@ module.exports = {
 	name: 'catch',
 	async run(client, interaction) {
 		const guess = interaction.fields.getTextInputValue('guess').toLowerCase();
-		let guildConfig = JSON.parse(fs.readFileSync(dbFilePath, 'utf8'));
-		let cards = JSON.parse(fs.readFileSync(cardFilePath, 'utf8'));
-		let cardlist = JSON.parse(fs.readFileSync(cardlistFilePath, 'utf8'));
-		const serverConfig = guildConfig.find((config) => config.guild_id === interaction.guild.id);
+		let serverConfig = await client
+			.knex('guilds')
+			.first('*')
+			.where({ id: interaction.guild.id })
+			.catch((...err) => console.error(err));
 		if (serverConfig.last_Card == null) {
 			let message = locales.already[serverConfig.locale] ?? locales.already.default;
 			interaction.reply(message.replace('%@player%', `<@${interaction.user.id}>`));
 			return;
 		}
-		const card = cardlist[serverConfig.last_Card];
+
+		let card = await client
+			.knex('cards')
+			.first('*')
+			.where({ id: serverConfig.last_Card })
+			.catch((...err) => console.error(err));
 
 		if (card.possibleName.includes(guess)) {
 			let live = Math.round(Math.floor(Math.random() * (25 - -25)) + -25);
 			let attacks = Math.round(Math.floor(Math.random() * (25 - -25)) + -25);
 			let uuid = uid();
-			if (!cards.users[interaction.user.id]) {
-				cards.users[interaction.user.id] = { id: interaction.user.id, cards: [] };
+			let user = await client
+				.knex('users')
+				.first('*')
+				.where({ id: message.author.id })
+				.catch((...err) => console.error(err));
+
+			if (!user) {
+				client
+					.knex('users')
+					.insert({ user_id: message.author.id })
+					.catch((...err) => console.error(err));
 			}
-			cards.users[interaction.user.id].cards.push({
-				id: uuid,
-				cardid: serverConfig.last_Card,
-				guilds: interaction.guild.id,
-				date: Date.now(),
-				live: `${live < 0 ? live : `+${live}`}`,
-				attacks: `${attacks < 0 ? attacks : `+${attacks}`}`,
-			});
-			let cooldown = new Date();
-			cooldown.setMinutes(cooldown.getMinutes() + 2);
-			cards.users[interaction.user.id].cooldown = cooldown.toISOString();
-			if (!cards.users[interaction.user.id].limit) cards.users[interaction.user.id].limit = 0;
-			cards.users[interaction.user.id].limit = cards.users[interaction.user.id].limit + 1;
+			client
+				.knex('users')
+				.insert({
+					id: uuid,
+					cardid: serverConfig.last_Card,
+					guilds: interaction.guild.id,
+					date: Date.now(),
+					live: `${live < 0 ? live : `+${live}`}`,
+					attacks: `${attacks < 0 ? attacks : `+${attacks}`}`,
+				})
+				.catch((...err) => console.error(err));
 			let message = locales.congrat[serverConfig.locale] ?? locales.congrat.default;
 			interaction.reply(message.replace('%cardName%', card.name).replace('%cardId%', uuid).replace('%@player%', `<@${interaction.user.id}>`));
-			await fs.writeFileSync(cardFilePath, JSON.stringify(cards, null, 2));
 			require('../../utils/functions/DiscordLogger').writePlayer(client, interaction.user.id, {
 				tag: 'SUCCES',
 				color: 'GREEN',
@@ -71,9 +83,11 @@ module.exports = {
 				],
 				content: 'Catch',
 			});
-			serverConfig.last_Card = null;
-			serverConfig.lastPlayer = interaction.user.id;
-			fs.writeFileSync(dbFilePath, JSON.stringify(guildConfig, null, 2));
+			client
+				.knex('guilds')
+				.update({ last_Card: null })
+				.where({ id: interaction.guild.id })
+				.catch((...err) => console.error(err));
 			let msg = interaction.message;
 			const newComponents = msg.components.map((row) => {
 				return new ActionRowBuilder().addComponents(
