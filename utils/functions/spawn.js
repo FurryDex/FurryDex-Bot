@@ -148,9 +148,11 @@ async function win(client, message) {
 				}
 			}
 		}
-	} while (!card);
+	} while (!(card == [] || card));
 
 	if (!card) return console.log('No Author in Guild');
+	console.log(card);
+
 	client
 		.knex('guilds')
 		.update({ last_Card: card.id })
