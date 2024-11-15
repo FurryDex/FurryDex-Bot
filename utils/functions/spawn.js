@@ -148,9 +148,9 @@ async function win(client, message) {
 				}
 			}
 		}
-	} while (!(card == [] || card));
+	} while (card == [] || !card);
 
-	if (!card) return console.log('No Author in Guild');
+	if (!card || card == []) return console.log('No Author in Guild');
 	console.log(card);
 
 	client
@@ -158,13 +158,6 @@ async function win(client, message) {
 		.update({ last_Card: card.id })
 		.where({ id: message.guild.id })
 		.catch((...err) => console.error(err));
-
-	let guild_name = guild.name;
-	if (guild.id == '1235970684556021890' || guild.id == '1177901864092708904' || guild.id == '1231289498286035054' || guild.id == '1139590285203083365') {
-		guild_name = `👑 • ${guild.name}`;
-	} else if (serverConfig.premium) {
-		guild_name = `⭐ • ${guild.name}`;
-	}
 
 	setTimeout(async () => {
 		if (config.server.enable_log) {
