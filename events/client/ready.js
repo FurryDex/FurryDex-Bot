@@ -12,23 +12,16 @@ module.exports = {
 	async execute(client) {
 		Logger.client(client, 'Je suis prêt !');
 
-		//const rest = new REST().setToken(token);
-		//await rest.put(Routes.applicationCommands(clientId), { body: client.commands });
-
 		client.application.commands.set(client.commands.map((cmd) => cmd));
 
 		client.user.setPresence({
 			activities: [{ name: activity }],
 		});
 
-		const dbFilePath = './DB/guild_config.json';
-		let guildConfig = JSON.parse(fs.readFileSync(dbFilePath, 'utf8'));
-
-		guildConfig.forEach((server) => {
-			server['last_Card'] = null;
-		});
-
-		fs.writeFileSync(dbFilePath, JSON.stringify(guildConfig, null, 2));
+		client
+			.knex('guilds')
+			.update({ last_card: null })
+			.catch((...err) => console.error(err));
 
 		Logger.succes(client, 'Bot démaré avec succès !');
 	},

@@ -42,6 +42,12 @@
 		"families": ["red"]
 	},
 	{
+		"name": "YOUTUBE",
+		"hex": "#CD201F",
+		"rgb": "RGB(205, 32, 31)",
+		"families": ["red", "organization"]
+	},
+	{
 		"name": "RED",
 		"hex": "#FF0000",
 		"rgb": "RGB(255, 0, 0)",
@@ -78,6 +84,12 @@
 		"families": ["pink", "deep"]
 	},
 	{
+		"name": "INSTAGRAM",
+		"hex": "#ff0050",
+		"rgb": "RGB(255, 0, 80)",
+		"families": ["pink", "organization"]
+	},
+	{
 		"name": "MEDIUMVIOLETRED",
 		"hex": "#C71585",
 		"rgb": "RGB(199, 21, 133)",
@@ -94,6 +106,12 @@
 		"hex": "#FF7F50",
 		"rgb": "RGB(255, 127, 80)",
 		"families": ["orange", "coral"]
+	},
+	{
+		"name": "FURRIES DEX",
+		"hex": "#ff9b00",
+		"rgb": "RGB(255, 155, 0)",
+		"families": ["orange", "coral", "organization"]
 	},
 	{
 		"name": "TOMATO",
@@ -280,6 +298,12 @@
 		"hex": "#4B0082",
 		"rgb": "RGB(75, 0, 130)",
 		"families": ["purple", "blue"]
+	},
+	{
+		"name": "TWITCH",
+		"hex": "#6441a5",
+		"rgb": "RGB(100, 65, 165)",
+		"families": ["purple", "organization"]
 	},
 	{
 		"name": "SLATEBLUE",
