@@ -1,10 +1,9 @@
 const { EmbedBuilder, ThreadAutoArchiveDuration } = require('discord.js');
 const config = require('../../config');
+let knex_channel, type;
 
 const categoryList = { other: '1284433127095140444', player: '1284433157168562237', server: '1284433198629126198' };
-const dbFilePath = './DB/guild_config.json';
-const CardsFilePath = './DB/cards.json';
-const fs = require('fs');
+
 async function write(client, destination, embed) {
 	let color = require('../colors.json').find((x) => x.name == embed.color.toUpperCase());
 
@@ -21,6 +20,14 @@ async function write(client, destination, embed) {
 }
 
 async function writePlayer(client, playerId, embed) {
+	if (client.user.id == config.bot.Stable) {
+		knex_channel = 'log_channel';
+		type = 'STABLE';
+	} else {
+		knex_channel = 'log_canary';
+		type = 'CANARY';
+	}
+
 	let color = require('../colors.json').find((x) => x.name == embed.color.toUpperCase());
 
 	let userDb = await client
@@ -64,12 +71,12 @@ async function writePlayer(client, playerId, embed) {
 		])
 		.setTimestamp();
 
-	let channel = await category.threads.cache.get(userDb.log_channel);
+	let channel = await category.threads.cache.get(userDb[knex_channel]);
 
-	if (!userDb.log_channel || !channel) {
+	if (!userDb[knex_channel] || !channel) {
 		await category.threads
 			.create({
-				name: `${user.displayName} (${playerId})`,
+				name: `${user.displayName} (${playerId}) - ${type}`,
 				autoArchiveDuration: ThreadAutoArchiveDuration.OneWeek,
 				message: {
 					content: 'Initialising...',
@@ -78,7 +85,7 @@ async function writePlayer(client, playerId, embed) {
 			.then((log) => {
 				client
 					.knex('users')
-					.update({ log_channel: log.id })
+					.update({ [knex_channel]: log.id })
 					.where({ id: playerId })
 					.catch((...err) => console.error(err));
 			})
@@ -91,7 +98,7 @@ async function writePlayer(client, playerId, embed) {
 		.where({ id: playerId })
 		.catch((...err) => console.error(err));
 
-	channel = await category.threads.cache.get(userDb.log_channel);
+	channel = await category.threads.cache.get(userDb[knex_channel]);
 	let message = await channel.fetchStarterMessage();
 	message.edit({ content: 'Log', embeds: [playerEmbed] });
 
@@ -105,6 +112,14 @@ async function writePlayer(client, playerId, embed) {
 }
 
 async function writeServer(client, serverId, embed) {
+	if (client.user.id == config.bot.Stable) {
+		knex_channel = 'log_channel';
+		type = 'STABLE';
+	} else {
+		knex_channel = 'log_canary';
+		type = 'CANARY';
+	}
+
 	let color = require('../colors.json').find((x) => x.name == embed.color.toUpperCase());
 
 	let serverConfig = await client
@@ -158,12 +173,12 @@ async function writeServer(client, serverId, embed) {
 		])
 		.setTimestamp();
 
-	let channel = await category.threads.cache.get(serverConfig.log_channel);
+	let channel = await category.threads.cache.get(serverConfig[knex_channel]);
 
-	if (!serverConfig.log_channel || !channel) {
+	if (!serverConfig[knex_channel] || !channel) {
 		await category.threads
 			.create({
-				name: `${guild.name} (${serverId})`,
+				name: `${guild.name} (${serverId}) - ${type}`,
 				autoArchiveDuration: ThreadAutoArchiveDuration.OneWeek,
 				message: {
 					content: 'Initialising...',
@@ -185,9 +200,10 @@ async function writeServer(client, serverId, embed) {
 		.where({ id: serverId })
 		.catch((...err) => console.error(err));
 
-	channel = await category.threads.cache.get(serverConfig.log_channel);
+	channel = await category.threads.cache.get(serverConfig[knex_channel]);
 	if (!channel) return;
 	let message = await channel.fetchStarterMessage();
+
 	message.edit({ content: 'Log', embeds: [guildEmbed] });
 
 	let logEmbed = new EmbedBuilder()
