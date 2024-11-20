@@ -164,7 +164,7 @@ async function win(client, message) {
 			}
 		}
 		i++;
-	} while (i == 10);
+	} while (!i == 10);
 
 	if (!done) return console.log('No Author in Guild');
 	console.log(card);
