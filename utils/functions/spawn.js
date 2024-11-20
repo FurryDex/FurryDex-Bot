@@ -122,38 +122,43 @@ async function win(client, message) {
 		.catch((...err) => console.error(err));
 
 	let done = false;
-	do {
-		// Convertir l'objet JSON en un tableau de cartes avec leur rareté
-		const cartes = Object.entries(cards).map(([id, carte]) => ({ id, ...carte }));
+	// Convertir l'objet JSON en un tableau de cartes avec leur rareté
+	const cartes = Object.entries(cards).map(([id, carte]) => ({ id, ...carte }));
 
-		// Calculer la somme totale des raretés
-		const sommeRaretés = cartes.reduce((acc, carte) => acc + carte.rarity, 0);
+	// Calculer la somme totale des raretés
+	const sommeRaretés = cartes.reduce((acc, carte) => acc + carte.rarity, 0);
 
-		// Générer un nombre aléatoire entre 0 et la somme des raretés
-		const random = Math.random() * sommeRaretés;
+	// Générer un nombre aléatoire entre 0 et la somme des raretés
+	const random = Math.random() * sommeRaretés;
 
-		// Choisir la carte en fonction du nombre aléatoire
-		let sommeTemp = 0;
-		for (const carte of cartes) {
-			sommeTemp += carte.rarity;
-			if (random < sommeTemp) {
-				member = guild.members.cache.get(carte.authorId);
-				if (serverConfig.spawnAllCards && serverConfig.premium) {
-					card = carte;
-					done = true;
-					return;
-				} else if (member) {
-					card = carte;
-					done = true;
-					return;
-				} else {
-					done = false;
-				}
+	// Choisir la carte en fonction du nombre aléatoire
+	let sommeTemp = 0;
+	for (const carte of cartes) {
+		if (done) return;
+		sommeTemp += carte.rarity;
+		if (random < sommeTemp) {
+			member = guild.members.cache.get(carte.authorId);
+			if (serverConfig.spawnAllCards && serverConfig.premium) {
+				card = carte;
+				done = true;
+				console.log('premium');
+				console.log(carte);
+				return;
+			} else if (member) {
+				card = carte;
+				done = true;
+				console.log('membre');
+				console.log(carte);
+				return;
+			} else {
+				console.log('Nop');
+				console.log(carte);
+				done = false;
 			}
 		}
-	} while (!done);
+	}
 
-	if (!card || card == []) return console.log('No Author in Guild');
+	if (!done) return console.log('No Author in Guild');
 	console.log(card);
 
 	client
