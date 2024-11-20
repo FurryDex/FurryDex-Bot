@@ -112,7 +112,7 @@ async function win(client, message) {
 	const guild = await client.guilds.cache.get(message.guild.id);
 	const channel = await guild.channels.cache.get(serverConfig.spawn_channel);
 
-	console(guild);
+	console.log(guild);
 	let card = [];
 
 	if (message.channel.members.size <= guild.members.size * (1 / 2)) return;
@@ -123,6 +123,7 @@ async function win(client, message) {
 		.catch((...err) => console.error(err));
 
 	let done = false;
+	let i = 1;
 	do {
 		// Convertir l'objet JSON en un tableau de cartes avec leur rareté
 		const cartes = Object.entries(cards).map(([id, carte]) => ({ id, ...carte }));
@@ -162,7 +163,8 @@ async function win(client, message) {
 				}
 			}
 		}
-	} while (!done);
+		i++;
+	} while (i == 10);
 
 	if (!done) return console.log('No Author in Guild');
 	console.log(card);
