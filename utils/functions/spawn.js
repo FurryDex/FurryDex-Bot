@@ -181,7 +181,7 @@ async function win(client, message) {
 		const embed = new EmbedBuilder()
 			.setTitle(title)
 			.setImage(card.image)
-			.setColor(require('../colors.json').find((color) => (color.name = 'RED')));
+			.setColor(require('../colors.json').find((color) => (color.name = 'RED')).hex);
 		if (!channel) return;
 		channel.send({ embeds: [embed], components: [button] }).then(async (message) => {
 			let channel = await guild.channels.cache.get(message.channelId);

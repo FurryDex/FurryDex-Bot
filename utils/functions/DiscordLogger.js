@@ -187,8 +187,8 @@ async function writeServer(client, serverId, embed) {
 			.then((log) => {
 				client
 					.knex('guilds')
-					.update({ log_channel: log.id })
-					.where({ id: playerId })
+					.update({ [knex_channel]: log.id })
+					.where({ id: serverId })
 					.catch((...err) => console.error(err));
 			})
 			.catch((err) => console.log(err));
