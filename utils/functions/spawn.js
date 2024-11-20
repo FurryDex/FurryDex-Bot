@@ -121,8 +121,6 @@ async function win(client, message) {
 		.select('*')
 		.catch((...err) => console.error(err));
 
-	console.log(1);
-
 	let done = false;
 	let i = 1;
 	do {

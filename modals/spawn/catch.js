@@ -45,7 +45,7 @@ module.exports = {
 					.catch((...err) => console.error(err));
 			}
 			client
-				.knex('users')
+				.knex('user_cards')
 				.insert({
 					id: uuid,
 					cardid: serverConfig.last_Card,
