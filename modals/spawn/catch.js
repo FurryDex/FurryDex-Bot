@@ -50,7 +50,7 @@ module.exports = {
 					id: uuid,
 					user_id: interaction.user.id,
 					card_id: serverConfig.last_Card,
-					guilds: interaction.guild.id,
+					guild: interaction.guild.id,
 					date: Date.now(),
 					live: `${live < 0 ? live : `+${live}`}`,
 					attacks: `${attacks < 0 ? attacks : `+${attacks}`}`,
