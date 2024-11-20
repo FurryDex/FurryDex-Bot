@@ -112,7 +112,6 @@ async function win(client, message) {
 	const guild = await client.guilds.cache.get(message.guild.id);
 	const channel = await guild.channels.cache.get(serverConfig.spawn_channel);
 
-	console.log(guild);
 	let card = [];
 
 	if (message.channel.members.size <= guild.members.size * (1 / 2)) return;
@@ -128,7 +127,7 @@ async function win(client, message) {
 		// Convertir l'objet JSON en un tableau de cartes avec leur rareté
 		const cartes = Object.entries(cards).map(([id, carte]) => ({ id, ...carte }));
 
-		if (!(serverConfig.spawnAllCards && serverConfig.premium)) {
+		if (!(serverConfig.spawnAllCards == 1 && serverConfig.premium == 1)) {
 			cartes.filter((carte) => guild.members.cache.get(carte.authorId) != undefined);
 		}
 
@@ -149,10 +148,9 @@ async function win(client, message) {
 			} else done = false;
 		}
 		i++;
-	} while (!i == 10);
+	} while (!done && !i == 20);
 
 	if (!done) return console.log('No Author in Guild');
-	console.log(card);
 
 	client
 		.knex('guilds')

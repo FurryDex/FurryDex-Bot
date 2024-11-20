@@ -35,13 +35,13 @@ module.exports = {
 			let user = await client
 				.knex('users')
 				.first('*')
-				.where({ id: message.author.id })
+				.where({ id: interaction.user.id })
 				.catch((...err) => console.error(err));
 
 			if (!user) {
 				client
 					.knex('users')
-					.insert({ user_id: message.author.id })
+					.insert({ user_id: interaction.user.id })
 					.catch((...err) => console.error(err));
 			}
 			client
