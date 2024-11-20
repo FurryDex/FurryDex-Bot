@@ -48,7 +48,8 @@ module.exports = {
 				.knex('user_cards')
 				.insert({
 					id: uuid,
-					cardid: serverConfig.last_Card,
+					user_id: interaction.user.id,
+					card_id: serverConfig.last_Card,
 					guilds: interaction.guild.id,
 					date: Date.now(),
 					live: `${live < 0 ? live : `+${live}`}`,
