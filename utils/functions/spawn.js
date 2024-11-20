@@ -126,12 +126,14 @@ async function win(client, message) {
 	let done = false;
 	let i = 1;
 	do {
+		console.log(2);
 		// Convertir l'objet JSON en un tableau de cartes avec leur rareté
 		const cartes = Object.entries(cards).map(([id, carte]) => ({ id, ...carte }));
 
-		if (!(serverConfig.spawnAllCards == 1 && serverConfig.premium == 1)) {
+		if (serverConfig.spawnAllCards == 0 && serverConfig.premium == 0) {
 			cartes.filter((carte) => guild.members.cache.get(carte.authorId) != undefined);
 		}
+		console.log(3);
 
 		// Calculer la somme totale des raretés
 		const sommeRaretés = cartes.reduce((acc, carte) => acc + carte.rarity, 0);
@@ -142,6 +144,7 @@ async function win(client, message) {
 		// Choisir la carte en fonction du nombre aléatoire
 		let sommeTemp = 0;
 		for (const carte of cartes) {
+			console.log(4);
 			if (done) return;
 			sommeTemp += carte.rarity;
 			if (random < sommeTemp) {
@@ -150,11 +153,9 @@ async function win(client, message) {
 			} else done = false;
 		}
 		i++;
-
-		console.log(2);
 	} while (!(done && i == 20));
 
-	console.log(3);
+	console.log(5);
 
 	if (!done) return console.log('No Author in Guild');
 
