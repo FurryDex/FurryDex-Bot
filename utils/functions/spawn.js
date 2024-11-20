@@ -1,11 +1,7 @@
-const fs = require('fs');
 const { EmbedBuilder, ButtonStyle, ActionRowBuilder, ButtonBuilder } = require('discord.js');
 const config = require('../../config');
 const Logger = require('../Logger.js');
 const locales = require('../../locales/utils/function/spawn.json');
-
-// Chemin du fichier de la base de données JSON
-const dbFilePath = './DB/guild_config.json';
 
 async function isXMinutesPassed(message, client) {
 	try {
@@ -125,6 +121,7 @@ async function win(client, message) {
 		.select('*')
 		.catch((...err) => console.error(err));
 
+	let done = false;
 	do {
 		// Convertir l'objet JSON en un tableau de cartes avec leur rareté
 		const cartes = Object.entries(cards).map(([id, carte]) => ({ id, ...carte }));
@@ -143,12 +140,16 @@ async function win(client, message) {
 				member = guild.members.cache.get(card.authorId);
 				if (serverConfig.spawnAllCards && serverConfig.premium) {
 					card = carte;
+					done = true;
 				} else if (member) {
 					card = carte;
+					done = true;
+				} else {
+					done = false;
 				}
 			}
 		}
-	} while (card == [] || !card);
+	} while (!done);
 
 	if (!card || card == []) return console.log('No Author in Guild');
 	console.log(card);
