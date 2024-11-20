@@ -57,7 +57,12 @@ module.exports = {
 				})
 				.catch((...err) => console.error(err));
 			let message = locales.congrat[serverConfig.locale] ?? locales.congrat.default;
-			interaction.reply(message.replace('%cardName%', card.name).replace('%cardId%', uuid).replace('%@player%', `<@${interaction.user.id}>`));
+			interaction.reply(
+				message
+					.replace('%cardName%', card.name)
+					.replace('%cardId%', `${uuid}, ${live < 0 ? live : `+${live}`}%/${attacks < 0 ? attacks : `+${attacks}`}%`)
+					.replace('%@player%', `<@${interaction.user.id}>`)
+			);
 			require('../../utils/functions/DiscordLogger').writePlayer(client, interaction.user.id, {
 				tag: 'SUCCES',
 				color: 'GREEN',
