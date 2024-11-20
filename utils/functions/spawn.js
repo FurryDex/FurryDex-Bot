@@ -138,12 +138,15 @@ async function win(client, message) {
 			sommeTemp += carte.rarity;
 			if (random < sommeTemp) {
 				member = guild.members.cache.get(card.authorId);
+				console.log(carte);
 				if (serverConfig.spawnAllCards && serverConfig.premium) {
 					card = carte;
 					done = true;
+					return;
 				} else if (member) {
 					card = carte;
 					done = true;
+					return;
 				} else {
 					done = false;
 				}
