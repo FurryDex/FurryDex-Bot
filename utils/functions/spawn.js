@@ -129,7 +129,11 @@ async function win(client, message) {
 		const cartes = Object.entries(cards).map(([id, carte]) => ({ id, ...carte }));
 
 		if (serverConfig.spawnAllCards == 0 && serverConfig.premium == 0) {
-			cartes.filter((carte) => guild.members.cache.get(carte.authorId) != undefined);
+			cartes.filter(async (carte) => {
+				if (await guild.members.cache.get(carte.authorId)) {
+					return true;
+				}
+			});
 		}
 
 		// Calculer la somme totale des raretés
