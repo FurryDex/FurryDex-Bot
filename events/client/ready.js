@@ -21,7 +21,7 @@ module.exports = {
 		if (client.user.id == config.bot.Stable) {
 			let guild = await client.guilds.cache.get('1235970684556021890');
 			let channel = await guild.channels.cache.get('1236239805973663846');
-			channel.setTopic(`Actual Version: ${require('../../package.json').version}`);
+			channel.setTopic(`Actual Version: V${require('../../package.json').version}`);
 		}
 
 		client

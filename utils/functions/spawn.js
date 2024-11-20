@@ -121,6 +121,8 @@ async function win(client, message) {
 		.select('*')
 		.catch((...err) => console.error(err));
 
+	console.log(1);
+
 	let done = false;
 	let i = 1;
 	do {
@@ -148,7 +150,11 @@ async function win(client, message) {
 			} else done = false;
 		}
 		i++;
-	} while (!done && !i == 20);
+
+		console.log(2);
+	} while (!(done && i == 20));
+
+	console.log(3);
 
 	if (!done) return console.log('No Author in Guild');
 
