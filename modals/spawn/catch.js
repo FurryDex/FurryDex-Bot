@@ -35,28 +35,34 @@ module.exports = {
 			let user = await client
 				.knex('users')
 				.first('*')
-				.where({ id: message.author.id })
+				.where({ id: interaction.user.id })
 				.catch((...err) => console.error(err));
 
 			if (!user) {
 				client
 					.knex('users')
-					.insert({ user_id: message.author.id })
+					.insert({ user_id: interaction.user.id })
 					.catch((...err) => console.error(err));
 			}
 			client
-				.knex('users')
+				.knex('user_cards')
 				.insert({
 					id: uuid,
-					cardid: serverConfig.last_Card,
-					guilds: interaction.guild.id,
+					user_id: interaction.user.id,
+					card_id: serverConfig.last_Card,
+					guild: interaction.guild.id,
 					date: Date.now(),
 					live: `${live < 0 ? live : `+${live}`}`,
 					attacks: `${attacks < 0 ? attacks : `+${attacks}`}`,
 				})
 				.catch((...err) => console.error(err));
 			let message = locales.congrat[serverConfig.locale] ?? locales.congrat.default;
-			interaction.reply(message.replace('%cardName%', card.name).replace('%cardId%', uuid).replace('%@player%', `<@${interaction.user.id}>`));
+			interaction.reply(
+				message
+					.replace('%cardName%', card.name)
+					.replace('%cardId%', `${uuid}, ${live < 0 ? live : `+${live}`}%/${attacks < 0 ? attacks : `+${attacks}`}%`)
+					.replace('%@player%', `<@${interaction.user.id}>`)
+			);
 			require('../../utils/functions/DiscordLogger').writePlayer(client, interaction.user.id, {
 				tag: 'SUCCES',
 				color: 'GREEN',

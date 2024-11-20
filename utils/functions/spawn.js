@@ -1,11 +1,7 @@
-const fs = require('fs');
 const { EmbedBuilder, ButtonStyle, ActionRowBuilder, ButtonBuilder } = require('discord.js');
 const config = require('../../config');
 const Logger = require('../Logger.js');
 const locales = require('../../locales/utils/function/spawn.json');
-
-// Chemin du fichier de la base de données JSON
-const dbFilePath = './DB/guild_config.json';
 
 async function isXMinutesPassed(message, client) {
 	try {
@@ -125,9 +121,20 @@ async function win(client, message) {
 		.select('*')
 		.catch((...err) => console.error(err));
 
+	let done = false;
+	let i = 1;
 	do {
+		done = false;
 		// Convertir l'objet JSON en un tableau de cartes avec leur rareté
 		const cartes = Object.entries(cards).map(([id, carte]) => ({ id, ...carte }));
+
+		if (serverConfig.spawnAllCards == 0 && serverConfig.premium == 0) {
+			cartes.filter(async (carte) => {
+				if (await guild.members.cache.get(carte.authorId)) {
+					return true;
+				}
+			});
+		}
 
 		// Calculer la somme totale des raretés
 		const sommeRaretés = cartes.reduce((acc, carte) => acc + carte.rarity, 0);
@@ -135,23 +142,21 @@ async function win(client, message) {
 		// Générer un nombre aléatoire entre 0 et la somme des raretés
 		const random = Math.random() * sommeRaretés;
 
+		console.log(cartes);
+
 		// Choisir la carte en fonction du nombre aléatoire
 		let sommeTemp = 0;
 		for (const carte of cartes) {
 			sommeTemp += carte.rarity;
 			if (random < sommeTemp) {
-				member = guild.members.cache.get(card.authorId);
-				if (serverConfig.spawnAllCards && serverConfig.premium) {
-					card = carte;
-				} else if (member) {
-					card = carte;
-				}
+				card = carte;
+				done = true;
 			}
 		}
-	} while (card == [] || !card);
+		i++;
+	} while (!(done && i == 20));
 
-	if (!card || card == []) return console.log('No Author in Guild');
-	console.log(card);
+	if (!done) return console.log('No Author in Guild');
 
 	client
 		.knex('guilds')
@@ -181,7 +186,7 @@ async function win(client, message) {
 		const embed = new EmbedBuilder()
 			.setTitle(title)
 			.setImage(card.image)
-			.setColor(require('../colors.json').find((color) => (color.name = 'RED')));
+			.setColor(require('../colors.json').find((color) => (color.name = 'RED')).hex);
 		if (!channel) return;
 		channel.send({ embeds: [embed], components: [button] }).then(async (message) => {
 			let channel = await guild.channels.cache.get(message.channelId);

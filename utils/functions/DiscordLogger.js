@@ -2,7 +2,7 @@ const { EmbedBuilder, ThreadAutoArchiveDuration } = require('discord.js');
 const config = require('../../config');
 let knex_channel, type;
 
-const categoryList = { other: '1284433127095140444', player: '1284433157168562237', server: '1284433198629126198' };
+const categoryList = { other: '1284433127095140444', player: '1302640066866446347', server: '1284433198629126198' };
 
 async function write(client, destination, embed) {
 	let color = require('../colors.json').find((x) => x.name == embed.color.toUpperCase());
@@ -187,8 +187,8 @@ async function writeServer(client, serverId, embed) {
 			.then((log) => {
 				client
 					.knex('guilds')
-					.update({ log_channel: log.id })
-					.where({ id: playerId })
+					.update({ [knex_channel]: log.id })
+					.where({ id: serverId })
 					.catch((...err) => console.error(err));
 			})
 			.catch((err) => console.log(err));
