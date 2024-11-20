@@ -138,6 +138,8 @@ async function win(client, message) {
 		// Générer un nombre aléatoire entre 0 et la somme des raretés
 		const random = Math.random() * sommeRaretés;
 
+		console.log(cartes);
+
 		// Choisir la carte en fonction du nombre aléatoire
 		let sommeTemp = 0;
 		for (const carte of cartes) {
