@@ -112,6 +112,7 @@ async function win(client, message) {
 	const guild = await client.guilds.cache.get(message.guild.id);
 	const channel = await guild.channels.cache.get(serverConfig.spawn_channel);
 
+	console(guild);
 	let card = [];
 
 	if (message.channel.members.size <= guild.members.size * (1 / 2)) return;
@@ -122,44 +123,46 @@ async function win(client, message) {
 		.catch((...err) => console.error(err));
 
 	let done = false;
-	// Convertir l'objet JSON en un tableau de cartes avec leur rareté
-	const cartes = Object.entries(cards).map(([id, carte]) => ({ id, ...carte }));
+	do {
+		// Convertir l'objet JSON en un tableau de cartes avec leur rareté
+		const cartes = Object.entries(cards).map(([id, carte]) => ({ id, ...carte }));
 
-	// Calculer la somme totale des raretés
-	const sommeRaretés = cartes.reduce((acc, carte) => acc + carte.rarity, 0);
+		// Calculer la somme totale des raretés
+		const sommeRaretés = cartes.reduce((acc, carte) => acc + carte.rarity, 0);
 
-	// Générer un nombre aléatoire entre 0 et la somme des raretés
-	const random = Math.random() * sommeRaretés;
+		// Générer un nombre aléatoire entre 0 et la somme des raretés
+		const random = Math.random() * sommeRaretés;
 
-	// Choisir la carte en fonction du nombre aléatoire
-	let sommeTemp = 0;
-	for (const carte of cartes) {
-		if (done) return;
-		sommeTemp += carte.rarity;
-		if (random < sommeTemp) {
-			console.log(random);
-			console.log(sommeTemp);
-			member = guild.members.cache.get(carte.authorId);
-			console.log(member);
-			if (serverConfig.spawnAllCards && serverConfig.premium) {
-				card = carte;
-				done = true;
-				console.log('premium');
-				console.log(carte);
-				return;
-			} else if (member) {
-				card = carte;
-				done = true;
-				console.log('membre');
-				console.log(carte);
-				return;
-			} else {
-				console.log('Nop');
-				console.log(carte);
-				done = false;
+		// Choisir la carte en fonction du nombre aléatoire
+		let sommeTemp = 0;
+		for (const carte of cartes) {
+			if (done) return;
+			sommeTemp += carte.rarity;
+			if (random < sommeTemp) {
+				console.log(random);
+				console.log(sommeTemp);
+				member = guild.members.cache.get(carte.authorId);
+				console.log(member);
+				if (serverConfig.spawnAllCards && serverConfig.premium) {
+					card = carte;
+					done = true;
+					console.log('premium');
+					console.log(carte);
+					return;
+				} else if (member) {
+					card = carte;
+					done = true;
+					console.log('membre');
+					console.log(carte);
+					return;
+				} else {
+					console.log('Nop');
+					console.log(carte);
+					done = false;
+				}
 			}
 		}
-	}
+	} while (!done);
 
 	if (!done) return console.log('No Author in Guild');
 	console.log(card);
