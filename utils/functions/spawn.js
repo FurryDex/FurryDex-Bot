@@ -152,7 +152,7 @@ async function win(client, message) {
 			}
 		}
 		i++;
-	} while (!(done && i == 20));
+	} while (!(done && i == 10));
 
 	if (!done) return console.log('No Author in Guild');
 
