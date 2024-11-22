@@ -129,8 +129,7 @@ async function win(client, message) {
 		const cartes = Object.entries(cards).map(([id, carte]) => ({ id, ...carte }));
 
 		cartes.forEach(async (carte) => {
-			let member = guild.members.cache.get(card.authorId);
-			console.log(`${carte.name}: ${member}`);
+			console.log(`${carte.name}: ${!!(await guild.members.fetch(carte.authorId))}`);
 		});
 
 		if (serverConfig.spawnAllCards == 0 && serverConfig.premium == 0) {
@@ -153,7 +152,7 @@ async function win(client, message) {
 			}
 		}
 		i++;
-	} while (!(done && i == 1));
+	} while (!done && i < 1);
 
 	if (!done) return console.log('No Author in Guild');
 
@@ -211,7 +210,8 @@ async function win(client, message) {
 	}, Math.floor(Math.random() * (7500 - 2500) + 2500));
 }
 
-function isMemberInGuild(guild, card) {
+async function isMemberInGuild(guild, card) {
+	const guild = await client.guilds.cache.get(message.guild.id);
 	if (guild.members.cache.get(card.authorId)) return true;
 	else return false;
 }
