@@ -28,7 +28,7 @@ module.exports = {
 			.where({ id: serverConfig.last_Card })
 			.catch((...err) => console.error(err));
 
-		if (card.possibleName.includes(guess)) {
+		if (card.possible_name.includes(guess)) {
 			let live = Math.round(Math.floor(Math.random() * (25 - -25)) + -25);
 			let attacks = Math.round(Math.floor(Math.random() * (25 - -25)) + -25);
 			let uuid = uid();
@@ -51,7 +51,7 @@ module.exports = {
 					user_id: interaction.user.id,
 					card_id: serverConfig.last_Card,
 					guild: interaction.guild.id,
-					date: Date.now(),
+					date: new Date().toISOString(),
 					live: `${live < 0 ? live : `+${live}`}`,
 					attacks: `${attacks < 0 ? attacks : `+${attacks}`}`,
 				})
