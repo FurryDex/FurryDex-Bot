@@ -129,7 +129,7 @@ async function win(client, message) {
 		const cartes = Object.entries(cards).map(([id, carte]) => ({ id, ...carte }));
 
 		cartes.forEach(async (carte) => {
-			console.log(`${carte.name}: ${await guild.members.cache.has(carte.authorId)}`);
+			console.log(`${carte.name}: ${carte.authorId}`);
 			console.log(await guild.members.cache.has(carte.authorId));
 		});
 
