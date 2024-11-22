@@ -129,7 +129,7 @@ async function win(client, message) {
 		const cartes = Object.entries(cards).map(([id, carte]) => ({ id, ...carte }));
 
 		cartes.forEach((carte) => {
-			console.log(`${carte.name}: ${isMemberInGuild(guild, carte)}`);
+			console.log(`${carte.name}: ${guild.members.cache.get(card.authorId).id}`);
 		});
 
 		if (serverConfig.spawnAllCards == 0 && serverConfig.premium == 0) {
