@@ -129,11 +129,7 @@ async function win(client, message) {
 		const cartes = Object.entries(cards).map(([id, carte]) => ({ id, ...carte }));
 
 		if (serverConfig.spawnAllCards == 0 && serverConfig.premium == 0) {
-			cartes.filter(async (carte) => {
-				if (await guild.members.cache.get(carte.authorId)) {
-					return true;
-				}
-			});
+			cartes.filter((carte) => isMemberInGuild(guild, carte));
 		}
 
 		// Calculer la somme totale des raretés
@@ -141,8 +137,6 @@ async function win(client, message) {
 
 		// Générer un nombre aléatoire entre 0 et la somme des raretés
 		const random = Math.random() * sommeRaretés;
-
-		console.log(cartes);
 
 		// Choisir la carte en fonction du nombre aléatoire
 		let sommeTemp = 0;
@@ -210,6 +204,11 @@ async function win(client, message) {
 			}, 300_000);
 		});
 	}, Math.floor(Math.random() * (7500 - 2500) + 2500));
+}
+
+function isMemberInGuild(guild, card) {
+	if (guild.members.cache.get(card.authorId)) return true;
+	else return false;
 }
 
 module.exports = { isXMinutesPassed, win };
