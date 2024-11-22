@@ -211,7 +211,6 @@ async function win(client, message) {
 }
 
 async function isMemberInGuild(guild, card) {
-	const guild = await client.guilds.cache.get(message.guild.id);
 	if (guild.members.cache.get(card.authorId)) return true;
 	else return false;
 }
