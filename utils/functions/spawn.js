@@ -128,8 +128,9 @@ async function win(client, message) {
 		// Convertir l'objet JSON en un tableau de cartes avec leur rareté
 		const cartes = Object.entries(cards).map(([id, carte]) => ({ id, ...carte }));
 
-		cartes.forEach((carte) => {
-			console.log(`${carte.name}: ${guild.members.cache.get(card.authorId).id}`);
+		cartes.forEach(async (carte) => {
+			let member = await guild.members.cache.get(card.authorId);
+			console.log(`${carte.name}: ${member}`);
 		});
 
 		if (serverConfig.spawnAllCards == 0 && serverConfig.premium == 0) {
