@@ -129,7 +129,7 @@ async function win(client, message) {
 		const cartes = Object.entries(cards).map(([id, carte]) => ({ id, ...carte }));
 
 		cartes.forEach(async (carte) => {
-			let member = await guild.members.cache.get(card.authorId);
+			let member = guild.members.cache.get(card.authorId);
 			console.log(`${carte.name}: ${member}`);
 		});
 
