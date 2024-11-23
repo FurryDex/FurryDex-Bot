@@ -131,14 +131,14 @@ async function win(client, message) {
 		cartes.forEach((carte) => {
 			console.log(`${carte.name}: `);
 			console.log(carte.authorId);
-			guild.members
-				.fetch(`${carte.authorId}`)
+			guild.members.cache
+				.get(`${carte.authorId}`)
 				.then((member) => console.log(member))
 				.catch(console.log('nope'));
 		});
 
 		if (serverConfig.spawnAllCards == 0 && serverConfig.premium == 0) {
-			cartes.filter((carte) => isMemberInGuild(guild, carte));
+			//cartes.filter((carte) => isMemberInGuild(guild, carte));
 		}
 
 		// Calculer la somme totale des raretés
