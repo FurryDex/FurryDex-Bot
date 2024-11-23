@@ -123,15 +123,12 @@ async function win(client, message) {
 
 	let i = 1;
 	try {
-		filtrerCartesParServeur(cards, guild)
+		filtrerCartesParServeur(!!(serverConfig.premium == 1 && serverConfig.spawnAllCards == 1), cards, guild)
 			.then((cartes) => {
-				console.log(cartes);
 				const sommeRaretés = cartes.reduce((acc, carte) => acc + carte.rarity, 0);
 
 				// Générer un nombre aléatoire entre 0 et la somme des raretés
 				const random = Math.random() * sommeRaretés;
-
-				console.log(`\n\n - - - - - \n\n`);
 
 				// Choisir la carte en fonction du nombre aléatoire
 				let sommeTemp = 0;
@@ -151,7 +148,9 @@ async function win(client, message) {
 	}
 	let done = false;
 	do {
+		console.log(card);
 		if (!card || card == []) return;
+		console.log(1);
 
 		done = true;
 
@@ -210,23 +209,21 @@ async function win(client, message) {
 	} while (!done);
 }
 
-async function filtrerCartesParServeur(cartes, guild) {
+async function filtrerCartesParServeur(enableFilter, cartes, guild) {
 	try {
 		// Récupère tous les membres du serveur dans le cache (en cas de besoin, fetch pour actualiser le cache)
 		const membres = await guild.members.fetch();
 
-		// Afficher les IDs des membres récupérés pour vérifier qu'ils sont chargés correctement
-		console.log(
-			'Membres du serveur:',
-			membres.map((m) => m.user.id)
-		);
-
 		// Filtre les cartes en vérifiant si l'authorId (converti en chaîne) est présent parmi les membres
-		const cartesFiltrees = cartes.filter((carte) => {
-			const estPresent = membres.has(carte.authorId.toString());
-			console.log(`Vérification de l'authorId ${carte.authorId}: ${estPresent ? 'présent' : 'absent'}`);
-			return estPresent;
-		});
+		let cartesFiltrees;
+		if (enableFilter) {
+			cartesFiltrees = cartes.filter((carte) => {
+				const estPresent = membres.has(carte.authorId.toString());
+				return estPresent;
+			});
+		} else {
+			cartesFiltrees = cartes;
+		}
 
 		return cartesFiltrees;
 	} catch (error) {
