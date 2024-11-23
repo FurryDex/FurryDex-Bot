@@ -112,7 +112,7 @@ async function win(client, message) {
 	const guild = message.guild;
 	const channel = await guild.channels.cache.get(serverConfig.spawn_channel);
 
-	let card = [];
+	let card;
 
 	if (message.channel.members.size <= guild.members.size * (1 / 2)) return;
 
