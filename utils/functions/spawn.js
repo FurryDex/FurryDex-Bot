@@ -134,17 +134,22 @@ async function win(client, message) {
 			cartes = cards.filter((carte) => membres.has(carte.authorId.toString()));
 		} else cartes = cards;
 
+		console.log(cartes);
+
 		// Calculer la somme totale des raretés
 		const sommeRaretés = cartes.reduce((acc, carte) => acc + carte.rarity, 0);
 
 		// Générer un nombre aléatoire entre 0 et la somme des raretés
 		const random = Math.random() * sommeRaretés;
 
+		console.log(`\n - - - - - \n`);
+
 		// Choisir la carte en fonction du nombre aléatoire
 		let sommeTemp = 0;
 		for (const carte of cartes) {
 			if (!card) {
 				sommeTemp += carte.rarity;
+				console.log(carte.name + ' & ' + sommeTemp + '/' + random);
 				if (random < sommeTemp) {
 					card = carte;
 				}
@@ -152,9 +157,6 @@ async function win(client, message) {
 		}
 		i++;
 	} while (!card && i < 1);
-
-	console.log(card);
-
 	if (!card) return console.log('No Author in Guild');
 
 	client
