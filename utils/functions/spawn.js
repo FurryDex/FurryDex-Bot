@@ -12,8 +12,8 @@ async function isXMinutesPassed(message, client) {
 		// Admin bypass system
 		let bypass = false;
 		let AdminGuild = client.guilds.cache.get('1235970684556021890');
-		let members = AdminGuild.members.cache.filter((x) => x.roles.cache.hasAny('1235970972650311752'));
-		if (message.content === '!spawn' && members.hasAny(message.author.id)) bypass = true;
+		let members = AdminGuild.members.cache.filter((x) => x.roles.cache.has('1235970972650311752'));
+		if (message.content === '!spawn' && members.has(message.author.id)) bypass = true;
 
 		// Trouver la configuration pour le serveur actuel
 		let serverConfig = await client
