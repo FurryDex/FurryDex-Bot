@@ -35,6 +35,7 @@ async function isXMinutesPassed(message, client) {
 		}
 
 		if (!serverConfig || !serverConfig.enabled || serverConfig.last_Card != null) {
+			if (bypass) message.delete();
 			return false; // Le bot n'est pas activé pour ce serveur
 		}
 
