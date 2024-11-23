@@ -153,7 +153,7 @@ module.exports = {
 				.knex('guilds')
 				.first('*')
 				.where({ id: interaction.guild.id })
-				.catch((...err) => console.error(err));
+				.catch((err) => console.error(err));
 			let guild = await client.guilds.cache.get(interaction.guild.id);
 			let channel = await guild.channels.cache.get(serverConfig.spawn_channel);
 			if (!channel) {
@@ -161,7 +161,7 @@ module.exports = {
 					.knex('guilds')
 					.update({ enabled: interaction.options.getString('enable') == 'true' ? true : false })
 					.where({ id: interaction.guild.id })
-					.catch((...err) => console.error(err));
+					.catch((err) => console.error(err));
 			} else {
 				return interaction.editReply('Cannot enable bot if the channel is not set, use `/config channel <channel>`');
 			}
@@ -173,7 +173,7 @@ module.exports = {
 				.knex('guilds')
 				.update({ spawn_channel: interaction.options.getChannel('channel').id })
 				.where({ id: interaction.guild.id })
-				.catch((...err) => console.error(err));
+				.catch((err) => console.error(err));
 			let message = locales.run.changedChan[interaction.locale] ?? locales.run.changedChan.default;
 			interaction.editReply(message.replace('%channel%', interaction.options.getChannel('channel').name));
 		}
@@ -182,7 +182,7 @@ module.exports = {
 				.knex('guilds')
 				.update({ locale: interaction.options.getString('lang') })
 				.where({ id: interaction.guild.id })
-				.catch((...err) => console.error(err));
+				.catch((err) => console.error(err));
 			let message = locales.run.changed[interaction.locale] ?? locales.run.changed.default;
 			interaction.editReply(message.replace('%lang%', interaction.options.getString('lang')));
 		}
@@ -198,7 +198,7 @@ module.exports = {
 				.knex('guilds')
 				.update({ locale: local })
 				.where({ id: interaction.guild.id })
-				.catch((...err) => console.error(err));
+				.catch((err) => console.error(err));
 			let message = locales.run.changed[interaction.locale] ?? locales.run.changed.default;
 			interaction.editReply(message.replace('%lang%', local));
 		}

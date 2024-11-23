@@ -15,7 +15,7 @@ module.exports = {
 			.knex('guilds')
 			.first('*')
 			.where({ id: interaction.guild.id })
-			.catch((...err) => console.error(err));
+			.catch((err) => console.error(err));
 		if (serverConfig.last_Card == null) {
 			let message = locales.already[serverConfig.locale] ?? locales.already.default;
 			interaction.reply(message.replace('%@player%', `<@${interaction.user.id}>`));
@@ -26,7 +26,7 @@ module.exports = {
 			.knex('cards')
 			.first('*')
 			.where({ id: serverConfig.last_Card })
-			.catch((...err) => console.error(err));
+			.catch((err) => console.error(err));
 
 		if (card.possible_name.includes(guess)) {
 			let live = Math.round(Math.floor(Math.random() * (25 - -25)) + -25);
@@ -36,13 +36,13 @@ module.exports = {
 				.knex('users')
 				.first('*')
 				.where({ id: interaction.user.id })
-				.catch((...err) => console.error(err));
+				.catch((err) => console.error(err));
 
 			if (!user) {
 				client
 					.knex('users')
 					.insert({ user_id: interaction.user.id })
-					.catch((...err) => console.error(err));
+					.catch((err) => console.error(err));
 			}
 			client
 				.knex('user_cards')
@@ -55,7 +55,7 @@ module.exports = {
 					live: `${live < 0 ? live : `+${live}`}`,
 					attacks: `${attacks < 0 ? attacks : `+${attacks}`}`,
 				})
-				.catch((...err) => console.error(err));
+				.catch((err) => console.error(err));
 			let message = locales.congrat[serverConfig.locale] ?? locales.congrat.default;
 			interaction.reply(
 				message
@@ -93,7 +93,7 @@ module.exports = {
 				.knex('guilds')
 				.update({ last_Card: null })
 				.where({ id: interaction.guild.id })
-				.catch((...err) => console.error(err));
+				.catch((err) => console.error(err));
 			let msg = interaction.message;
 			const newComponents = msg.components.map((row) => {
 				return new ActionRowBuilder().addComponents(

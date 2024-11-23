@@ -100,7 +100,7 @@ module.exports = {
 			.knex('user_cards')
 			.select('*')
 			.where({ user_id: user.id })
-			.catch((...err) => {
+			.catch((err) => {
 				console.error(err);
 			});
 
@@ -115,7 +115,7 @@ module.exports = {
 					.knex('cards')
 					.first('*')
 					.where({ id: card.card_id })
-					.catch((...err) => {
+					.catch((err) => {
 						console.error(err);
 					});
 				AllOptions.push({

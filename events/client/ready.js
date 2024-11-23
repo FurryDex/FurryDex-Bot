@@ -27,7 +27,7 @@ module.exports = {
 		client
 			.knex('guilds')
 			.update({ last_card: null })
-			.catch((...err) => console.error(err));
+			.catch((err) => console.error(err));
 
 		Logger.succes(client, 'Bot démaré avec succès !');
 	},

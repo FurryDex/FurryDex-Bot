@@ -17,7 +17,7 @@ async function cardEmbed(client, cardId, locale) {
 			.knex('species')
 			.first('*')
 			.where({ id: species_id })
-			.catch((...err) => {
+			.catch((err) => {
 				console.error(err);
 			});
 		species.push(species_name.name);
@@ -27,7 +27,7 @@ async function cardEmbed(client, cardId, locale) {
 		.knex('category')
 		.first('*')
 		.where({ id: originalCardF.category })
-		.catch((...err) => {
+		.catch((err) => {
 			console.error(err);
 		});
 	let temp_type = data_type.name;
@@ -77,7 +77,7 @@ async function originalCard(client, cardId) {
 		.knex('cards')
 		.first('*')
 		.where({ id: cardId })
-		.catch((...err) => {
+		.catch((err) => {
 			console.error(err);
 		});
 }
@@ -87,7 +87,7 @@ async function card(client, cardId) {
 		.knex('user_cards')
 		.first('*')
 		.where({ id: cardId })
-		.catch((...err) => {
+		.catch((err) => {
 			console.error(err);
 		});
 }
