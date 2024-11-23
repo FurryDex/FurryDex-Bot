@@ -128,9 +128,13 @@ async function win(client, message) {
 		// Convertir l'objet JSON en un tableau de cartes avec leur rareté
 		const cartes = Object.entries(cards).map(([id, carte]) => ({ id, ...carte }));
 
-		cartes.forEach(async (carte) => {
-			console.log(`${carte.name}: ${carte.authorId}`);
-			guild.members.cache.find((m) => m.id == `${carte.authorId}`).then((member) => console.log(member));
+		cartes.forEach((carte) => {
+			console.log(`${carte.name}: `);
+			console.log(carte.authorId);
+			guild.members
+				.fetch(`${carte.authorId}`)
+				.then((member) => console.log(member))
+				.catch(console.log('nope'));
 		});
 
 		if (serverConfig.spawnAllCards == 0 && serverConfig.premium == 0) {
