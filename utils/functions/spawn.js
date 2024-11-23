@@ -122,15 +122,18 @@ async function win(client, message) {
 		.catch((...err) => console.error(err));
 
 	let i = 1;
-	do {
+	try {
 		let cartes;
 		try {
-			filtrerCartesParServeur(card, guild).then((cartesFiltrees) => {
+			filtrerCartesParServeur(cards, guild).then((cartesFiltrees) => {
 				cartes = cartesFiltrees;
 			});
 		} catch (err) {
 			console.error(err);
 		}
+		do {
+			setTimeout(() => {}, 1000);
+		} while (!cartes);
 
 		// Calculer la somme totale des raretés
 		const sommeRaretés = cartes.reduce((acc, carte) => acc + carte.rarity, 0);
@@ -152,7 +155,10 @@ async function win(client, message) {
 			}
 		}
 		i++;
-	} while (card == [] && i < 1);
+	} catch (err) {
+		console.error(err);
+	}
+	do {} while (card == [] && i < 1);
 	if (card == []) return console.log('No Author in Guild');
 	console.log(card);
 
