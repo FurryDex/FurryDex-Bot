@@ -131,7 +131,7 @@ async function win(client, message) {
 		cartes.forEach(async (carte) => {
 			console.log(`${carte.name}: ${carte.authorId}`);
 			const isMember = await guild.members
-				.fetch(carte.authorId)
+				.fetch(`${carte.authorId}`)
 				.then(() => true)
 				.catch(() => false);
 			console.log(isMember);
