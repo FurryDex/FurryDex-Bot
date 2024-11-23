@@ -130,7 +130,11 @@ async function win(client, message) {
 
 		cartes.forEach(async (carte) => {
 			console.log(`${carte.name}: ${carte.authorId}`);
-			console.log(await guild.members.cache.hasAny([carte.authorId]));
+			const isMember = await guild.members
+				.fetch(carte.authorId)
+				.then(() => true)
+				.catch(() => false);
+			console.log(isMember);
 		});
 
 		if (serverConfig.spawnAllCards == 0 && serverConfig.premium == 0) {
