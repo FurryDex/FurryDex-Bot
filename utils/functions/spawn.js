@@ -124,17 +124,17 @@ async function win(client, message) {
 	let i = 1;
 	try {
 		filtrerCartesParServeur(!!(serverConfig.premium == 1 && serverConfig.spawnAllCards == 1), cards, guild)
-			.then((cartes) => {
-				const sommeRaretés = cartes.reduce((acc, carte) => acc + carte.rarity, 0);
+			.then(async (cartes) => {
+				const sommeRaretés = cartes.reduce((acc, carte) => acc + Number(carte.rarity), 0);
 
 				// Générer un nombre aléatoire entre 0 et la somme des raretés
-				const random = Math.random() * sommeRaretés;
+				let random = Math.random() * sommeRaretés;
 
 				// Choisir la carte en fonction du nombre aléatoire
 				let sommeTemp = 0;
 				for (const carte of cartes) {
 					if (!card) {
-						sommeTemp += carte.rarity;
+						sommeTemp += Number(carte.rarity);
 						console.log(carte.name + ' & ' + sommeTemp + '/' + random);
 						if (random < sommeTemp) {
 							card = carte;
