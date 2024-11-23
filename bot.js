@@ -20,6 +20,12 @@ const client = new Client({
 		GatewayIntentBits.DirectMessageTyping,
 		GatewayIntentBits.MessageContent,
 		GatewayIntentBits.GuildScheduledEvents,
+		GatewayIntentBits.AutoModerationConfiguration,
+		GatewayIntentBits.AutoModerationExecution,
+		GatewayIntentBits.DirectMessagePolls,
+		GatewayIntentBits.GuildMessagePolls,
+		GatewayIntentBits.GuildModeration,
+		GatewayIntentBits.GuildVoiceStates,
 	],
 	partials: [Partials.User, Partials.Channel, Partials.GuildMember, Partials.Message, Partials.Reaction, Partials.GuildScheduledEvent, Partials.ThreadMember],
 });

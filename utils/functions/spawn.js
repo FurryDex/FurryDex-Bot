@@ -2,6 +2,7 @@ const { EmbedBuilder, ButtonStyle, ActionRowBuilder, ButtonBuilder } = require('
 const config = require('../../config');
 const Logger = require('../Logger.js');
 const locales = require('../../locales/utils/function/spawn.json');
+const { startTimer } = require('winston');
 
 async function isXMinutesPassed(message, client) {
 	try {
@@ -11,8 +12,8 @@ async function isXMinutesPassed(message, client) {
 		// Admin bypass system
 		let bypass = false;
 		let AdminGuild = client.guilds.cache.get('1235970684556021890');
-		let members = AdminGuild.members.cache.filter((x) => x.roles.cache.hasAny('1235970972650311752'));
-		if (message.content === '!spawn' && members.hasAny(message.author.id)) bypass = true;
+		let members = AdminGuild.members.cache.filter((x) => x.roles.cache.has('1235970972650311752'));
+		if (message.content === '!spawn' && members.has(message.author.id)) bypass = true;
 
 		// Trouver la configuration pour le serveur actuel
 		let serverConfig = await client
@@ -34,6 +35,7 @@ async function isXMinutesPassed(message, client) {
 		}
 
 		if (!serverConfig || !serverConfig.enabled || serverConfig.last_Card != null) {
+			if (bypass) message.delete();
 			return false; // Le bot n'est pas activé pour ce serveur
 		}
 
@@ -109,10 +111,10 @@ async function win(client, message) {
 		.first('*')
 		.where({ id: message.guild.id })
 		.catch((...err) => console.error(err));
-	const guild = await client.guilds.cache.get(message.guild.id);
+	const guild = message.guild;
 	const channel = await guild.channels.cache.get(serverConfig.spawn_channel);
 
-	let card = [];
+	let card;
 
 	if (message.channel.members.size <= guild.members.size * (1 / 2)) return;
 
@@ -121,94 +123,112 @@ async function win(client, message) {
 		.select('*')
 		.catch((...err) => console.error(err));
 
-	let done = false;
 	let i = 1;
+	try {
+		filtrerCartesParServeur(!!(serverConfig.premium == 1 && serverConfig.spawnAllCards == 1), cards, guild)
+			.then(async (cartes) => {
+				const sommeRaretés = cartes.reduce((acc, carte) => acc + Number(carte.rarity), 0);
+
+				// Générer un nombre aléatoire entre 0 et la somme des raretés
+				let random = Math.random() * sommeRaretés;
+
+				// Choisir la carte en fonction du nombre aléatoire
+				let sommeTemp = 0;
+				for (const carte of cartes) {
+					if (!card) {
+						sommeTemp += Number(carte.rarity);
+						if (random < sommeTemp) {
+							card = carte;
+						}
+					}
+				}
+			})
+			.catch((err) => console.error(err));
+	} catch (err) {
+		console.error(err);
+	}
+	let done = false;
 	do {
-		done = false;
-		// Convertir l'objet JSON en un tableau de cartes avec leur rareté
-		const cartes = Object.entries(cards).map(([id, carte]) => ({ id, ...carte }));
+		if (!card) continue;
 
-		if (serverConfig.spawnAllCards == 0 && serverConfig.premium == 0) {
-			cartes.filter((carte) => isMemberInGuild(guild, carte));
-		}
+		done = true;
 
-		// Calculer la somme totale des raretés
-		const sommeRaretés = cartes.reduce((acc, carte) => acc + carte.rarity, 0);
+		client
+			.knex('guilds')
+			.update({ last_Card: card.id })
+			.where({ id: message.guild.id })
+			.catch((...err) => console.error(err));
 
-		// Générer un nombre aléatoire entre 0 et la somme des raretés
-		const random = Math.random() * sommeRaretés;
-
-		// Choisir la carte en fonction du nombre aléatoire
-		let sommeTemp = 0;
-		for (const carte of cartes) {
-			sommeTemp += carte.rarity;
-			if (random < sommeTemp) {
-				card = carte;
-				done = true;
-			}
-		}
-		i++;
-	} while (!(done && i == 20));
-
-	if (!done) return console.log('No Author in Guild');
-
-	client
-		.knex('guilds')
-		.update({ last_Card: card.id })
-		.where({ id: message.guild.id })
-		.catch((...err) => console.error(err));
-
-	setTimeout(async () => {
-		if (config.server.enable_log) {
-			require('./DiscordLogger').writeServer(client, guild.id, {
-				tag: 'SUCCES',
-				color: 'GREEN',
-				description: 'Card spawn',
-				info: [{ name: 'Card', value: `${card.name} (${card.id})` }],
-				content: 'Spawn',
-			});
-		}
-		const button = new ActionRowBuilder().addComponents(
-			new ButtonBuilder()
-				.setCustomId('catch')
-				.setDisabled(false)
-				.setEmoji('<:hunt:1284221526270410814>')
-				.setLabel(locales.button.text[serverConfig.locale] ?? locales.button.text.default)
-				.setStyle(ButtonStyle.Danger)
-		);
-		let title = locales.embed.title[serverConfig.locale] ?? locales.embed.title.default;
-		const embed = new EmbedBuilder()
-			.setTitle(title)
-			.setImage(card.image)
-			.setColor(require('../colors.json').find((color) => (color.name = 'RED')).hex);
-		if (!channel) return;
-		channel.send({ embeds: [embed], components: [button] }).then(async (message) => {
-			let channel = await guild.channels.cache.get(message.channelId);
-			setTimeout(async () => {
-				let msg = await channel.messages.fetch(message.id);
-
-				serverConfig = await client
-					.knex('guilds')
-					.update({ last_Card: null })
-					.where({ id: guild.id })
-					.catch((...err) => console.error(err));
-				serverConfig.last_Card = null;
-				const newComponents = msg.components.map((row) => {
-					return new ActionRowBuilder().addComponents(
-						row.components.map((button) => {
-							return new ButtonBuilder().setCustomId(button.customId).setLabel(button.label).setStyle(button.style).setDisabled(true); // Toggle the disabled state
-						})
-					);
+		setTimeout(() => {
+			if (config.server.enable_log) {
+				require('./DiscordLogger').writeServer(client, guild.id, {
+					tag: 'SUCCES',
+					color: 'GREEN',
+					description: 'Card spawn',
+					info: [{ name: 'Card', value: `${card.name} (${card.id})` }],
+					content: 'Spawn',
 				});
-				msg.edit({ embeds: msg.embeds, components: newComponents }).catch(() => {});
-			}, 300_000);
-		});
-	}, Math.floor(Math.random() * (7500 - 2500) + 2500));
+			}
+			const button = new ActionRowBuilder().addComponents(
+				new ButtonBuilder()
+					.setCustomId('catch')
+					.setDisabled(false)
+					.setEmoji('<:hunt:1284221526270410814>')
+					.setLabel(locales.button.text[serverConfig.locale] ?? locales.button.text.default)
+					.setStyle(ButtonStyle.Danger)
+			);
+			let title = locales.embed.title[serverConfig.locale] ?? locales.embed.title.default;
+			const embed = new EmbedBuilder()
+				.setTitle(title)
+				.setImage(card.image)
+				.setColor(require('../colors.json').find((color) => (color.name = 'RED')).hex);
+			if (!channel) return;
+			channel.send({ embeds: [embed], components: [button] }).then(async (message) => {
+				let channel = await guild.channels.cache.get(message.channelId);
+				setTimeout(async () => {
+					let msg = await channel.messages.fetch(message.id);
+
+					serverConfig = await client
+						.knex('guilds')
+						.update({ last_Card: null })
+						.where({ id: guild.id })
+						.catch((...err) => console.error(err));
+					serverConfig.last_Card = null;
+					const newComponents = msg.components.map((row) => {
+						return new ActionRowBuilder().addComponents(
+							row.components.map((button) => {
+								return new ButtonBuilder().setCustomId(button.customId).setLabel(button.label).setStyle(button.style).setDisabled(true); // Toggle the disabled state
+							})
+						);
+					});
+					msg.edit({ embeds: msg.embeds, components: newComponents }).catch(() => {});
+				}, 300_000);
+			});
+		}, Math.floor(Math.random() * (7500 - 2500) + 2500));
+	} while (!done);
 }
 
-function isMemberInGuild(guild, card) {
-	if (guild.members.cache.get(card.authorId)) return true;
-	else return false;
+async function filtrerCartesParServeur(enableFilter, cartes, guild) {
+	try {
+		// Récupère tous les membres du serveur dans le cache (en cas de besoin, fetch pour actualiser le cache)
+		const membres = await guild.members.fetch();
+
+		// Filtre les cartes en vérifiant si l'authorId (converti en chaîne) est présent parmi les membres
+		let cartesFiltrees;
+		if (enableFilter) {
+			cartesFiltrees = cartes.filter((carte) => {
+				const estPresent = membres.has(carte.authorId.toString());
+				return estPresent;
+			});
+		} else {
+			cartesFiltrees = cartes;
+		}
+
+		return cartesFiltrees;
+	} catch (error) {
+		console.error('Erreur lors de la récupération des membres:', error);
+		return [];
+	}
 }
 
 module.exports = { isXMinutesPassed, win };
