@@ -486,3 +486,4 @@ config2.json
 config.js
 
 .vscode/
+./package-lock.json
