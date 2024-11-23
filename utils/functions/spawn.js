@@ -77,10 +77,9 @@ async function isXMinutesPassed(message, client) {
 			.where({ id: message.guild.id })
 			.catch((...err) => console.error(err));
 
-		console.log(1);
-
 		// Vérifier si X minutes se sont écoulées depuis le dernier appel
 		if (new Date(serverConfig.time).getTime() <= date.getTime() || bypass) {
+			console.log(1);
 			client
 				.knex('guilds')
 				.update({ time: in1Hour.toISOString(), First_Check: new Date().toISOString() })
