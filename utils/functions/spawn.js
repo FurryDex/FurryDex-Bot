@@ -123,21 +123,14 @@ async function win(client, message) {
 
 	let i = 1;
 	do {
-		done = false;
-		// Convertir l'objet JSON en un tableau de cartes avec leur rareté
 		let cartes;
-		console.log(1, cards);
-
-		const membres = await guild.members.fetch();
-
-		console.log(2, membres);
-
-		if (serverConfig.spawnAllCards == 0 && serverConfig.premium == 0) {
-			console.log('TEST');
-			cartes = cards.filter((carte) => membres.has(carte.authorId.toString()));
-		} else cartes = cards;
-
-		console.log(3, cartes);
+		try {
+			filtrerCartesParServeur(card, guild).then((cartesFiltrees) => {
+				cartes = cartesFiltrees;
+			});
+		} catch (err) {
+			console.error(err);
+		}
 
 		// Calculer la somme totale des raretés
 		const sommeRaretés = cartes.reduce((acc, carte) => acc + carte.rarity, 0);
@@ -161,6 +154,7 @@ async function win(client, message) {
 		i++;
 	} while (card == [] && i < 1);
 	if (card == []) return console.log('No Author in Guild');
+	console.log(card);
 
 	client
 		.knex('guilds')
@@ -216,9 +210,19 @@ async function win(client, message) {
 	}, Math.floor(Math.random() * (7500 - 2500) + 2500));
 }
 
-async function isMemberInGuild(guild, card) {
-	if (guild.members.cache.get(card.authorId)) return true;
-	else return false;
+async function filtrerCartesParServeur(card, guild) {
+	try {
+		// Récupère tous les membres du serveur
+		const membres = await guild.members.fetch();
+
+		// Filtre les cartes en vérifiant si l'authorId est présent parmi les membres
+		const cartesFiltrees = card.filter((carte) => membres.has(carte.authorId.toString()));
+
+		return cartesFiltrees;
+	} catch (error) {
+		console.error('Erreur lors de la récupération des membres:', error);
+		return [];
+	}
 }
 
 module.exports = { isXMinutesPassed, win };
