@@ -109,7 +109,7 @@ async function win(client, message) {
 		.first('*')
 		.where({ id: message.guild.id })
 		.catch((...err) => console.error(err));
-	const guild = await client.guilds.cache.get(message.guild.id);
+	const guild = message.guild;
 	const channel = await guild.channels.cache.get(serverConfig.spawn_channel);
 
 	let card = [];
