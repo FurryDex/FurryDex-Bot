@@ -149,7 +149,7 @@ async function win(client, message) {
 	let done = false;
 	do {
 		console.log(card);
-		if (!card || card == []) return;
+		if (!card && card == []) return;
 		console.log(1);
 
 		done = true;
