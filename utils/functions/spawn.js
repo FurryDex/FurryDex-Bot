@@ -14,6 +14,7 @@ async function isXMinutesPassed(message, client) {
 		let AdminGuild = client.guilds.cache.get('1235970684556021890');
 		let members = AdminGuild.members.cache.filter((x) => x.roles.cache.has('1235970972650311752'));
 		if (message.content === '!spawn' && members.has(message.author.id)) bypass = true;
+		console.log(bypass);
 
 		// Trouver la configuration pour le serveur actuel
 		let serverConfig = await client
@@ -21,7 +22,6 @@ async function isXMinutesPassed(message, client) {
 			.first('*')
 			.where({ id: message.guild.id })
 			.catch((...err) => console.error(err));
-		console.log(serverConfig);
 		let user = await client
 			.knex('users')
 			.first('*')
@@ -46,7 +46,7 @@ async function isXMinutesPassed(message, client) {
 		if (!serverConfig.time || serverConfig.time == 0) {
 			client
 				.knex('guilds')
-				.update({ time: in1Hour.toISOString(), First_Check: new Date().getTime() })
+				.update({ time: in1Hour.toISOString(), First_Check: new Date().toISOString() })
 				.where({ id: message.guild.id })
 				.catch((...err) => console.error(err));
 		}
@@ -68,7 +68,7 @@ async function isXMinutesPassed(message, client) {
 		if (serverConfig.time <= dateFirstCheck10)
 			client
 				.knex('guilds')
-				.update({ time: dateFirstCheck10 })
+				.update({ time: dateFirstCheck10.toISOString() })
 				.where({ id: message.guild.id })
 				.catch((...err) => console.error(err));
 
@@ -82,7 +82,7 @@ async function isXMinutesPassed(message, client) {
 		if (new Date(serverConfig.time).getTime() <= date.getTime() || bypass) {
 			client
 				.knex('guilds')
-				.update({ time: in1Hour.toISOString(), First_Check: new Date().getTime() })
+				.update({ time: in1Hour.toISOString(), First_Check: new Date().toISOString() })
 				.where({ id: message.guild.id })
 				.catch((...err) => console.error(err));
 			require('./DiscordLogger').writeServer(client, message.guild.id, {
