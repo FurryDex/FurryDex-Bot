@@ -143,16 +143,19 @@ async function win(client, message) {
 		// Choisir la carte en fonction du nombre aléatoire
 		let sommeTemp = 0;
 		for (const carte of cartes) {
-			sommeTemp += carte.rarity;
-			if (random < sommeTemp) {
-				card = carte;
-				done = true;
+			if (!card) {
+				sommeTemp += carte.rarity;
+				if (random < sommeTemp) {
+					card = carte;
+				}
 			}
 		}
 		i++;
-	} while (!done && i < 1);
+	} while (!card && i < 1);
 
-	if (!done) return console.log('No Author in Guild');
+	console.log(card);
+
+	if (!card) return console.log('No Author in Guild');
 
 	client
 		.knex('guilds')
