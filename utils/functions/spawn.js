@@ -14,7 +14,6 @@ async function isXMinutesPassed(message, client) {
 		let AdminGuild = client.guilds.cache.get('1235970684556021890');
 		let members = AdminGuild.members.cache.filter((x) => x.roles.cache.has('1235970972650311752'));
 		if (message.content === '!spawn' && members.has(message.author.id)) bypass = true;
-		console.log(bypass);
 
 		// Trouver la configuration pour le serveur actuel
 		let serverConfig = await client
@@ -77,6 +76,8 @@ async function isXMinutesPassed(message, client) {
 			.first('*')
 			.where({ id: message.guild.id })
 			.catch((...err) => console.error(err));
+
+		console.log(1);
 
 		// Vérifier si X minutes se sont écoulées depuis le dernier appel
 		if (new Date(serverConfig.time).getTime() <= date.getTime() || bypass) {
