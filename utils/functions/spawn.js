@@ -127,14 +127,17 @@ async function win(client, message) {
 		done = false;
 		// Convertir l'objet JSON en un tableau de cartes avec leur rareté
 		let cartes;
+		console.log(1, cards);
 
 		const membres = await guild.members.fetch();
+
+		console.log(2, membres);
 
 		if (serverConfig.spawnAllCards == 0 && serverConfig.premium == 0) {
 			cartes = cards.filter((carte) => membres.has(carte.authorId.toString()));
 		} else cartes = cards;
 
-		console.log(cartes);
+		console.log(3, cartes);
 
 		// Calculer la somme totale des raretés
 		const sommeRaretés = cartes.reduce((acc, carte) => acc + carte.rarity, 0);
@@ -142,7 +145,7 @@ async function win(client, message) {
 		// Générer un nombre aléatoire entre 0 et la somme des raretés
 		const random = Math.random() * sommeRaretés;
 
-		console.log(`\n - - - - - \n`);
+		console.log(`\n\n - - - - - \n\n`);
 
 		// Choisir la carte en fonction du nombre aléatoire
 		let sommeTemp = 0;
