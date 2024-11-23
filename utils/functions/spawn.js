@@ -156,8 +156,8 @@ async function win(client, message) {
 			}
 		}
 		i++;
-	} while (!card && i < 1);
-	if (!card) return console.log('No Author in Guild');
+	} while (card == [] && i < 1);
+	if (card == []) return console.log('No Author in Guild');
 
 	client
 		.knex('guilds')
