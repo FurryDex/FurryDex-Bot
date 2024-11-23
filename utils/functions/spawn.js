@@ -210,13 +210,13 @@ async function win(client, message) {
 	} while (!done);
 }
 
-async function filtrerCartesParServeur(card, guild) {
+async function filtrerCartesParServeur(cartes, guild) {
 	try {
 		// Récupère tous les membres du serveur
 		const membres = await guild.members.fetch();
 
-		// Filtre les cartes en vérifiant si l'authorId est présent parmi les membres
-		const cartesFiltrees = card.filter((carte) => membres.has(carte.authorId.toString()));
+		// Filtre les cartes en vérifiant si l'authorId (converti en chaîne) est présent parmi les membres
+		const cartesFiltrees = cartes.filter((carte) => membres.has(carte.authorId.toString()));
 
 		return cartesFiltrees;
 	} catch (error) {
