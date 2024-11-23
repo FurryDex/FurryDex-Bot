@@ -19,23 +19,23 @@ async function isXMinutesPassed(message, client) {
 		let serverConfig = await client
 			.knex('guilds')
 			.first('*')
-			.where({ id: message.guild.id.toString() })
+			.where({ id: message.guild.id })
 			.catch((...err) => console.error(err));
 		let user = await client
 			.knex('users')
 			.first('*')
-			.where({ id: message.author.id.toString() })
+			.where({ id: message.author.id })
 			.catch((...err) => console.error(err));
 
 		if (!user) {
 			client
 				.knex('users')
-				.insert({ id: message.author.id.toString() })
+				.insert({ id: message.author.id })
 				.catch((...err) => console.error(err));
 		}
 
 		if (!serverConfig || !serverConfig.enabled || serverConfig.last_Card != null) {
-			if (bypass) message.delete();
+			if (bypass) message.reply('Sorry, the bot is not enable in this server');
 			return false; // Le bot n'est pas activé pour ce serveur
 		}
 
