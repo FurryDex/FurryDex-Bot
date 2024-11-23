@@ -121,7 +121,6 @@ async function win(client, message) {
 		.select('*')
 		.catch((...err) => console.error(err));
 
-	let done = false;
 	let i = 1;
 	do {
 		done = false;
@@ -134,6 +133,7 @@ async function win(client, message) {
 		console.log(2, membres);
 
 		if (serverConfig.spawnAllCards == 0 && serverConfig.premium == 0) {
+			console.log('TEST');
 			cartes = cards.filter((carte) => membres.has(carte.authorId.toString()));
 		} else cartes = cards;
 
