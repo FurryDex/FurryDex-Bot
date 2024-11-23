@@ -113,7 +113,7 @@ async function writePlayer(client, playerId, embed) {
 }
 
 async function writeServer(client, serverId, embed) {
-	playerId = serverId.toString();
+	serverId = serverId.toString();
 	if (client.user.id == config.bot.Stable) {
 		knex_channel = 'log_channel';
 		type = 'STABLE';
