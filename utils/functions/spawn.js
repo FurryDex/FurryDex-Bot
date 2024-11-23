@@ -126,21 +126,13 @@ async function win(client, message) {
 	do {
 		done = false;
 		// Convertir l'objet JSON en un tableau de cartes avec leur rareté
-		const cartes = Object.entries(cards).map(([id, carte]) => ({ id, ...carte }));
-		console.log(cartes);
+		let cartes;
 
-		cartes.forEach((carte) => {
-			console.log(`${carte.name}: `);
-			console.log(carte.authorId);
-			guild.members.cache
-				.get(`${carte.authorId}`)
-				.then((member) => console.log(member))
-				.catch(console.log('nope'));
-		});
+		const membres = await guild.members.fetch();
 
 		if (serverConfig.spawnAllCards == 0 && serverConfig.premium == 0) {
-			//cartes.filter((carte) => isMemberInGuild(guild, carte));
-		}
+			cartes = cards.filter((carte) => membres.has(carte.authorId.toString()));
+		} else cartes = cards;
 
 		// Calculer la somme totale des raretés
 		const sommeRaretés = cartes.reduce((acc, carte) => acc + carte.rarity, 0);
