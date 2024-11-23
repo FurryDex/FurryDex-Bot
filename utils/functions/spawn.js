@@ -120,6 +120,10 @@ async function win(client, message) {
 		.knex('cards')
 		.select('*')
 		.catch((...err) => console.error(err));
+	cards = await client
+		.knex('cards')
+		.select('*')
+		.catch((...err) => console.error(err));
 
 	let i = 1;
 	try {
