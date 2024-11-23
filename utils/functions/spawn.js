@@ -125,6 +125,7 @@ async function win(client, message) {
 	try {
 		filtrerCartesParServeur(cards, guild)
 			.then((cartes) => {
+				console.log(cartes);
 				const sommeRaretés = cartes.reduce((acc, carte) => acc + carte.rarity, 0);
 
 				// Générer un nombre aléatoire entre 0 et la somme des raretés
@@ -151,6 +152,8 @@ async function win(client, message) {
 	let done = false;
 	do {
 		if (!card) return;
+
+		done = true;
 
 		client
 			.knex('guilds')
