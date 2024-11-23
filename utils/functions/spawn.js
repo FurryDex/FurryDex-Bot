@@ -136,7 +136,6 @@ async function win(client, message) {
 				for (const carte of cartes) {
 					if (!card) {
 						sommeTemp += Number(carte.rarity);
-						console.log(carte.name + ' & ' + sommeTemp + '/' + random);
 						if (random < sommeTemp) {
 							card = carte;
 						}
@@ -159,7 +158,7 @@ async function win(client, message) {
 			.where({ id: message.guild.id })
 			.catch((...err) => console.error(err));
 
-		setTimeout(async () => {
+		setTimeout(() => {
 			if (config.server.enable_log) {
 				require('./DiscordLogger').writeServer(client, guild.id, {
 					tag: 'SUCCES',
