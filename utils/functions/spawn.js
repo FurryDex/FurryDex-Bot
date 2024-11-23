@@ -2,6 +2,7 @@ const { EmbedBuilder, ButtonStyle, ActionRowBuilder, ButtonBuilder } = require('
 const config = require('../../config');
 const Logger = require('../Logger.js');
 const locales = require('../../locales/utils/function/spawn.json');
+const { startTimer } = require('winston');
 
 async function isXMinutesPassed(message, client) {
 	try {
@@ -148,9 +149,7 @@ async function win(client, message) {
 	}
 	let done = false;
 	do {
-		console.log(card);
-		if (!card) return;
-		console.log(1);
+		if (!card) continue;
 
 		done = true;
 
