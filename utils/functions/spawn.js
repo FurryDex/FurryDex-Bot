@@ -123,97 +123,88 @@ async function win(client, message) {
 
 	let i = 1;
 	try {
-		let cartes;
-		try {
-			filtrerCartesParServeur(cards, guild).then((cartesFiltrees) => {
-				cartes = cartesFiltrees;
-			});
-		} catch (err) {
-			console.error(err);
-		}
-		do {
-			setTimeout(() => {}, 1000);
-		} while (!cartes);
+		filtrerCartesParServeur(cards, guild)
+			.then((cartes) => {
+				const sommeRaretés = cartes.reduce((acc, carte) => acc + carte.rarity, 0);
 
-		// Calculer la somme totale des raretés
-		const sommeRaretés = cartes.reduce((acc, carte) => acc + carte.rarity, 0);
+				// Générer un nombre aléatoire entre 0 et la somme des raretés
+				const random = Math.random() * sommeRaretés;
 
-		// Générer un nombre aléatoire entre 0 et la somme des raretés
-		const random = Math.random() * sommeRaretés;
+				console.log(`\n\n - - - - - \n\n`);
 
-		console.log(`\n\n - - - - - \n\n`);
-
-		// Choisir la carte en fonction du nombre aléatoire
-		let sommeTemp = 0;
-		for (const carte of cartes) {
-			if (!card) {
-				sommeTemp += carte.rarity;
-				console.log(carte.name + ' & ' + sommeTemp + '/' + random);
-				if (random < sommeTemp) {
-					card = carte;
+				// Choisir la carte en fonction du nombre aléatoire
+				let sommeTemp = 0;
+				for (const carte of cartes) {
+					if (!card) {
+						sommeTemp += carte.rarity;
+						console.log(carte.name + ' & ' + sommeTemp + '/' + random);
+						if (random < sommeTemp) {
+							card = carte;
+						}
+					}
 				}
-			}
-		}
-		i++;
+			})
+			.catch((err) => console.error(err));
 	} catch (err) {
 		console.error(err);
 	}
-	do {} while (card == [] && i < 1);
-	if (card == []) return console.log('No Author in Guild');
-	console.log(card);
+	let done = false;
+	do {
+		if (!card) return;
 
-	client
-		.knex('guilds')
-		.update({ last_Card: card.id })
-		.where({ id: message.guild.id })
-		.catch((...err) => console.error(err));
+		client
+			.knex('guilds')
+			.update({ last_Card: card.id })
+			.where({ id: message.guild.id })
+			.catch((...err) => console.error(err));
 
-	setTimeout(async () => {
-		if (config.server.enable_log) {
-			require('./DiscordLogger').writeServer(client, guild.id, {
-				tag: 'SUCCES',
-				color: 'GREEN',
-				description: 'Card spawn',
-				info: [{ name: 'Card', value: `${card.name} (${card.id})` }],
-				content: 'Spawn',
-			});
-		}
-		const button = new ActionRowBuilder().addComponents(
-			new ButtonBuilder()
-				.setCustomId('catch')
-				.setDisabled(false)
-				.setEmoji('<:hunt:1284221526270410814>')
-				.setLabel(locales.button.text[serverConfig.locale] ?? locales.button.text.default)
-				.setStyle(ButtonStyle.Danger)
-		);
-		let title = locales.embed.title[serverConfig.locale] ?? locales.embed.title.default;
-		const embed = new EmbedBuilder()
-			.setTitle(title)
-			.setImage(card.image)
-			.setColor(require('../colors.json').find((color) => (color.name = 'RED')).hex);
-		if (!channel) return;
-		channel.send({ embeds: [embed], components: [button] }).then(async (message) => {
-			let channel = await guild.channels.cache.get(message.channelId);
-			setTimeout(async () => {
-				let msg = await channel.messages.fetch(message.id);
-
-				serverConfig = await client
-					.knex('guilds')
-					.update({ last_Card: null })
-					.where({ id: guild.id })
-					.catch((...err) => console.error(err));
-				serverConfig.last_Card = null;
-				const newComponents = msg.components.map((row) => {
-					return new ActionRowBuilder().addComponents(
-						row.components.map((button) => {
-							return new ButtonBuilder().setCustomId(button.customId).setLabel(button.label).setStyle(button.style).setDisabled(true); // Toggle the disabled state
-						})
-					);
+		setTimeout(async () => {
+			if (config.server.enable_log) {
+				require('./DiscordLogger').writeServer(client, guild.id, {
+					tag: 'SUCCES',
+					color: 'GREEN',
+					description: 'Card spawn',
+					info: [{ name: 'Card', value: `${card.name} (${card.id})` }],
+					content: 'Spawn',
 				});
-				msg.edit({ embeds: msg.embeds, components: newComponents }).catch(() => {});
-			}, 300_000);
-		});
-	}, Math.floor(Math.random() * (7500 - 2500) + 2500));
+			}
+			const button = new ActionRowBuilder().addComponents(
+				new ButtonBuilder()
+					.setCustomId('catch')
+					.setDisabled(false)
+					.setEmoji('<:hunt:1284221526270410814>')
+					.setLabel(locales.button.text[serverConfig.locale] ?? locales.button.text.default)
+					.setStyle(ButtonStyle.Danger)
+			);
+			let title = locales.embed.title[serverConfig.locale] ?? locales.embed.title.default;
+			const embed = new EmbedBuilder()
+				.setTitle(title)
+				.setImage(card.image)
+				.setColor(require('../colors.json').find((color) => (color.name = 'RED')).hex);
+			if (!channel) return;
+			channel.send({ embeds: [embed], components: [button] }).then(async (message) => {
+				let channel = await guild.channels.cache.get(message.channelId);
+				setTimeout(async () => {
+					let msg = await channel.messages.fetch(message.id);
+
+					serverConfig = await client
+						.knex('guilds')
+						.update({ last_Card: null })
+						.where({ id: guild.id })
+						.catch((...err) => console.error(err));
+					serverConfig.last_Card = null;
+					const newComponents = msg.components.map((row) => {
+						return new ActionRowBuilder().addComponents(
+							row.components.map((button) => {
+								return new ButtonBuilder().setCustomId(button.customId).setLabel(button.label).setStyle(button.style).setDisabled(true); // Toggle the disabled state
+							})
+						);
+					});
+					msg.edit({ embeds: msg.embeds, components: newComponents }).catch(() => {});
+				}, 300_000);
+			});
+		}, Math.floor(Math.random() * (7500 - 2500) + 2500));
+	} while (!done);
 }
 
 async function filtrerCartesParServeur(card, guild) {
