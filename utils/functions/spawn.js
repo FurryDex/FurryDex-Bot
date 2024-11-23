@@ -212,11 +212,21 @@ async function win(client, message) {
 
 async function filtrerCartesParServeur(cartes, guild) {
 	try {
-		// Récupère tous les membres du serveur
+		// Récupère tous les membres du serveur dans le cache (en cas de besoin, fetch pour actualiser le cache)
 		const membres = await guild.members.fetch();
 
+		// Afficher les IDs des membres récupérés pour vérifier qu'ils sont chargés correctement
+		console.log(
+			'Membres du serveur:',
+			membres.map((m) => m.user.id)
+		);
+
 		// Filtre les cartes en vérifiant si l'authorId (converti en chaîne) est présent parmi les membres
-		const cartesFiltrees = cartes.filter((carte) => membres.has(carte.authorId.toString()));
+		const cartesFiltrees = cartes.filter((carte) => {
+			const estPresent = membres.has(carte.authorId.toString());
+			console.log(`Vérification de l'authorId ${carte.authorId}: ${estPresent ? 'présent' : 'absent'}`);
+			return estPresent;
+		});
 
 		return cartesFiltrees;
 	} catch (error) {
