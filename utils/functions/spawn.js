@@ -20,18 +20,18 @@ async function isXMinutesPassed(message, client) {
 			.knex('guilds')
 			.first('*')
 			.where({ id: message.guild.id })
-			.catch((...err) => console.error(err));
+			.catch((err) => console.error(err));
 		let user = await client
 			.knex('users')
 			.first('*')
 			.where({ id: message.author.id })
-			.catch((...err) => console.error(err));
+			.catch((err) => console.error(err));
 
 		if (!user) {
 			client
 				.knex('users')
 				.insert({ id: message.author.id })
-				.catch((...err) => console.error(err));
+				.catch((err) => console.error(err));
 		}
 
 		if (!serverConfig || !serverConfig.enabled || serverConfig.last_Card != null) {
@@ -47,14 +47,14 @@ async function isXMinutesPassed(message, client) {
 				.knex('guilds')
 				.update({ time: in1Hour.toISOString(), First_Check: new Date().toISOString() })
 				.where({ id: message.guild.id })
-				.catch((...err) => console.error(err));
+				.catch((err) => console.error(err));
 		}
 
 		serverConfig = await client
 			.knex('guilds')
 			.first('*')
 			.where({ id: message.guild.id })
-			.catch((...err) => console.error(err));
+			.catch((err) => console.error(err));
 
 		// Récupérer le nombre de membres dans le serveur
 		const memberCount = message.guild.memberCount;
@@ -69,22 +69,21 @@ async function isXMinutesPassed(message, client) {
 				.knex('guilds')
 				.update({ time: dateFirstCheck10.toISOString() })
 				.where({ id: message.guild.id })
-				.catch((...err) => console.error(err));
+				.catch((err) => console.error(err));
 
 		serverConfig = await client
 			.knex('guilds')
 			.first('*')
 			.where({ id: message.guild.id })
-			.catch((...err) => console.error(err));
+			.catch((err) => console.error(err));
 
 		// Vérifier si X minutes se sont écoulées depuis le dernier appel
 		if (new Date(serverConfig.time).getTime() <= date.getTime() || bypass) {
-			console.log(1);
 			client
 				.knex('guilds')
 				.update({ time: in1Hour.toISOString(), First_Check: new Date().toISOString() })
 				.where({ id: message.guild.id })
-				.catch((...err) => console.error(err));
+				.catch((err) => console.error(err));
 			require('./DiscordLogger').writeServer(client, message.guild.id, {
 				tag: 'INFO',
 				color: 'BLUE',
@@ -111,7 +110,7 @@ async function win(client, message) {
 		.knex('guilds')
 		.first('*')
 		.where({ id: message.guild.id })
-		.catch((...err) => console.error(err));
+		.catch((err) => console.error(err));
 	const guild = message.guild;
 	const channel = await guild.channels.cache.get(serverConfig.spawn_channel);
 
@@ -122,7 +121,7 @@ async function win(client, message) {
 	let cards = await client
 		.knex('cards')
 		.select('*')
-		.catch((...err) => console.error(err));
+		.catch((err) => console.error(err));
 
 	let i = 1;
 	try {
@@ -158,7 +157,7 @@ async function win(client, message) {
 			.knex('guilds')
 			.update({ last_Card: card.id })
 			.where({ id: message.guild.id })
-			.catch((...err) => console.error(err));
+			.catch((err) => console.error(err));
 
 		setTimeout(() => {
 			if (config.server.enable_log) {
@@ -193,7 +192,7 @@ async function win(client, message) {
 						.knex('guilds')
 						.update({ last_Card: null })
 						.where({ id: guild.id })
-						.catch((...err) => console.error(err));
+						.catch((err) => console.error(err));
 					serverConfig.last_Card = null;
 					const newComponents = msg.components.map((row) => {
 						return new ActionRowBuilder().addComponents(

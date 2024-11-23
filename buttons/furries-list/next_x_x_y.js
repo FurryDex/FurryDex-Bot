@@ -10,7 +10,7 @@ module.exports = {
 			.knex('user_cards')
 			.select('*')
 			.where({ user_id: user.id })
-			.catch((...err) => {
+			.catch((err) => {
 				console.error(err);
 			});
 		const args = interaction.customId.toString().split('_');
@@ -26,7 +26,7 @@ module.exports = {
 				.knex('cards')
 				.select('*')
 				.where({ id: card.card_id })
-				.catch((...err) => {
+				.catch((err) => {
 					console.error(err);
 				});
 			AllOptions.push({

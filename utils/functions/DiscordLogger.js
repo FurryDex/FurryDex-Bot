@@ -20,6 +20,7 @@ async function write(client, destination, embed) {
 }
 
 async function writePlayer(client, playerId, embed) {
+	playerId = playerId.toString();
 	if (client.user.id == config.bot.Stable) {
 		knex_channel = 'log_channel';
 		type = 'STABLE';
@@ -34,12 +35,12 @@ async function writePlayer(client, playerId, embed) {
 		.knex('users')
 		.first('*')
 		.where({ id: playerId })
-		.catch((...err) => console.error(err));
+		.catch((err) => console.error(err));
 	let cardsDb = await client
 		.knex('user_cards')
 		.select('*')
 		.where({ user_id: playerId })
-		.catch((...err) => console.error(err));
+		.catch((err) => console.error(err));
 	const user = await client.users.cache.get(playerId);
 
 	if (!userDb.premium) userDb.premium = false;
@@ -87,7 +88,7 @@ async function writePlayer(client, playerId, embed) {
 					.knex('users')
 					.update({ [knex_channel]: log.id })
 					.where({ id: playerId })
-					.catch((...err) => console.error(err));
+					.catch((err) => console.error(err));
 			})
 			.catch((err) => console.log(err));
 	}
@@ -96,7 +97,7 @@ async function writePlayer(client, playerId, embed) {
 		.knex('users')
 		.first('*')
 		.where({ id: playerId })
-		.catch((...err) => console.error(err));
+		.catch((err) => console.error(err));
 
 	channel = await category.threads.cache.get(userDb[knex_channel]);
 	let message = await channel.fetchStarterMessage();
@@ -112,6 +113,7 @@ async function writePlayer(client, playerId, embed) {
 }
 
 async function writeServer(client, serverId, embed) {
+	playerId = serverId.toString();
 	if (client.user.id == config.bot.Stable) {
 		knex_channel = 'log_channel';
 		type = 'STABLE';
@@ -126,12 +128,12 @@ async function writeServer(client, serverId, embed) {
 		.knex('guilds')
 		.first('*')
 		.where({ id: serverId })
-		.catch((...err) => console.error(err));
+		.catch((err) => console.error(err));
 	let cardsDb = await client
 		.knex('user_cards')
 		.select('*')
 		.where({ guild: serverId })
-		.catch((...err) => console.error(err));
+		.catch((err) => console.error(err));
 	const guild = await client.guilds.cache.get(serverId);
 
 	const logGuild = await client.guilds.cache.get(config.server.ID);
@@ -189,7 +191,7 @@ async function writeServer(client, serverId, embed) {
 					.knex('guilds')
 					.update({ [knex_channel]: log.id })
 					.where({ id: serverId })
-					.catch((...err) => console.error(err));
+					.catch((err) => console.error(err));
 			})
 			.catch((err) => console.log(err));
 	}
@@ -198,7 +200,7 @@ async function writeServer(client, serverId, embed) {
 		.knex('guilds')
 		.first('*')
 		.where({ id: serverId })
-		.catch((...err) => console.error(err));
+		.catch((err) => console.error(err));
 
 	channel = await category.threads.cache.get(serverConfig[knex_channel]);
 	if (!channel) return;

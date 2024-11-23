@@ -61,6 +61,6 @@ module.exports = {
 
 		knex('user_cards')
 			.insert({ id: uid(), user_id: user.id, card_id: cardId, guild: guild, date: date, live: live, attacks: attacks })
-			.catch((...err) => console.error(err));
+			.catch((err) => console.error(err));
 	},
 };

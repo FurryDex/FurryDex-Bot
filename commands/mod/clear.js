@@ -18,7 +18,7 @@ module.exports = {
 		const message = interaction.options.getInteger('message');
 
 		if (message >= 1 && message <= 99) {
-			interaction.channel.bulkDelete(message).catch((...err) => console.error(err));
+			interaction.channel.bulkDelete(message).catch((err) => console.error(err));
 			interaction
 				.reply("Tout est dans l'odre !")
 				.then((msg) => {
@@ -26,7 +26,7 @@ module.exports = {
 						msg.delete();
 					}, 5000);
 				})
-				.catch((...err) => console.error(err));
+				.catch((err) => console.error(err));
 		} else interaction.reply('Error, Usage: `/clear {Number of message (1-99)}`');
 	},
 };
