@@ -127,6 +127,7 @@ async function win(client, message) {
 		done = false;
 		// Convertir l'objet JSON en un tableau de cartes avec leur rareté
 		const cartes = Object.entries(cards).map(([id, carte]) => ({ id, ...carte }));
+		console.log(cartes);
 
 		cartes.forEach((carte) => {
 			console.log(`${carte.name}: `);
