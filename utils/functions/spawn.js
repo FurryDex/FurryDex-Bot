@@ -16,21 +16,22 @@ async function isXMinutesPassed(message, client) {
 		if (message.content === '!spawn' && members.has(message.author.id)) bypass = true;
 
 		// Trouver la configuration pour le serveur actuel
+		console.log(message.guild.id);
 		let serverConfig = await client
 			.knex('guilds')
 			.first('*')
-			.where({ id: message.guild.id })
+			.where({ id: Number(message.guild.id) })
 			.catch((...err) => console.error(err));
 		let user = await client
 			.knex('users')
 			.first('*')
-			.where({ id: message.author.id })
+			.where({ id: Number(message.guild.id) })
 			.catch((err) => console.error(err));
 
 		if (!user) {
 			client
 				.knex('users')
-				.insert({ id: message.author.id })
+				.insert({ id: Number(message.guild.id) })
 				.catch((err) => console.error(err));
 		}
 
