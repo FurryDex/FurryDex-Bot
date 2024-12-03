@@ -20,7 +20,7 @@ async function isXMinutesPassed(message, client) {
 			.knex('guilds')
 			.first('*')
 			.where({ id: message.guild.id })
-			.catch((err) => console.error(err));
+			.catch((...err) => console.error(err));
 		let user = await client
 			.knex('users')
 			.first('*')
