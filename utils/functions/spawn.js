@@ -34,6 +34,8 @@ async function isXMinutesPassed(message, client) {
 				.catch((err) => console.error(err));
 		}
 
+		console.log(serverConfig);
+
 		if (!serverConfig || !serverConfig.enabled || serverConfig.last_Card != null) {
 			if (bypass) message.reply('Sorry, the bot is not enable in this server');
 			return false; // Le bot n'est pas activé pour ce serveur
