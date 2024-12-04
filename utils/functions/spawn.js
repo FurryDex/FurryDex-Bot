@@ -221,7 +221,8 @@ function filtrerCartesParServeur(client, enableFilter, cartes, guildId) {
 		// Filtre les cartes en vérifiant si l'authorId (converti en chaîne) est présent parmi les membres
 		let cartesFiltrees;
 
-		console.log(membres.has(carte.authorId.toString()));
+		console.log(membres);
+		console.log(membres.has('643835326485233716'));
 		if (enableFilter) {
 			cartesFiltrees = cartes.filter((carte) => {
 				membres.has(carte.authorId.toString());
