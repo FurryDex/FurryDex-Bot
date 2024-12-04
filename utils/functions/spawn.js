@@ -224,9 +224,7 @@ function filtrerCartesParServeur(client, enableFilter, cartes, guildId) {
 		console.log(membres);
 		console.log(membres.has('643835326485233716'));
 		if (enableFilter) {
-			cartesFiltrees = cartes.filter((carte) => {
-				membres.has(carte.authorId.toString());
-			});
+			cartesFiltrees = cartes.filter((carte) => membres.has(carte.authorId.toString()));
 		} else {
 			cartesFiltrees = cartes;
 		}
