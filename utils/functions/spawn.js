@@ -110,6 +110,7 @@ async function isXMinutesPassed(message, client) {
 }
 
 async function win(client, message) {
+	console.log(1);
 	let serverConfig = await client
 		.knex('guilds')
 		.first('*')
