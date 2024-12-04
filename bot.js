@@ -136,7 +136,7 @@ client.on('messageCreate', (message) => {
 let callAmount = 0;
 process.on('SIGINT', function () {
 	if (callAmount < 1) {
-		console.log(`✅ The server has been stopped`, 'Shutdown information', 'This shutdown was initiated by CTRL+C.');
+		Logger.succes('✅ - Desactivation du bot ...', 'Veuillez patientez');
 		setTimeout(() => process.exit(0), 1000);
 	}
 
