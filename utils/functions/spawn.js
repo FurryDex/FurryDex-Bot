@@ -79,6 +79,8 @@ async function isXMinutesPassed(message, client) {
 
 		let time = new Date(serverConfig.time);
 
+		console.log(time.getTime() + ' - ' + date.getTime());
+
 		// Vérifier si X minutes se sont écoulées depuis le dernier appel
 		if (time.getTime() <= date.getTime() || bypass) {
 			client
