@@ -56,5 +56,5 @@ app.post('/api/token', async (req, res) => {
 });
 
 app.listen(port, () => {
-	console.log(`Server listening at http://localhost:${port}`);
+	console.log(`Server listening at http://192.168.1.10:${port}`);
 });
