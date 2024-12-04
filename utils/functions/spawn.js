@@ -128,7 +128,6 @@ async function win(client, message) {
 	let i = 1;
 	try {
 		cartes = filtrerCartesParServeur(client, !!(serverConfig.premium == 1 && serverConfig.spawnAllCards == 1), cards, guild.id);
-		console.log(cartes.length);
 		const sommeRaretés = cartes.reduce((acc, carte) => acc + Number(carte.rarity), 0);
 
 		// Générer un nombre aléatoire entre 0 et la somme des raretés
@@ -144,7 +143,6 @@ async function win(client, message) {
 				}
 			}
 		}
-		console.log(card);
 	} catch (err) {
 		console.error(err);
 	}
@@ -225,7 +223,6 @@ function filtrerCartesParServeur(client, enableFilter, cartes, guildId) {
 		} else {
 			cartesFiltrees = cartes;
 		}
-		console.log(cartesFiltrees);
 
 		return cartesFiltrees;
 	} catch (error) {
