@@ -138,7 +138,7 @@ async function win(client, message) {
 		// Filtre les cartes en vérifiant si l'authorId (converti en chaîne) est présent parmi les membres
 		let cartes;
 
-		cards.foreach((carte) => console.log(membres.has(carte.authorId.toString()) + ' - ' + carte.authorId.toString()));
+		cards.forEach((carte) => console.log(membres.has(carte.authorId.toString()) + ' - ' + carte.authorId.toString()));
 
 		if (!!(serverConfig.premium == 0 && serverConfig.spawnAllCards)) {
 			cartes = cards.filter((carte) => membres.has(carte.authorId.toString()));
