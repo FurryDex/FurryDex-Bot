@@ -34,8 +34,13 @@ async function isXMinutesPassed(message, client) {
 				.catch((err) => console.error(err));
 		}
 
-		if (!serverConfig || !serverConfig.enabled || serverConfig.last_Card != null) {
-			if (bypass) message.reply('Sorry, the bot is not enable in this server');
+		if (!serverConfig || !serverConfig.enabled) {
+			if (bypass) message.reply({ content: 'Sorry, the bot is not enable in this server', ephemeral: true });
+			return false; // Le bot n'est pas activé pour ce serveur
+		}
+
+		if (serverConfig.last_Card != null) {
+			if (bypass) message.reply({ content: 'Sorry, the last card is not catch', ephemeral: true });
 			return false; // Le bot n'est pas activé pour ce serveur
 		}
 
