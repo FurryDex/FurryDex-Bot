@@ -133,7 +133,6 @@ async function win(client, message) {
 	let i = 1;
 	try {
 		// Récupère tous les membres du serveur dans le cache (en cas de besoin, fetch pour actualiser le cache)
-		const guild = client.guilds.cache.get(guild.id);
 		const membres = await guild.members.fetch();
 
 		// Filtre les cartes en vérifiant si l'authorId (converti en chaîne) est présent parmi les membres
