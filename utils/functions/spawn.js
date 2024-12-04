@@ -119,7 +119,6 @@ async function win(client, message) {
 	let card;
 
 	if (message.channel.members.size <= guild.members.size * (1 / 2)) return;
-	console.log(1);
 
 	let cards = await client
 		.knex('cards')
@@ -130,6 +129,7 @@ async function win(client, message) {
 	try {
 		filtrerCartesParServeur(!!(serverConfig.premium == 1 && serverConfig.spawnAllCards == 1), cards, guild)
 			.then(async (cartes) => {
+				console.log(cartes.length);
 				const sommeRaretés = cartes.reduce((acc, carte) => acc + Number(carte.rarity), 0);
 
 				// Générer un nombre aléatoire entre 0 et la somme des raretés
@@ -145,6 +145,7 @@ async function win(client, message) {
 						}
 					}
 				}
+				console.log(card);
 			})
 			.catch((err) => console.error(err));
 	} catch (err) {
@@ -152,7 +153,6 @@ async function win(client, message) {
 	}
 	let done = false;
 	do {
-		console.log(card);
 		if (!card) continue;
 
 		done = true;
