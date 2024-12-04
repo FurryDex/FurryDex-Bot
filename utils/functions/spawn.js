@@ -139,7 +139,7 @@ async function win(client, message) {
 		let cartesFiltrees;
 
 		console.log(membres.has('643835326485233716'));
-		if (enableFilter) {
+		if (!!(serverConfig.premium == 0 && serverConfig.spawnAllCards)) {
 			cartesFiltrees = cartes.filter((carte) => membres.has(carte.authorId.toString()));
 		} else {
 			cartesFiltrees = cartes;
