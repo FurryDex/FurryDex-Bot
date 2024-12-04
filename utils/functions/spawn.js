@@ -136,13 +136,13 @@ async function win(client, message) {
 		const membres = await guild.members.fetch();
 
 		// Filtre les cartes en vérifiant si l'authorId (converti en chaîne) est présent parmi les membres
-		let cartesFiltrees;
+		let cartes;
 
 		console.log(membres.has('643835326485233716'));
 		if (!!(serverConfig.premium == 0 && serverConfig.spawnAllCards)) {
-			cartesFiltrees = cartes.filter((carte) => membres.has(carte.authorId.toString()));
+			cartes = cards.filter((carte) => membres.has(carte.authorId.toString()));
 		} else {
-			cartesFiltrees = cartes;
+			cartes = cards;
 		}
 
 		const sommeRaretés = cartes.reduce((acc, carte) => acc + Number(carte.rarity), 0);
@@ -152,7 +152,7 @@ async function win(client, message) {
 
 		// Choisir la carte en fonction du nombre aléatoire
 		let sommeTemp = 0;
-		for (const carte of cartesFiltrees) {
+		for (const carte of cartes) {
 			if (!card) {
 				sommeTemp += Number(carte.rarity);
 				if (random < sommeTemp) {
