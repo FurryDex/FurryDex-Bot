@@ -24,10 +24,6 @@ module.exports = {
 			channel.setTopic(`Actual Version: V${require('../../package.json').version}`);
 		}
 
-		let status = require('../../utils/functions/status');
-		status.updateStatus(client, 'online');
-		status.automaticUpdate(client);
-
 		client
 			.knex('guilds')
 			.update({ last_card: null })
