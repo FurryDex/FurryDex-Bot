@@ -26,7 +26,7 @@ module.exports = {
 			//});
 
 			// Retrieve the access_token from the response
-			const { version } = await response.json();
+			//const { version } = await response.json();
 			channel.setTopic(`Actual Stable Version: V${require('../../package.json').version}, Actual Canary Version: V${require('../../package.json').version}`);
 		}
 
