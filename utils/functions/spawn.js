@@ -127,7 +127,7 @@ async function win(client, message) {
 
 	let i = 1;
 	try {
-		filtrerCartesParServeur(!!(serverConfig.premium == 1 && serverConfig.spawnAllCards == 1), cards, guild)
+		filtrerCartesParServeur(client, !!(serverConfig.premium == 1 && serverConfig.spawnAllCards == 1), cards, guild.id)
 			.then(async (cartes) => {
 				console.log(cartes.length);
 				const sommeRaretés = cartes.reduce((acc, carte) => acc + Number(carte.rarity), 0);
@@ -212,12 +212,14 @@ async function win(client, message) {
 	} while (!done);
 }
 
-async function filtrerCartesParServeur(enableFilter, cartes, guild) {
+async function filtrerCartesParServeur(client, enableFilter, cartes, guildId) {
 	try {
 		console.log(1);
 		// Récupère tous les membres du serveur dans le cache (en cas de besoin, fetch pour actualiser le cache)
-		const membres = await guild.members.fetch();
+		const guild = await client.guilds.cache.get(guildId);
 		console.log(2);
+		const membres = await guild.members.fetch();
+		console.log(3);
 
 		// Filtre les cartes en vérifiant si l'authorId (converti en chaîne) est présent parmi les membres
 		let cartesFiltrees;
@@ -229,7 +231,7 @@ async function filtrerCartesParServeur(enableFilter, cartes, guild) {
 		} else {
 			cartesFiltrees = cartes;
 		}
-		console.log(3);
+		console.log(4);
 
 		return cartesFiltrees;
 	} catch (error) {
