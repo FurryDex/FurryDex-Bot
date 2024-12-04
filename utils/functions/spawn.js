@@ -19,8 +19,8 @@ async function isXMinutesPassed(message, client) {
 		let serverConfig = await client
 			.knex('guilds')
 			.first('*')
-			.where({ id: message.guild.id })
-			.catch((err) => console.error(err));
+			.where({ id: await message.guild.id })
+			.catch((...err) => console.error(err));
 		let user = await client
 			.knex('users')
 			.first('*')
@@ -34,8 +34,13 @@ async function isXMinutesPassed(message, client) {
 				.catch((err) => console.error(err));
 		}
 
-		if (!serverConfig || !serverConfig.enabled || serverConfig.last_Card != null) {
-			if (bypass) message.reply('Sorry, the bot is not enable in this server');
+		if (!serverConfig || !serverConfig.enabled) {
+			if (bypass) message.reply({ content: 'Sorry, the bot is not enable in this server', ephemeral: true });
+			return false; // Le bot n'est pas activé pour ce serveur
+		}
+
+		if (serverConfig.last_Card != null) {
+			if (bypass) message.reply({ content: 'Sorry, the last card is not catch', ephemeral: true });
 			return false; // Le bot n'est pas activé pour ce serveur
 		}
 
@@ -77,8 +82,10 @@ async function isXMinutesPassed(message, client) {
 			.where({ id: message.guild.id })
 			.catch((err) => console.error(err));
 
+		let time = new Date(serverConfig.time);
+
 		// Vérifier si X minutes se sont écoulées depuis le dernier appel
-		if (new Date(serverConfig.time).getTime() <= date.getTime() || bypass) {
+		if (time.getTime() <= date.getTime() || bypass) {
 			client
 				.knex('guilds')
 				.update({ time: in1Hour.toISOString(), First_Check: new Date().toISOString() })
@@ -125,25 +132,22 @@ async function win(client, message) {
 
 	let i = 1;
 	try {
-		filtrerCartesParServeur(!!(serverConfig.premium == 1 && serverConfig.spawnAllCards == 1), cards, guild)
-			.then(async (cartes) => {
-				const sommeRaretés = cartes.reduce((acc, carte) => acc + Number(carte.rarity), 0);
+		cartes = filtrerCartesParServeur(client, !!(serverConfig.premium == 1 && serverConfig.spawnAllCards == 1), cards, guild.id);
+		const sommeRaretés = cartes.reduce((acc, carte) => acc + Number(carte.rarity), 0);
 
-				// Générer un nombre aléatoire entre 0 et la somme des raretés
-				let random = Math.random() * sommeRaretés;
+		// Générer un nombre aléatoire entre 0 et la somme des raretés
+		let random = Math.random() * sommeRaretés;
 
-				// Choisir la carte en fonction du nombre aléatoire
-				let sommeTemp = 0;
-				for (const carte of cartes) {
-					if (!card) {
-						sommeTemp += Number(carte.rarity);
-						if (random < sommeTemp) {
-							card = carte;
-						}
-					}
+		// Choisir la carte en fonction du nombre aléatoire
+		let sommeTemp = 0;
+		for (const carte of cartes) {
+			if (!card) {
+				sommeTemp += Number(carte.rarity);
+				if (random < sommeTemp) {
+					card = carte;
 				}
-			})
-			.catch((err) => console.error(err));
+			}
+		}
 	} catch (err) {
 		console.error(err);
 	}
@@ -208,10 +212,11 @@ async function win(client, message) {
 	} while (!done);
 }
 
-async function filtrerCartesParServeur(enableFilter, cartes, guild) {
+function filtrerCartesParServeur(client, enableFilter, cartes, guildId) {
 	try {
 		// Récupère tous les membres du serveur dans le cache (en cas de besoin, fetch pour actualiser le cache)
-		const membres = await guild.members.fetch();
+		const guild = client.guilds.cache.get(guildId);
+		const membres = guild.members.fetch();
 
 		// Filtre les cartes en vérifiant si l'authorId (converti en chaîne) est présent parmi les membres
 		let cartesFiltrees;
