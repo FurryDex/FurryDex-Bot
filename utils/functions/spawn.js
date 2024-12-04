@@ -139,7 +139,6 @@ async function win(client, message) {
 		let cartes;
 
 		if (!(serverConfig.premium == 1 && serverConfig.spawnAllCards == 1)) {
-			cards.forEach((carte) => console.log(membres.has(carte.authorId.toString()) + ' - ' + carte.authorId.toString()));
 			cartes = cards.filter((carte) => membres.has(carte.authorId.toString()));
 		} else {
 			cartes = cards;
