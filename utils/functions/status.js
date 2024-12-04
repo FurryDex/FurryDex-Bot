@@ -28,7 +28,7 @@ async function updateStatus(client, message) {
 
 	const guild = client.guilds.cache.get(config.server.ID);
 	const channel = guild.channels.cache.get(config.status.channel);
-	const message = channel.messages.fetch(statusId[type]);
+	const msgToEdit = channel.messages.fetch(statusId[type]);
 
 	let color = require('../colors.json').find((color) => (color.name = messageList.find((msg) => msg.message == message).color)).hex;
 	let embed = new EmbedBuilder()
@@ -48,7 +48,7 @@ async function updateStatus(client, message) {
 		)
 		.setTimestamp();
 
-	message.edit(embed);
+	msgToEdit.edit(embed);
 }
 
 async function automaticUpdate(client) {
