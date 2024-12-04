@@ -30,11 +30,11 @@ module.exports = {
 			channel.setTopic(`Actual Stable Version: V${require('../../package.json').version}, Actual Canary Version: V${require('../../package.json').version}`);
 		}
 
-		const response = await fetch(`http://192.168.1.10:10002/info.json`, {
-			method: 'GET',
-		});
+		//const response = await fetch(`http://192.168.1.10:10002/info.json`, {
+		//	method: 'GET',
+		//});
 
-		console.log(response);
+		//console.log(response);
 
 		client
 			.knex('guilds')
