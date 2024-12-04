@@ -127,27 +127,24 @@ async function win(client, message) {
 
 	let i = 1;
 	try {
-		filtrerCartesParServeur(client, !!(serverConfig.premium == 1 && serverConfig.spawnAllCards == 1), cards, guild.id)
-			.then(async (cartes) => {
-				console.log(cartes.length);
-				const sommeRaretés = cartes.reduce((acc, carte) => acc + Number(carte.rarity), 0);
+		cartes = filtrerCartesParServeur(client, !!(serverConfig.premium == 1 && serverConfig.spawnAllCards == 1), cards, guild.id);
+		console.log(cartes.length);
+		const sommeRaretés = cartes.reduce((acc, carte) => acc + Number(carte.rarity), 0);
 
-				// Générer un nombre aléatoire entre 0 et la somme des raretés
-				let random = Math.random() * sommeRaretés;
+		// Générer un nombre aléatoire entre 0 et la somme des raretés
+		let random = Math.random() * sommeRaretés;
 
-				// Choisir la carte en fonction du nombre aléatoire
-				let sommeTemp = 0;
-				for (const carte of cartes) {
-					if (!card) {
-						sommeTemp += Number(carte.rarity);
-						if (random < sommeTemp) {
-							card = carte;
-						}
-					}
+		// Choisir la carte en fonction du nombre aléatoire
+		let sommeTemp = 0;
+		for (const carte of cartes) {
+			if (!card) {
+				sommeTemp += Number(carte.rarity);
+				if (random < sommeTemp) {
+					card = carte;
 				}
-				console.log(card);
-			})
-			.catch((err) => console.error(err));
+			}
+		}
+		console.log(card);
 	} catch (err) {
 		console.error(err);
 	}
@@ -212,7 +209,7 @@ async function win(client, message) {
 	} while (!done);
 }
 
-async function filtrerCartesParServeur(client, enableFilter, cartes, guildId) {
+function filtrerCartesParServeur(client, enableFilter, cartes, guildId) {
 	try {
 		// Récupère tous les membres du serveur dans le cache (en cas de besoin, fetch pour actualiser le cache)
 		const guild = client.guilds.cache.get(guildId);
