@@ -30,6 +30,10 @@ app.get('/index.js', function (req, res) {
 	res.sendFile(path.join(__dirname, '/index.js'));
 });
 
+app.get('/info.json', function (req, res) {
+	res.send({ version: require('../package.json').version, status: 'online' });
+});
+
 app.post('/api/token', async (req, res) => {
 	// Exchange the code for an access_token
 	const response = await fetch(`https://discord.com/api/oauth2/token`, {
