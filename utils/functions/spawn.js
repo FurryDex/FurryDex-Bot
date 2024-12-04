@@ -214,6 +214,7 @@ async function win(client, message) {
 
 async function filtrerCartesParServeur(enableFilter, cartes, guild) {
 	try {
+		console.log(1);
 		// Récupère tous les membres du serveur dans le cache (en cas de besoin, fetch pour actualiser le cache)
 		const membres = await guild.members.fetch();
 
@@ -227,6 +228,7 @@ async function filtrerCartesParServeur(enableFilter, cartes, guild) {
 		} else {
 			cartesFiltrees = cartes;
 		}
+		console.log(1);
 
 		return cartesFiltrees;
 	} catch (error) {
