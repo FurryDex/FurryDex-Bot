@@ -28,7 +28,7 @@ module.exports = {
 			await client
 				.knex('guilds')
 				.first('*')
-				.where({ id: '1' })
+				.where({ id: 1 })
 				.catch((...err) => console.error(err))
 		);
 
