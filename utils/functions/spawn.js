@@ -217,6 +217,7 @@ async function filtrerCartesParServeur(enableFilter, cartes, guild) {
 		console.log(1);
 		// Récupère tous les membres du serveur dans le cache (en cas de besoin, fetch pour actualiser le cache)
 		const membres = await guild.members.fetch();
+		console.log(2);
 
 		// Filtre les cartes en vérifiant si l'authorId (converti en chaîne) est présent parmi les membres
 		let cartesFiltrees;
@@ -228,7 +229,7 @@ async function filtrerCartesParServeur(enableFilter, cartes, guild) {
 		} else {
 			cartesFiltrees = cartes;
 		}
-		console.log(1);
+		console.log(3);
 
 		return cartesFiltrees;
 	} catch (error) {
