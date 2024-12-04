@@ -220,10 +220,11 @@ function filtrerCartesParServeur(client, enableFilter, cartes, guildId) {
 
 		// Filtre les cartes en vérifiant si l'authorId (converti en chaîne) est présent parmi les membres
 		let cartesFiltrees;
+
+		console.log(membres.has(carte.authorId.toString());)
 		if (enableFilter) {
 			cartesFiltrees = cartes.filter((carte) => {
-				const estPresent = membres.has(carte.authorId.toString());
-				return estPresent;
+				membres.has(carte.authorId.toString());
 			});
 		} else {
 			cartesFiltrees = cartes;
