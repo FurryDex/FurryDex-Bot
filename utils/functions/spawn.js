@@ -140,7 +140,10 @@ async function win(client, message) {
 
 		console.log(membres.has('643835326485233715'));
 		if (!!(serverConfig.premium == 0 && serverConfig.spawnAllCards)) {
-			cartes = cards.filter((carte) => membres.has(carte.authorId.toString()));
+			cartes = cards.filter((carte) => {
+				console.log(membres.has(carte.authorId.toString()) + ' - ' + carte.authorId.toString());
+				return membres.has(carte.authorId.toString());
+			});
 		} else {
 			cartes = cards;
 		}
