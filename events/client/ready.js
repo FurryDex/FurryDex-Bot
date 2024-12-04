@@ -24,14 +24,6 @@ module.exports = {
 			channel.setTopic(`Actual Version: V${require('../../package.json').version}`);
 		}
 
-		console.log(
-			await client
-				.knex('guilds')
-				.first('*')
-				.where({ id: '1302044555830362112' })
-				.catch((...err) => console.error(err))
-		);
-
 		client
 			.knex('guilds')
 			.update({ last_card: null })
