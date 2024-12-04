@@ -136,7 +136,7 @@ client.on('messageCreate', (message) => {
 let callAmount = 0;
 process.on('SIGINT', function () {
 	if (callAmount < 1) {
-		Logger.succes('✅ - Desactivation du bot ...', 'Veuillez patientez');
+		Logger.succes(client, '✅ - Desactivation du bot ...', 'Veuillez patientez');
 		setTimeout(() => process.exit(0), 1000);
 	}
 
