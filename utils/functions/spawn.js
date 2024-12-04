@@ -79,8 +79,6 @@ async function isXMinutesPassed(message, client) {
 
 		let time = new Date(serverConfig.time);
 
-		console.log(time.getTime() + ' - ' + date.getTime());
-
 		// Vérifier si X minutes se sont écoulées depuis le dernier appel
 		if (time.getTime() <= date.getTime() || bypass) {
 			client
@@ -110,7 +108,6 @@ async function isXMinutesPassed(message, client) {
 }
 
 async function win(client, message) {
-	console.log(1);
 	let serverConfig = await client
 		.knex('guilds')
 		.first('*')
@@ -122,6 +119,7 @@ async function win(client, message) {
 	let card;
 
 	if (message.channel.members.size <= guild.members.size * (1 / 2)) return;
+	console.log(1);
 
 	let cards = await client
 		.knex('cards')
@@ -154,6 +152,7 @@ async function win(client, message) {
 	}
 	let done = false;
 	do {
+		console.log(card);
 		if (!card) continue;
 
 		done = true;
