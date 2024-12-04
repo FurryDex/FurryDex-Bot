@@ -133,10 +133,13 @@ client.on('messageCreate', (message) => {
 	isXMinutesPassed(message, client);
 });
 
+let status = require('./utils/functions/status');
+
 let callAmount = 0;
 process.on('SIGINT', function () {
 	if (callAmount < 1) {
 		Logger.succes(client, '✅ - Desactivation du bot ...', 'Veuillez patientez');
+		status.updateStatus(client, 'offline');
 		setTimeout(() => process.exit(0), 1000);
 	}
 

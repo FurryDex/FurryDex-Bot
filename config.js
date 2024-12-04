@@ -17,6 +17,10 @@ module.exports = {
 		yes: '#00FF00',
 		no: '#FF0000',
 	},
+	status: {
+		enable: true,
+		channel: '1236743659932876910',
+	},
 	creator: '643835326485233716',
 	api: {
 		port: 10001,
