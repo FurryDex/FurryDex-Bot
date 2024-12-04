@@ -133,4 +133,14 @@ client.on('messageCreate', (message) => {
 	isXMinutesPassed(message, client);
 });
 
+let callAmount = 0;
+process.on('SIGINT', function () {
+	if (callAmount < 1) {
+		Console.log(`✅ The server has been stopped`, 'Shutdown information', 'This shutdown was initiated by CTRL+C.');
+		setTimeout(() => process.exit(0), 1000);
+	}
+
+	callAmount++;
+});
+
 module.exports = { client };
