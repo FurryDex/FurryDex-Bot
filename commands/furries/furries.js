@@ -103,6 +103,12 @@ module.exports = {
 			.catch((err) => {
 				console.error(err);
 			});
+		let allCards = await client
+			.knex('cards')
+			.select('*')
+			.catch((err) => {
+				console.error(err);
+			});
 
 		if (subcommand == 'list') {
 			if (user_cards.length == 0) return interaction.editReply({ content: locales.run['no-furry'][interaction.locale] ?? locales.run['no-furry'].default, ephemeral: true });
