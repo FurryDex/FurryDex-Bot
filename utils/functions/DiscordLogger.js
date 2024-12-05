@@ -98,8 +98,9 @@ async function writePlayer(client, playerId, embed) {
 		.first('*')
 		.where({ id: playerId })
 		.catch((err) => console.error(err));
-
-	channel = await category.threads.cache.get(userDb[knex_channel]);
+	do {
+		channel = await category.threads.cache.get(userDb[knex_channel]);
+	} while (!channel);
 	let message = await channel.fetchStarterMessage();
 	message.edit({ content: 'Log', embeds: [playerEmbed] });
 
@@ -201,8 +202,9 @@ async function writeServer(client, serverId, embed) {
 		.where({ id: serverId })
 		.catch((err) => console.error(err));
 
-	channel = await category.threads.cache.get(serverConfig[knex_channel]);
-	if (!channel) return;
+	do {
+		channel = await category.threads.cache.get(serverConfig[knex_channel]);
+	} while (!channel);
 	let message = await channel.fetchStarterMessage();
 
 	message.edit({ content: 'Log', embeds: [guildEmbed] });
