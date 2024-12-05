@@ -103,7 +103,7 @@ function formatArrayToText(array) {
 		return capitalizedArray[0];
 	} else {
 		const lastItem = capitalizedArray.pop();
-		return capitalizedArray.join(', ') + ' et ' + lastItem;
+		return capitalizedArray.join(', ') + ' and ' + lastItem;
 	}
 }
 
