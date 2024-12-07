@@ -28,6 +28,7 @@ module.exports = {
 				},
 			}).then((response) => {
 				const { version } = response.json();
+				console.log(response.json());
 				channel.setTopic(`Actual Stable Version: V${require('../../package.json').version}, Actual Canary Version: V${version}`);
 			});
 		}
