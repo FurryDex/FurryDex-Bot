@@ -63,7 +63,7 @@ async function cardEmbed(client, cardId, locale) {
 			`${(locales.embed.giveBy[locale] ?? locales.embed.giveBy.default)
 				.replace('%emoji%', '<:atlanta_add:598176235700355083>')
 				.replace('%giver%', `<@${cardF.gived}>`)
-				.replace('%giveTime%', `${time(date, TimestampStyles.LongDateTime)} (${time(date, TimestampStyles.RelativeTime)})`)}\n`
+				.replace('%giveTime%', `${time(giveDate, TimestampStyles.LongDateTime)} (${time(giveDate, TimestampStyles.RelativeTime)})`)}\n`
 		);
 	} else {
 		description = description.replace('%gived%', ``);
