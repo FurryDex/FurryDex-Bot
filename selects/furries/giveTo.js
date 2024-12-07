@@ -23,6 +23,6 @@ module.exports = {
 			.where({ user_id: interaction.user.id })
 			.catch((err) => console.error(err));
 
-		interaction.reply(`carte pour ${args[0]} de ${args[1]}, ID: ${args[2]}`);
+		interaction.reply(`carte pour ${args[1]} de ${interaction.user.id}, ID: ${args[0]}`);
 	},
 };
