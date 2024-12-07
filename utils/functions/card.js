@@ -57,7 +57,14 @@ async function cardEmbed(client, cardId, locale) {
 		.replace('%attacks%', cardF.attacks < 0 ? originalCardF.attacks - (originalCardF.attacks * cardF.attacks.replace('-', '')) / 100 : originalCardF.attacks + (originalCardF.attacks * cardF.attacks) / 100) //cardF.attacks < 0 ? originalCardF.attacks-(originalCardF.attacks*cardF.attacks/100) : originalCardF.attacks+(originalCardF.attacks*cardF.attacks/100)
 		.replace('%attacks_2%', cardF.attacks);
 	if (cardF.gived != 0) {
-		description = description.replace('%gived%', `${(locales.embed.giveBy[locale] ?? locales.embed.giveBy.default).replace('%emoji%', '<:atlanta_add:598176235700355083>').replace('%giver%', `<@${cardF.gived}>`)}\n`);
+		let giveDate = new Date(cardF.giveDate);
+		description = description.replace(
+			'%gived%',
+			`${(locales.embed.giveBy[locale] ?? locales.embed.giveBy.default)
+				.replace('%emoji%', '<:atlanta_add:598176235700355083>')
+				.replace('%giver%', `<@${cardF.gived}>`)
+				.replace('%giveTime%', `${time(date, TimestampStyles.LongDateTime)} (${time(date, TimestampStyles.RelativeTime)})`)}\n`
+		);
 	} else {
 		description = description.replace('%gived%', ``);
 	}
