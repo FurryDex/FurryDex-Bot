@@ -173,24 +173,32 @@ module.exports = {
 			return interaction.editReply({ content: `The deck got \`%number%\` cards`.replace('%number%', user_cards.length) });
 		} else if (subcommand == 'give!') {
 			if (user_cards.length == 0) return interaction.editReply({ content: locales.run['no-furry'][interaction.locale] ?? locales.run['no-furry'].default, ephemeral: true });
-			let giveto = interaction.options.getUser('give-to');
+			let giveTo = interaction.options.getUser('give-to');
 			AllOptions = [];
-			cardsBDD.users[user.id].cards.forEach((card) => {
+			user_cards.forEach(async (card, key) => {
 				let date = new Date(card.date);
 				cd = (num) => num.toString().padStart(2, 0);
 				let description = locales.run.list[interaction.locale] ?? locales.run.list.default;
+				let card_info = await client
+					.knex('cards')
+					.first('*')
+					.where({ id: card.card_id })
+					.catch((err) => {
+						console.error(err);
+					});
 				AllOptions.push({
-					label: `(#${card.id}) ${cardlistBDD[card.cardid].name}`,
-					value: `${giveto.id}_${user.id}_${card.date}`,
-					emoji: `${cardlistBDD[card.cardid].emoji}`,
+					label: `(#${card.id}) ${card_info.name}`,
+					value: `${card.id}_${giveTo.id}`,
+					emoji: `${card_info.emoji}`,
 					description: description
 						.replace('%attacks%', card.attacks)
 						.replace('%live%', card.live)
 						.replace('%date%', `${cd(date.getDate())}/${cd(date.getMonth())}/${cd(date.getFullYear())} ${cd(date.getHours())}H${cd(date.getMinutes())}`),
 				});
+				if (user_cards.length == key + 1) {
+					sendMenu(AllOptions, interaction, user.id, false, 0, 25, 'cards');
+				}
 			});
-
-			sendMenu(AllOptions, interaction, user.id, false, 0, 25, 'giveTo');
 		} else {
 			return interaction.editReply({
 				content: 'Sorry, this *command* is disable. Er0r: 403',
