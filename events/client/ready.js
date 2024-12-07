@@ -26,9 +26,8 @@ module.exports = {
 				headers: {
 					Accept: 'application/json',
 				},
-			}).then((response) => {
-				const { version } = response.json();
-				console.log(response.json());
+			}).then(async (response) => {
+				const { version } = await response.json();
 				channel.setTopic(`Actual Stable Version: V${require('../../package.json').version}, Actual Canary Version: V${version}`);
 			});
 		}
