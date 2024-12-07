@@ -145,7 +145,7 @@ module.exports = {
 				let hasCardorNot = await client
 					.knex('user_cards')
 					.first('*')
-					.where({ card_id: card.id })
+					.where({ card_id: card.id, user_id: user.id })
 					.catch((err) => {
 						console.error(err);
 					});
