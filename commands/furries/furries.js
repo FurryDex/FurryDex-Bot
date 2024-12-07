@@ -149,7 +149,7 @@ module.exports = {
 					.catch((err) => {
 						console.error(err);
 					});
-				if (!hasCardorNot == []) {
+				if (hasCardorNot) {
 					havedCards.push({ id: card.id, emoji: card.emoji });
 				} else {
 					notHavedCards.push({ id: card.id, emoji: card.emoji });
