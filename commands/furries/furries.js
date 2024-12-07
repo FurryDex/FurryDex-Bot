@@ -142,7 +142,13 @@ module.exports = {
 			let notHavedCards = [];
 			let cards = 0;
 			allCards.forEach(async (card, key) => {
-				let hasCardorNot = hasCard(user_cards, card.id) ?? false;
+				let hasCardorNot = await client
+					.knex('user_cards')
+					.first('*')
+					.where({ card_id: card.id, user_id: user.id })
+					.catch((err) => {
+						console.error(err);
+					});
 				if (hasCardorNot) {
 					havedCards.push({ id: card.id, emoji: card.emoji });
 				} else {
@@ -166,8 +172,7 @@ module.exports = {
 			if (user_cards.length == 0) return interaction.editReply({ content: locales.run['no-furry'][interaction.locale] ?? locales.run['no-furry'].default, ephemeral: true });
 			return interaction.editReply({ content: `The deck got \`%number%\` cards`.replace('%number%', user_cards.length) });
 		} else if (subcommand == 'give!') {
-			if (!cardsBDD.users[user.id]) return interaction.editReply({ content: locales.run['no-furry'][interaction.locale] ?? locales.run['no-furry'].default, ephemeral: true });
-			if (!cardsBDD.users[user.id].cards || cardsBDD.users[user.id].cards == []) return interaction.editReply({ content: locales.run['no-furry'][interaction.locale] ?? locales.run['no-furry'].default, ephemeral: true });
+			if (user_cards.length == 0) return interaction.editReply({ content: locales.run['no-furry'][interaction.locale] ?? locales.run['no-furry'].default, ephemeral: true });
 			let giveto = interaction.options.getUser('give-to');
 			AllOptions = [];
 			cardsBDD.users[user.id].cards.forEach((card) => {
