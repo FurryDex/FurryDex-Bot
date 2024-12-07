@@ -24,6 +24,6 @@ module.exports = {
 			.where({ user_id: interaction.user.id, id: args[0] })
 			.catch((err) => console.error(err));
 
-		interaction.reply(`carte pour ${args[1]} de ${interaction.user.id}, ID: ${args[0]}`);
+		interaction.reply(`card \#${args[0]}\` from <@${interaction.user.id}> to <@${args[1]}> was give succefully`);
 	},
 };
