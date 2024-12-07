@@ -32,7 +32,7 @@ module.exports = {
 				{ name: 'to', value: `${args[1]}` },
 				{ name: 'card', value: `${args[0]}` },
 			],
-			content: 'Catch',
+			content: 'Give',
 		});
 
 		require('../../utils/functions/DiscordLogger').writePlayer(client, args[1], {
@@ -43,9 +43,9 @@ module.exports = {
 				{ name: 'from', value: `${interaction.user.id}` },
 				{ name: 'card', value: `${args[0]}` },
 			],
-			content: 'Catch',
+			content: 'Give',
 		});
 
-		interaction.reply(`card \#${args[0]}\` from <@${interaction.user.id}> to <@${args[1]}> was give succefully`);
+		interaction.reply(`card \`#${args[0]}\` from <@${interaction.user.id}> to <@${args[1]}> was give succefully`);
 	},
 };
