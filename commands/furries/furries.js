@@ -196,7 +196,7 @@ module.exports = {
 						.replace('%date%', `${cd(date.getDate())}/${cd(date.getMonth())}/${cd(date.getFullYear())} ${cd(date.getHours())}H${cd(date.getMinutes())}`),
 				});
 				if (user_cards.length == key + 1) {
-					sendMenu(AllOptions, interaction, user.id, false, 0, 25, 'cards');
+					sendMenu(AllOptions, interaction, user.id, false, 0, 25, 'giveTo');
 				}
 			});
 		} else {
