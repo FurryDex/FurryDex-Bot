@@ -149,7 +149,6 @@ module.exports = {
 					.catch((err) => {
 						console.error(err);
 					});
-				console.log(hasCardorNot);
 				if (hasCardorNot) {
 					havedCards.push({ id: card.id, emoji: card.emoji });
 				} else {
