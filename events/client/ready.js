@@ -30,14 +30,8 @@ module.exports = {
 
 			// Retrieve the access_token from the response
 			const { version } = await response.json();
-			channel.setTopic(`Actual Stable Version: V${require('../../package.json').version}, Actual Canary Version: V${require('../../package.json').version}`);
+			channel.setTopic(`Actual Stable Version: V${require('../../package.json').version}, Actual Canary Version: V${version}`);
 		}
-
-		const response = await fetch(`http://192.168.1.10:10002/info.json`, {
-			method: 'GET',
-		});
-
-		console.log(response);
 
 		client
 			.knex('guilds')
