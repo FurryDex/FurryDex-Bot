@@ -21,7 +21,7 @@ module.exports = {
 		if (client.user.id == config.bot.Stable) {
 			let guild = await client.guilds.cache.get('1235970684556021890');
 			let channel = await guild.channels.cache.get('1236239805973663846');
-			fetch('http://192.168.1.10:10003/info.json', {
+			fetch('http://192.168.1.10:10002/info.json', {
 				method: 'GET',
 				headers: {
 					Accept: 'application/json',
