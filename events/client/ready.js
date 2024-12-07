@@ -21,20 +21,17 @@ module.exports = {
 		if (client.user.id == config.bot.Stable) {
 			let guild = await client.guilds.cache.get('1235970684556021890');
 			let channel = await guild.channels.cache.get('1236239805973663846');
-			//const response = await fetch(`http://192.168.1.10:10002/info.json`, {
-			//	method: 'GET',
-			//});
+			fetch('http://192.168.1.10:10002/info.json', {
+				method: 'GET',
+				headers: {
+					Accept: 'application/json',
+				},
+			});
 
 			// Retrieve the access_token from the response
-			//const { version } = await response.json();
-			channel.setTopic(`Actual Stable Version: V${require('../../package.json').version}, Actual Canary Version: V${require('../../package.json').version}`);
+			const { version } = await response.json();
+			channel.setTopic(`Actual Stable Version: V${require('../../package.json').version}, Actual Canary Version: V${version}`);
 		}
-
-		//const response = await fetch(`http://192.168.1.10:10002/info.json`, {
-		//	method: 'GET',
-		//});
-
-		//console.log(response);
 
 		client
 			.knex('guilds')
