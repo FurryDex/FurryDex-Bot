@@ -171,7 +171,7 @@ module.exports = {
 		} else if (subcommand == 'count') {
 			if (user_cards.length == 0) return interaction.editReply({ content: locales.run['no-furry'][interaction.locale] ?? locales.run['no-furry'].default, ephemeral: true });
 			return interaction.editReply({ content: `The deck got \`%number%\` cards`.replace('%number%', user_cards.length) });
-		} else if (subcommand == 'give!') {
+		} else if (subcommand == 'give') {
 			if (user_cards.length == 0) return interaction.editReply({ content: locales.run['no-furry'][interaction.locale] ?? locales.run['no-furry'].default, ephemeral: true });
 			let giveTo = interaction.options.getUser('give-to');
 			AllOptions = [];
