@@ -8,9 +8,9 @@ module.exports = {
 	name: 'catch',
 	run: async (client, interaction) => {
 		let userData = await client
-			.knex('user_cards')
+			.knex('users')
 			.first('*')
-			.where({ user_id: interaction.user.id })
+			.where({ id: interaction.user.id })
 			.catch((err) => {
 				console.error(err);
 			});
