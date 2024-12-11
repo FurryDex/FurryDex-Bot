@@ -482,6 +482,7 @@ db/
 .json
 DB/*.json
 config.json
+config1.json
 config2.json
 config.js
 
