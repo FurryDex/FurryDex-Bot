@@ -26,10 +26,12 @@ module.exports = {
 				headers: {
 					Accept: 'application/json',
 				},
-			}).then(async (response) => {
-				const { version } = await response.json();
-				channel.setTopic(`Actual Stable Version: V${require('../../package.json').version}, Actual Canary Version: V${version}`);
-			});
+			})
+				.then(async (response) => {
+					const { version } = await response.json();
+					channel.setTopic(`Actual Stable Version: V${require('../../package.json').version}, Actual Canary Version: V${version}`);
+				})
+				.catch((err) => {});
 		}
 
 		client

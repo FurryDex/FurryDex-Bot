@@ -15,7 +15,7 @@ module.exports = {
 				console.error(err);
 			})
 			.then(() => {
-				interaction.reply({ content: '✅ Thank you. Enjoy the bot !' });
+				interaction.reply({ content: '✅ Thank you. Enjoy the bot !', ephemeral: true });
 			});
 	},
 };
