@@ -16,7 +16,9 @@ module.exports = {
 			});
 
 		if (userData.ToS != 1) {
-			let embed = EmbedBuilder().setTitle('Wait, wait, wait !').setDescription(`Sorry, but you need to accept the ToS for continue !\n\nLegal Documents (ToS & Privacy policy): https://flyzar73.github.io/legal/ \nBy clicking on "Accept", you accept the ToS`);
+			let embed = new EmbedBuilder()
+				.setTitle('Wait, wait, wait !')
+				.setDescription(`Sorry, but you need to accept the ToS for continue !\n\nLegal Documents (ToS & Privacy policy): https://flyzar73.github.io/legal/ \nBy clicking on "Accept", you accept the ToS`);
 
 			const buttonRow = new ActionRowBuilder().addComponents(new ButtonBuilder().setCustomId(`accept-tos`).setLabel('Accept').setStyle(ButtonStyle.Primary));
 
