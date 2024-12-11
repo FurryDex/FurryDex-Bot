@@ -165,14 +165,12 @@ module.exports = {
 			allCards.forEach(async (card, key) => {
 				let user_this_cards = await client
 					.knex('user_cards')
-					.first('*')
+					.select('*')
 					.where({ card_id: card.id, user_id: user.id })
 					.catch((err) => {
 						console.error(err);
 					});
-				console.log(user_this_cards);
-				let hasCardorNot = user_this_cards ? false : true;
-				if (hasCardorNot) {
+				if (user_this_cards != []) {
 					havedCards.push({ id: card.id, emoji: card.emoji, number: user_this_cards.length });
 				} else {
 					notHavedCards.push({ id: card.id, emoji: card.emoji });
