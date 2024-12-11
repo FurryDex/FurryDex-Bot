@@ -17,6 +17,15 @@ module.exports = {
 				.insert({ user_id: args[1] })
 				.catch((err) => console.error(err));
 		}
+
+		let card = await client
+			.knex('user_cards')
+			.first('*')
+			.where({ user_id: interaction.user.id, id: args[0] })
+			.catch((err) => console.error(err));
+
+		if (!card) return interaction.reply('You are not the owner of the card');
+
 		let date = new Date();
 		client
 			.knex('user_cards')
