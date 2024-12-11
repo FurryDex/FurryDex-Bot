@@ -170,7 +170,7 @@ module.exports = {
 					.catch((err) => {
 						console.error(err);
 					});
-				let hasCardorNot = user_this_cards[0] ? true : false;
+				let hasCardorNot = user_this_cards == [] ? false : true;
 				if (hasCardorNot) {
 					havedCards.push({ id: card.id, emoji: card.emoji, number: user_this_cards.length });
 				} else {
