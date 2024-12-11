@@ -38,6 +38,26 @@ module.exports = {
 					required: false,
 					type: ApplicationCommandOptionType.User,
 				},
+				{
+					name: 'category',
+					description: 'The category completion',
+					required: false,
+					type: ApplicationCommandOptionType.String,
+					choices: [
+						{ name: 'Normal', value: '1' },
+						{ name: 'Classic', value: '2' },
+						{ name: 'Special', value: '3' },
+						{ name: 'Furry Dex', value: '4' },
+						{ name: 'Furry Dex Special', value: '5' },
+						{ name: 'Director', value: '6' },
+						{ name: 'Tiktok', value: '7' },
+						{ name: 'Instagram', value: '8' },
+						{ name: 'Celebration', value: '9' },
+						{ name: 'Youtube', value: '10' },
+						{ name: 'Twitch', value: '11' },
+						{ name: 'Musicien', value: '12' },
+					],
+				},
 			],
 		},
 		{
@@ -159,6 +179,20 @@ module.exports = {
 				}
 			});
 		} else if (subcommand == 'completion') {
+			let category = interaction.options.getString('category') ?? '';
+			if (category) {
+				allCards = await client
+					.knex('cards')
+					.select('*')
+					.where({ category: category })
+					.catch((err) => {
+						console.error(err);
+					});
+				if (allCards.length == 0) {
+					const embed = new EmbedBuilder().setTitle(`Furry Dex Completion`).setDescription(`There no card in this category`).setColor('#FF9700').setTimestamp();
+					interaction.editReply({ embeds: [embed] });
+				}
+			}
 			let havedCards = [];
 			let notHavedCards = [];
 			let cards = 0;
@@ -228,15 +262,6 @@ module.exports = {
 		}
 	},
 };
-
-async function hasCard(userCards, wantedId) {
-	let yes = false;
-	userCards.forEach((card) => {
-		if (card.card_id == wantedId) yes = true;
-	});
-	if (yes) return true;
-	else return false;
-}
 
 async function sendMenu(options, interaction, id, edit = false, page = 0, chunkSize = 25, customId) {
 	const chunkedOptions = chunkArray(options, chunkSize);
