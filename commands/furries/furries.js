@@ -163,15 +163,16 @@ module.exports = {
 			let notHavedCards = [];
 			let cards = 0;
 			allCards.forEach(async (card, key) => {
-				let hasCardorNot = await client
+				let user_this_cards = await client
 					.knex('user_cards')
 					.first('*')
 					.where({ card_id: card.id, user_id: user.id })
 					.catch((err) => {
 						console.error(err);
 					});
+				let hasCardorNot = user_this_cards[0] ? true : false;
 				if (hasCardorNot) {
-					havedCards.push({ id: card.id, emoji: card.emoji });
+					havedCards.push({ id: card.id, emoji: card.emoji, number: user_this_cards.length });
 				} else {
 					notHavedCards.push({ id: card.id, emoji: card.emoji });
 				}
@@ -180,9 +181,9 @@ module.exports = {
 					const embed = new EmbedBuilder()
 						.setTitle(`Furry Dex Completion`)
 						.setDescription(
-							`Dex of <@${user.id}>\nFurries Dex progression: *${Math.round((havedCards.length / cards) * 100)}%*\n\n__**Owned Furries Cards**__\n${havedCards.map((card) => card.emoji).join(' ')}\n\n__**Missing Furries Cards**__\n${notHavedCards
-								.map((card) => card.emoji)
-								.join(' ')}`
+							`Dex of <@${user.id}>\nFurries Dex progression: *${Math.round((havedCards.length / cards) * 100)}%*\n\n__**Owned Furries Cards**__\n${havedCards
+								.map((card) => `${card.emoji} ${card.number == 1 ? '' : `x ${card.number}`}`)
+								.join(' ')}\n\n__**Missing Furries Cards**__\n${notHavedCards.map((card) => card.emoji).join(' ')}`
 						)
 						.setColor('#FF9700')
 						.setTimestamp();
