@@ -1,4 +1,4 @@
-const { ModalBuilder, TextInputStyle, ActionRowBuilder, TextInputBuilder, EmbedBuilder } = require('discord.js');
+const { ModalBuilder, TextInputStyle, ActionRowBuilder, TextInputBuilder, EmbedBuilder, ButtonBuilder, ButtonStyle } = require('discord.js');
 const locales = require('../../locales/buttons/catch.json');
 const fs = require('fs');
 
