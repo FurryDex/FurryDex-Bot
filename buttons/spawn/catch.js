@@ -22,7 +22,7 @@ module.exports = {
 
 			const buttonRow = new ActionRowBuilder().addComponents(new ButtonBuilder().setCustomId(`accept-tos`).setLabel('Accept').setStyle(ButtonStyle.Primary));
 
-			message.editReply({ embeds: [embed], components: [buttonRow], ephemeral: true });
+			interaction.reply({ embeds: [embed], components: [buttonRow], ephemeral: true });
 
 			return;
 		}
