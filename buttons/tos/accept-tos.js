@@ -8,9 +8,9 @@ module.exports = {
 	name: 'accept-tos',
 	run: async (client, interaction) => {
 		client
-			.knex('user_cards')
+			.knex('users')
 			.update({ ToS: 1 })
-			.where({ user_id: interaction.user.id })
+			.where({ id: interaction.user.id })
 			.catch((err) => {
 				console.error(err);
 			})
