@@ -1,0 +1,16 @@
+{
+	"token": "MTA3MDM5ODYyMzYzODExMDMxOQ.G7QgpY.JKYqq4UvvPvB5WLDJaNgu_Pu0cskf2D7l34Teo",
+	"clientId": "1070398623638110319",
+	"guildId": "1231289498286035054",
+	"connection": {
+		"client": "mysql",
+		"connection": {
+			"host": "192.168.1.10",
+			"port": 3306,
+			"user": "u1_5B2d0JDVP5",
+			"password": "CKKP5qn+=hHYkUPI1cgfiG.=",
+			"database": "s1_FurryDex"
+		}
+	},
+	"api": 10001
+}
