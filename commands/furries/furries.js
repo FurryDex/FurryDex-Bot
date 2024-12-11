@@ -170,7 +170,8 @@ module.exports = {
 					.catch((err) => {
 						console.error(err);
 					});
-				if (user_this_cards != []) {
+				console.log(user_this_cards);
+				if (user_this_cards) {
 					havedCards.push({ id: card.id, emoji: card.emoji, number: user_this_cards.length });
 				} else {
 					notHavedCards.push({ id: card.id, emoji: card.emoji });
