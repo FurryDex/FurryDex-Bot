@@ -171,7 +171,7 @@ module.exports = {
 						console.error(err);
 					});
 				console.log(user_this_cards);
-				if (user_this_cards) {
+				if (user_this_cards.length == 0) {
 					havedCards.push({ id: card.id, emoji: card.emoji, number: user_this_cards.length });
 				} else {
 					notHavedCards.push({ id: card.id, emoji: card.emoji });
