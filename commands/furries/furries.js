@@ -110,6 +110,27 @@ module.exports = {
 				console.error(err);
 			});
 
+		let userData = await client
+			.knex('users')
+			.first('*')
+			.where({ id: interaction.user.id })
+			.catch((err) => {
+				console.error(err);
+			});
+
+		if (userData.ToS != 1) {
+			let embed = new EmbedBuilder()
+				.setTitle('Wait, wait, wait !')
+				.setDescription(`Sorry, but you need to accept the ToS for continue !\n\nLegal Documents (ToS & Privacy policy): https://flyzar73.github.io/legal/ \nBy clicking on "Accept", you accept the ToS`)
+				.setColor('Green');
+
+			const buttonRow = new ActionRowBuilder().addComponents(new ButtonBuilder().setCustomId(`accept-tos`).setLabel('Accept').setStyle(ButtonStyle.Primary));
+
+			interaction.editReply({ embeds: [embed], components: [buttonRow], ephemeral: true });
+
+			return;
+		}
+
 		if (subcommand == 'list') {
 			if (user_cards.length == 0) return interaction.editReply({ content: locales.run['no-furry'][interaction.locale] ?? locales.run['no-furry'].default, ephemeral: true });
 			AllOptions = [];

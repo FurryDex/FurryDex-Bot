@@ -7,6 +7,27 @@ const dbFilePath = './DB/guild_config.json';
 module.exports = {
 	name: 'catch',
 	run: async (client, interaction) => {
+		let userData = await client
+			.knex('users')
+			.first('*')
+			.where({ id: interaction.user.id })
+			.catch((err) => {
+				console.error(err);
+			});
+
+		if (userData.ToS != 1) {
+			let embed = new EmbedBuilder()
+				.setTitle('Wait, wait, wait !')
+				.setDescription(`Sorry, but you need to accept the ToS for continue !\n\nLegal Documents (ToS & Privacy policy): https://flyzar73.github.io/legal/ \nBy clicking on "Accept", you accept the ToS`)
+				.setColor('Green');
+
+			const buttonRow = new ActionRowBuilder().addComponents(new ButtonBuilder().setCustomId(`accept-tos`).setLabel('Accept').setStyle(ButtonStyle.Primary));
+
+			interaction.reply({ embeds: [embed], components: [buttonRow], ephemeral: true });
+
+			return;
+		}
+
 		const modal = new ModalBuilder()
 			.setTitle(locales.models.title[interaction.locale] ?? locales.models.title.default)
 			.setCustomId('catch')
