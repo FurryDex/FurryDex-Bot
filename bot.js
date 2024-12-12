@@ -123,6 +123,19 @@ client.data = client.knex;
 
 client.login(require('./config.json').token);
 
+async () => {
+	fetch('http://192.168.1.10:10004/get/', {
+		method: 'GET',
+		headers: {
+			Accept: 'application/json',
+		},
+	})
+		.then(async (response) => {
+			client.locales = await response.json();
+		})
+		.catch((err) => console.error(err));
+};
+
 // --------- COG & SPAWN ----------
 
 client.on('messageCreate', (message) => {
