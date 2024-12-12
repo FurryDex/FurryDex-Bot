@@ -132,8 +132,13 @@ async () => {
 	})
 		.then(async (response) => {
 			client.locales = await response.json();
+			fs.writeFileSync('./locales.json', JSON.stringify(client.locales));
 		})
-		.catch((err) => console.error(err));
+		.catch((err) => {
+			logger.error(client, 'Locales', err);
+
+			client.locales = fs.readFileSync('./locales.json');
+		});
 };
 
 // --------- COG & SPAWN ----------
