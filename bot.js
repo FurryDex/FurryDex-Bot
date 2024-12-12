@@ -123,7 +123,7 @@ client.data = client.knex;
 
 client.login(require('./config.json').token);
 
-async () => {
+function locales() {
 	console.log(1);
 	fetch('http://192.168.1.10:10004/get/', {
 		method: 'GET',
@@ -141,7 +141,9 @@ async () => {
 			client.locales = fs.readFileSync('./locales.json');
 		});
 	console.log(client.locales);
-};
+}
+
+locales();
 
 // --------- COG & SPAWN ----------
 
