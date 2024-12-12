@@ -489,3 +489,4 @@ config.js
 .vscode/
 
 package-lock.json
+locales.json
