@@ -124,7 +124,6 @@ client.data = client.knex;
 client.login(require('./config.json').token);
 
 function locales() {
-	console.log(1);
 	fetch('http://192.168.1.10:10004/get/', {
 		method: 'GET',
 		headers: {
@@ -134,7 +133,6 @@ function locales() {
 		.then(async (response) => {
 			client.locales = await response.json();
 			fs.writeFileSync('./locales.json', JSON.stringify(client.locales));
-			console.log(client.locales);
 		})
 		.catch((err) => {
 			logger.error(client, 'Locales', err);
