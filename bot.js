@@ -134,13 +134,12 @@ function locales() {
 		.then(async (response) => {
 			client.locales = await response.json();
 			fs.writeFileSync('./locales.json', JSON.stringify(client.locales));
+			console.log(client.locales);
 		})
 		.catch((err) => {
 			logger.error(client, 'Locales', err);
-
 			client.locales = fs.readFileSync('./locales.json');
 		});
-	console.log(client.locales);
 }
 
 locales();
