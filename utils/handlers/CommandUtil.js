@@ -20,6 +20,7 @@ module.exports = async (client) => {
 
 		//try {
 		let locales = client.locales['commands'][cmd.name];
+		console.log(`${cmd.name}: \n${locales}`);
 		cmd.nameLocalizations = locales.name ?? {};
 		cmd.descriptionLocalizations = locales.description ?? {};
 		if (cmd.options && locales.options) {
@@ -32,7 +33,6 @@ module.exports = async (client) => {
 					});
 				}
 				if (option.options && locales.options[option.name].options) {
-					console.log(locales.options[option.name].options);
 					option.options.forEach((suboption, subindex) => {
 						suboption.nameLocalizations = locales.options[option.name].options[suboption.name].name ?? {};
 						suboption.descriptionLocalizations = locales.options[option.name].options[suboption.name].description ?? {};
