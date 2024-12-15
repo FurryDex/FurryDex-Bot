@@ -45,7 +45,7 @@ module.exports = async (client) => {
 				});
 			}
 		} catch (err) {
-			Logger.warn(null, 'TRANSLATION ERROR', err);
+			Logger.warn(null, 'TRANSLATION ERROR', err, client.locales);
 		}
 
 		client.commands.set(cmd.name, cmd);
