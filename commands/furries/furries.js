@@ -128,6 +128,20 @@ module.exports = {
 				console.error(err);
 			});
 
+		if (!userData) {
+			client
+				.knex('users')
+				.insert({ user_id: interaction.user.id })
+				.catch((err) => console.error(err));
+			userData = await client
+				.knex('users')
+				.first('*')
+				.where({ id: interaction.user.id })
+				.catch((err) => {
+					console.error(err);
+				});
+		}
+
 		if (userData.ToS != 1) {
 			let embed = new EmbedBuilder()
 				.setTitle('Wait, wait, wait !')
