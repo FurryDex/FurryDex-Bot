@@ -51,6 +51,8 @@ const manager = new GiveawaysManager(client, {
 
 client.giveawaysManager = manager;
 
+client.locales = {};
+
 function locales() {
 	try {
 		fetch('http://192.168.1.10:10004/get/', {
@@ -73,8 +75,7 @@ function locales() {
 	}
 }
 
-while (!client.locales) {
-	console.log(client.locales);
+while (!client.locales == {}) {
 	locales();
 }
 
