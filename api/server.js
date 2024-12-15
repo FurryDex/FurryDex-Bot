@@ -31,7 +31,7 @@ app.get('/index.js', function (req, res) {
 });
 
 app.get('/info.json', function (req, res) {
-	res.send({ version: require('../package.json').version, status: 'online' });
+	res.send({ version: require('../package.json').version, status: '🟢 Online' });
 });
 
 app.post('/api/token', async (req, res) => {
