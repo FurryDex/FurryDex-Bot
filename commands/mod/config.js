@@ -1,11 +1,7 @@
 const { ApplicationCommandOptionType, StringSelectMenuBuilder, ActionRowBuilder, PermissionFlagsBits } = require('discord.js');
 
-const cardsBDD = require('../../DB/cards.json');
-const cardlistBDD = require('../../DB/cardlist.json');
-const fs = require('fs');
 const locales = require('../../locales/commands/config.json');
 
-const dbFilePath = './DB/guild_config.json';
 module.exports = {
 	name: 'config',
 	description: 'base config command',
