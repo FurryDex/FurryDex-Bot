@@ -53,42 +53,29 @@ client.giveawaysManager = manager;
 
 client.locales = {};
 
-function locales() {
-	try {
-		fetch('http://192.168.1.10:10004/get/', {
-			method: 'GET',
-			headers: {
-				Accept: 'application/json',
-			},
-		})
-			.then(async (response) => {
-				loc = await response.json();
-				client.locales = loc;
-				fs.writeFileSync('./locales.json', JSON.stringify(client.locales));
-			})
-			.catch((err) => {
-				logger.error(client, 'Locales', err);
-				client.locales = fs.readFileSync('./locales.json');
-			});
-	} catch (err) {
-		Logger.error(null, 'Cannot get translation', err);
+async function locales() {
+	const reponse = await fetch('http://192.168.1.10:10004/get/', {
+		method: 'GET',
+		headers: {
+			Accept: 'application/json',
+		},
+	});
+	if (await response) {
+		client.locales = await response.json();
+		fs.writeFileSync('./locales.json', JSON.stringify(client.locales));
+	} else {
+		logger.error(client, 'Locales', err);
+		client.locales = fs.readFileSync('./locales.json');
 	}
+	return;
 }
 
-locales();
-while (client.locales != {} && client.locales.isReady ? (client.locales.isReady.yes ? client.locales.isReady.yes.en_US != 'ready' : false) : false) {
-	setTimeout(() => {
-		let hop = 'hop';
-	}, 1000);
-}
-
-setTimeout(() => {
+locales().then(() => {
 	[('commands', 'buttons', 'selects', 'modals', 'blacklist_guild')].forEach((x) => (client[x] = new Collection()));
 	['CommandUtil', 'EventUtil', 'ButtonUtil', 'ModalUtil', 'SelectMenuUtil'].forEach((handler) => {
 		require(`./utils/handlers/${handler}`)(client);
 	});
-}, 10000);
-
+});
 //
 
 //require("./api/index.js");
@@ -136,6 +123,7 @@ if (!debug) {
 const winston = require('winston');
 const { setTimeout } = require('node:timers/promises');
 const { stringify } = require('node:querystring');
+const { response } = require('express');
 
 const logger = winston.createLogger({
 	level: 'info',
