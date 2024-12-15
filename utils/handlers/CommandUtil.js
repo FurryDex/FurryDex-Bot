@@ -21,6 +21,7 @@ module.exports = async (client) => {
 		if (cmd.fullyTranslated) {
 			try {
 				let locales = client.locales['commands'][cmd.name];
+				console.log(locales);
 				cmd.nameLocalizations = locales.name;
 				cmd.descriptionLocalizations = locales.description;
 				if (cmd.options) {
