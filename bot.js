@@ -52,20 +52,25 @@ const manager = new GiveawaysManager(client, {
 client.giveawaysManager = manager;
 
 function locales() {
-	fetch('http://192.168.1.10:10004/get/', {
-		method: 'GET',
-		headers: {
-			Accept: 'application/json',
-		},
-	})
-		.then(async (response) => {
-			client.locales = await response.json();
-			fs.writeFileSync('./locales.json', JSON.stringify(client.locales));
+	try {
+		fetch('http://192.168.1.10:10004/get/', {
+			method: 'GET',
+			headers: {
+				Accept: 'application/json',
+			},
 		})
-		.catch((err) => {
-			logger.error(client, 'Locales', err);
-			client.locales = fs.readFileSync('./locales.json');
-		});
+			.then(async (response) => {
+				loc = await response.json();
+				client.locales = loc;
+				fs.writeFileSync('./locales.json', JSON.stringify(client.locales));
+			})
+			.catch((err) => {
+				logger.error(client, 'Locales', err);
+				client.locales = fs.readFileSync('./locales.json');
+			});
+	} catch (err) {
+		Logger.error(null, 'Cannot get translation', err);
+	}
 }
 
 while (!client.locales) {
