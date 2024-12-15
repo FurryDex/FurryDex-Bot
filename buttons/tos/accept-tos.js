@@ -1,9 +1,3 @@
-const { ModalBuilder, TextInputStyle, ActionRowBuilder, TextInputBuilder } = require('discord.js');
-const locales = require('../../locales/buttons/catch.json');
-const fs = require('fs');
-
-const dbFilePath = './DB/guild_config.json';
-
 module.exports = {
 	name: 'accept-tos',
 	run: async (client, interaction) => {

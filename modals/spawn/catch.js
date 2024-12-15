@@ -1,9 +1,5 @@
 const locales = require('../../locales/modals/catch.json');
-const fs = require('fs');
 const { ActionRowBuilder, ButtonBuilder } = require('discord.js');
-const dbFilePath = './DB/guild_config.json';
-const cardFilePath = './DB/cards.json';
-const cardlistFilePath = './DB/cardlist.json';
 const uid = function () {
 	return Date.now().toString(36) + Math.random().toString(36).substr(2);
 };
