@@ -33,7 +33,7 @@ const client = new Client({
 const Logger = require('./utils/Logger');
 const debug = false;
 
-if (!config.shard) require('./api/server');
+if (!require('./config.json').shard) require('./api/server');
 //require('./api/server');
 
 const { isXMinutesPassed, win } = require('./utils/functions/spawn');
