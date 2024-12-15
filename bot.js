@@ -81,8 +81,9 @@ while (!client.locales == {} && client.locales.isReady.yes.en_US == 'ready') {
 		let hop = 'hop';
 	}, 1000);
 }
+console.log(client.locales);
 
-['commands', 'buttons', 'selects', 'modals', 'blacklist_guild'].forEach((x) => (client[x] = new Collection()));
+[('commands', 'buttons', 'selects', 'modals', 'blacklist_guild')].forEach((x) => (client[x] = new Collection()));
 ['CommandUtil', 'EventUtil', 'ButtonUtil', 'ModalUtil', 'SelectMenuUtil'].forEach((handler) => {
 	require(`./utils/handlers/${handler}`)(client);
 });
