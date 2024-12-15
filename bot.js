@@ -51,6 +51,25 @@ const manager = new GiveawaysManager(client, {
 
 client.giveawaysManager = manager;
 
+function locales() {
+	fetch('http://192.168.1.10:10004/get/', {
+		method: 'GET',
+		headers: {
+			Accept: 'application/json',
+		},
+	})
+		.then(async (response) => {
+			client.locales = await response.json();
+			fs.writeFileSync('./locales.json', JSON.stringify(client.locales));
+		})
+		.catch((err) => {
+			logger.error(client, 'Locales', err);
+			client.locales = fs.readFileSync('./locales.json');
+		});
+}
+
+locales();
+
 ['commands', 'buttons', 'selects', 'modals', 'blacklist_guild'].forEach((x) => (client[x] = new Collection()));
 ['CommandUtil', 'EventUtil', 'ButtonUtil', 'ModalUtil', 'SelectMenuUtil'].forEach((handler) => {
 	require(`./utils/handlers/${handler}`)(client);
@@ -123,25 +142,6 @@ client.knex = require('knex')(require('./config.json').connection);
 client.data = client.knex;
 
 client.login(require('./config.json').token);
-
-function locales() {
-	fetch('http://192.168.1.10:10004/get/', {
-		method: 'GET',
-		headers: {
-			Accept: 'application/json',
-		},
-	})
-		.then(async (response) => {
-			client.locales = await response.json();
-			fs.writeFileSync('./locales.json', JSON.stringify(client.locales));
-		})
-		.catch((err) => {
-			logger.error(client, 'Locales', err);
-			client.locales = fs.readFileSync('./locales.json');
-		});
-}
-
-locales();
 
 // --------- COG & SPAWN ----------
 
