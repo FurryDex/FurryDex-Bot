@@ -76,7 +76,7 @@ function locales() {
 }
 
 locales();
-while (client.locales != {} && client.locales.isReady.yes.en_US != 'ready') {
+while (client.locales != {} && client.locales.isReady ? (client.locales.isReady.yes ? client.locales.isReady.yes.en_US != 'ready' : false) : false) {
 	setTimeout(() => {
 		let hop = 'hop';
 	}, 1000);
