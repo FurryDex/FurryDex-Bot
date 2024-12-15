@@ -38,7 +38,7 @@ const debug = true;
 const { isXMinutesPassed, win } = require('./utils/functions/spawn');
 const config = require('./config');
 
-[('commands', 'buttons', 'selects', 'modals', 'blacklist_guild')].forEach((x) => (client[x] = new Collection()));
+['commands', 'buttons', 'selects', 'modals'].forEach((x) => (client[x] = new Collection()));
 ['EventUtil', 'ButtonUtil', 'ModalUtil', 'SelectMenuUtil'].forEach((handler) => {
 	require(`./utils/handlers/${handler}`)(client);
 });
