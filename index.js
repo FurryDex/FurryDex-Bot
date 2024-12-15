@@ -8,6 +8,6 @@ try {
 	manager.on('shardCreate', (shard) => require('./utils/Logger').shard(null, `Lancement de la shard #${shard.id}`));
 
 	manager.spawn();
-} catch {
-	return require('./utils/Logger').error(null, 'Error au lancement de shard !');
+} catch (error) {
+	return require('./utils/Logger').error(null, 'Error au lancement de shard !', error);
 }
