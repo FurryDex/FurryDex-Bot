@@ -62,10 +62,10 @@ async function locales() {
 	});
 	if (await response) {
 		client.locales = await response.json();
-		fs.writeFileSync('./locales.json', JSON.stringify(client.locales));
+		await fs.writeFileSync('./locales.json', JSON.stringify(client.locales));
 	} else {
 		logger.error(client, 'Locales', err);
-		client.locales = fs.readFileSync('./locales.json');
+		client.locales = await fs.readFileSync('./locales.json');
 	}
 	return;
 }
