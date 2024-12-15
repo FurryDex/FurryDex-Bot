@@ -33,7 +33,7 @@ const client = new Client({
 const Logger = require('./utils/Logger');
 const debug = false;
 
-require('./api/server');
+//require('./api/server');
 
 const { GiveawaysManager } = require('discord-giveaways');
 const { isXMinutesPassed, win } = require('./utils/functions/spawn');
