@@ -54,7 +54,7 @@ client.giveawaysManager = manager;
 client.locales = {};
 
 async function locales() {
-	const reponse = await fetch('http://192.168.1.10:10004/get/', {
+	const response = await fetch('http://192.168.1.10:10004/get/', {
 		method: 'GET',
 		headers: {
 			Accept: 'application/json',
