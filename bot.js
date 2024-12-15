@@ -68,7 +68,9 @@ function locales() {
 		});
 }
 
-locales();
+do {
+	locales;
+} while (!client.locales);
 
 ['commands', 'buttons', 'selects', 'modals', 'blacklist_guild'].forEach((x) => (client[x] = new Collection()));
 ['CommandUtil', 'EventUtil', 'ButtonUtil', 'ModalUtil', 'SelectMenuUtil'].forEach((handler) => {

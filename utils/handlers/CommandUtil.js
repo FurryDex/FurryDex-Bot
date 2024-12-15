@@ -19,7 +19,6 @@ module.exports = async (client) => {
 		}
 
 		if (cmd.fullyTranslated) {
-			console.log(client.locales);
 			try {
 				let locales = client.locales['commands'][cmd.name];
 				cmd.nameLocalizations = locales.name;
@@ -47,7 +46,7 @@ module.exports = async (client) => {
 					});
 				}
 			} catch (err) {
-				Logger.error(null, 'TRANSLATION ERROR', err);
+				Logger.warn(null, 'TRANSLATION ERROR', err);
 			}
 		}
 
