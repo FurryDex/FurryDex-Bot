@@ -15,7 +15,7 @@ module.exports = {
 		if (!userData) {
 			client
 				.knex('users')
-				.insert({ user_id: interaction.user.id })
+				.insert({ id: interaction.user.id })
 				.catch((err) => console.error(err));
 			userData = await client
 				.knex('users')
