@@ -12,9 +12,7 @@ module.exports = {
 	options: [
 		{
 			name: 'list',
-			nameLocalizations: locales.options[0].name,
 			description: 'List your furries cards.',
-			descriptionLocalizations: locales.options[0].description,
 			type: ApplicationCommandOptionType.Subcommand,
 			options: [
 				{
@@ -27,9 +25,7 @@ module.exports = {
 		},
 		{
 			name: 'completion',
-			nameLocalizations: locales.options[1].name,
 			description: 'Show your current completion of the Furries Dex.',
-			descriptionLocalizations: locales.options[1].description,
 			type: ApplicationCommandOptionType.Subcommand,
 			options: [
 				{
@@ -38,20 +34,36 @@ module.exports = {
 					required: false,
 					type: ApplicationCommandOptionType.User,
 				},
+				{
+					name: 'category',
+					description: 'The category completion',
+					required: false,
+					type: ApplicationCommandOptionType.String,
+					choices: [
+						{ name: 'Normal', value: '1' },
+						{ name: 'Classic', value: '2' },
+						{ name: 'Special', value: '3' },
+						{ name: 'Furry Dex', value: '4' },
+						{ name: 'Furry Dex Special', value: '5' },
+						{ name: 'Director', value: '6' },
+						{ name: 'Tiktok', value: '7' },
+						{ name: 'Instagram', value: '8' },
+						{ name: 'Celebration', value: '9' },
+						{ name: 'Youtube', value: '10' },
+						{ name: 'Twitch', value: '11' },
+						{ name: 'Musicien', value: '12' },
+					],
+				},
 			],
 		},
 		{
 			name: 'last',
-			nameLocalizations: locales.options[2].name,
 			description: 'Display info of your or another users last caught card.',
-			descriptionLocalizations: locales.options[2].description,
 			type: ApplicationCommandOptionType.Subcommand,
 		},
 		{
 			name: 'give',
-			nameLocalizations: locales.options[3].name,
 			description: 'Give a card to a user.',
-			descriptionLocalizations: locales.options[3].description,
 			type: ApplicationCommandOptionType.Subcommand,
 			options: [
 				{
@@ -64,9 +76,7 @@ module.exports = {
 		},
 		{
 			name: 'count',
-			nameLocalizations: locales.options[4].name,
 			description: 'Count how many card you have.',
-			descriptionLocalizations: locales.options[4].description,
 			type: ApplicationCommandOptionType.Subcommand,
 			options: [
 				{
@@ -79,16 +89,16 @@ module.exports = {
 		},
 		{
 			name: 'info',
-			nameLocalizations: locales.options[5].name,
+			//nameLocalizations: locales.options[5].name,
 			description: 'Display info from a specific card.',
-			descriptionLocalizations: locales.options[5].description,
+			//descriptionLocalizations: locales.options[5].description,
 			type: ApplicationCommandOptionType.Subcommand,
 		},
 		{
 			name: 'favorite',
-			nameLocalizations: locales.options[6].name,
+			//nameLocalizations: locales.options[6].name,
 			description: 'Set a card to favorite.',
-			descriptionLocalizations: locales.options[6].description,
+			//descriptionLocalizations: locales.options[6].description,
 			type: ApplicationCommandOptionType.Subcommand,
 		},
 	],
@@ -159,19 +169,33 @@ module.exports = {
 				}
 			});
 		} else if (subcommand == 'completion') {
+			let category = interaction.options.getString('category') ?? '';
+			if (category) {
+				allCards = await client
+					.knex('cards')
+					.select('*')
+					.where({ category: category })
+					.catch((err) => {
+						console.error(err);
+					});
+				if (allCards.length == 0) {
+					const embed = new EmbedBuilder().setTitle(`Furry Dex Completion`).setDescription(`There no card in this category`).setColor('#FF9700').setTimestamp();
+					interaction.editReply({ embeds: [embed] });
+				}
+			}
 			let havedCards = [];
 			let notHavedCards = [];
 			let cards = 0;
 			allCards.forEach(async (card, key) => {
-				let hasCardorNot = await client
+				let user_this_cards = await client
 					.knex('user_cards')
-					.first('*')
+					.select('*')
 					.where({ card_id: card.id, user_id: user.id })
 					.catch((err) => {
 						console.error(err);
 					});
-				if (hasCardorNot) {
-					havedCards.push({ id: card.id, emoji: card.emoji });
+				if (user_this_cards.length != 0) {
+					havedCards.push({ id: card.id, emoji: card.emoji, number: user_this_cards.length });
 				} else {
 					notHavedCards.push({ id: card.id, emoji: card.emoji });
 				}
@@ -180,9 +204,9 @@ module.exports = {
 					const embed = new EmbedBuilder()
 						.setTitle(`Furry Dex Completion`)
 						.setDescription(
-							`Dex of <@${user.id}>\nFurries Dex progression: *${Math.round((havedCards.length / cards) * 100)}%*\n\n__**Owned Furries Cards**__\n${havedCards.map((card) => card.emoji).join(' ')}\n\n__**Missing Furries Cards**__\n${notHavedCards
-								.map((card) => card.emoji)
-								.join(' ')}`
+							`Dex of <@${user.id}>\nFurries Dex progression: *${Math.round((havedCards.length / cards) * 100)}%*\n\n__**Owned Furries Cards**__\n${havedCards
+								.map((card) => `${card.emoji} ${card.number == 1 ? '' : `x ${card.number}`}`)
+								.join(' ')}\n\n__**Missing Furries Cards**__\n${notHavedCards.map((card) => card.emoji).join(' ')}`
 						)
 						.setColor('#FF9700')
 						.setTimestamp();
@@ -228,15 +252,6 @@ module.exports = {
 		}
 	},
 };
-
-async function hasCard(userCards, wantedId) {
-	let yes = false;
-	userCards.forEach((card) => {
-		if (card.card_id == wantedId) yes = true;
-	});
-	if (yes) return true;
-	else return false;
-}
 
 async function sendMenu(options, interaction, id, edit = false, page = 0, chunkSize = 25, customId) {
 	const chunkedOptions = chunkArray(options, chunkSize);

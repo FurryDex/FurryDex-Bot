@@ -7,7 +7,7 @@ const locales = require('../../locales/commands/config.json');
 
 const dbFilePath = './DB/guild_config.json';
 module.exports = {
-	name: 'setup',
+	name: 'config',
 	description: 'base config command',
 	permissions: PermissionFlagsBits.Administrator,
 	category: 'admin',
@@ -147,13 +147,24 @@ module.exports = {
 		const subcommand = interaction.options.getSubcommand();
 
 		await interaction.deferReply();
+		let serverConfig = await client
+			.knex('guilds')
+			.first('*')
+			.where({ id: interaction.guild.id })
+			.catch((err) => console.error(err));
 
-		if (subcommand == 'enable') {
-			let serverConfig = await client
+		if (!serverConfig) {
+			await client.knex('guilds').insert({
+				id: interaction.guild.id,
+			});
+			serverConfig = await client
 				.knex('guilds')
 				.first('*')
 				.where({ id: interaction.guild.id })
 				.catch((err) => console.error(err));
+		}
+
+		if (subcommand == 'enable') {
 			let guild = await client.guilds.cache.get(interaction.guild.id);
 			let channel = await guild.channels.cache.get(serverConfig.spawn_channel);
 			if (!channel) {

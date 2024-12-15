@@ -18,34 +18,35 @@ module.exports = async (client) => {
 			cmd.default_member_permissions = cmd.permissions;
 		}
 
-		if (cmd.fullyTranslated) {
-			try {
-				let locales = require(`../../locales/commands/${cmd.name}.json`);
-				cmd.nameLocalizations = locales.name;
-				cmd.descriptionLocalizations = locales.description;
-				if (cmd.options) {
-					cmd.options.forEach((option, index) => {
-						option.nameLocalizations = locales.options[index].name;
-						option.descriptionLocalizations = locales.options[index].description;
-						if (option.choices) {
-							suboption.choices.forEach((optionchoices, indexchoices) => {
-								optionchoices.nameLocalizations = locales.options[index].choices[indexchoices].name;
-							});
-						}
-						if (option.options) {
-							option.options.forEach((suboption, subindex) => {
-								suboption.nameLocalizations = locales.options[index].options[subindex].name;
-								suboption.descriptionLocalizations = locales.options[index].options[subindex].description;
-								if (option.choices) {
-									suboption.choices.forEach((suboptionchoices, subindexchoices) => {
-										suboptionchoices.nameLocalizations = locales.options[index].options[subindex].choices[subindexchoices].name;
-									});
-								}
-							});
-						}
-					});
-				}
-			} catch {}
+		try {
+			let locales = client.locales['commands'][cmd.name];
+			cmd.nameLocalizations = locales.name ?? {};
+			cmd.descriptionLocalizations = locales.description ?? {};
+			if (cmd.options && locales.options) {
+				cmd.options.forEach((option, index) => {
+					option.nameLocalizations = locales.options[option.name].name ?? {};
+					option.descriptionLocalizations = locales.options[option.name].description ?? {};
+					if (option.choices && locales.options[option.name].choices) {
+						suboption.choices.forEach((optionchoices, indexchoices) => {
+							optionchoices.nameLocalizations = locales.options[option.name].choices[optionchoices.name].name ?? {};
+						});
+					}
+					if (option.options && locales.options[option.name].options) {
+						option.options.forEach((suboption, subindex) => {
+							suboption.nameLocalizations = locales.options[option.name].options[suboption.name].name ?? {};
+							suboption.descriptionLocalizations = locales.options[option.name].options[suboption.name].description ?? {};
+							if (suboption.choices && locales.options[option.name].options[suboption.name].choices) {
+								suboption.choices.forEach((suboptionchoices, subindexchoices) => {
+									suboptionchoices.nameLocalizations = locales.options[option.name].options[suboption.name].choices[suboptionchoices.name].name ?? {};
+								});
+							}
+						});
+					}
+				});
+			}
+		} catch (err) {
+			Logger.warn(null, 'TRANSLATION ERROR on ' + cmd.name);
+			console.error(err);
 		}
 
 		client.commands.set(cmd.name, cmd);

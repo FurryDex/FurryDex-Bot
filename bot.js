@@ -1,6 +1,7 @@
-const { Client, Collection, Partials, Status, REST, Routes, GatewayIntentBits } = require('discord.js');
+const { Client, Collection, Partials, GatewayIntentBits } = require('discord.js');
 const fs = require('fs');
 const dotenv = require('dotenv');
+const process = require('node:process');
 dotenv.config();
 const client = new Client({
 	intents: [
@@ -30,29 +31,35 @@ const client = new Client({
 	partials: [Partials.User, Partials.Channel, Partials.GuildMember, Partials.Message, Partials.Reaction, Partials.GuildScheduledEvent, Partials.ThreadMember],
 });
 const Logger = require('./utils/Logger');
-const debug = true;
+const debug = false;
 
-require('./api/server');
+if (!config.shard) require('./api/server');
+//require('./api/server');
 
-const { GiveawaysManager } = require('discord-giveaways');
 const { isXMinutesPassed, win } = require('./utils/functions/spawn');
-const mysql = require('mysql');
 const config = require('./config');
-const manager = new GiveawaysManager(client, {
-	storage: './giveaways.json',
-	default: {
-		botsCanWin: false,
-		embedColor: '#00BDFF',
-		embedColorEnd: '#01004D',
-		reaction: '🎉',
-	},
+
+['commands', 'buttons', 'selects', 'modals'].forEach((x) => (client[x] = new Collection()));
+['EventUtil', 'ButtonUtil', 'ModalUtil', 'SelectMenuUtil'].forEach((handler) => {
+	require(`./utils/handlers/${handler}`)(client);
 });
 
-client.giveawaysManager = manager;
+client.locales = {};
 
-['commands', 'buttons', 'selects', 'modals', 'blacklist_guild'].forEach((x) => (client[x] = new Collection()));
-['CommandUtil', 'EventUtil', 'ButtonUtil', 'ModalUtil', 'SelectMenuUtil'].forEach((handler) => {
-	require(`./utils/handlers/${handler}`)(client);
+async function locales() {
+	const response = await fetch('http://192.168.1.10:10004/get/');
+	if (await response) {
+		client.locales = await response.json();
+		await fs.writeFileSync('./locales.json', JSON.stringify(client.locales));
+	} else {
+		logger.error(client, 'Locales', err);
+		client.locales = await fs.readFileSync('./locales.json');
+	}
+	return;
+}
+
+locales().then(() => {
+	require(`./utils/handlers/CommandUtil.js`)(client);
 });
 //
 
@@ -63,10 +70,10 @@ if (!debug) {
 		Logger.error(client, `Bot stopped with code: ${code}`);
 	});
 	process.on('uncaughtException', (err, origin) => {
-		Logger.error(client, `${'uncaughtException'.toUpperCase()}: ${err}\nOrigin: ${origin}`);
+		Logger.error(client, `${'uncaughtException'.toUpperCase()}: ${err}\nOrigin: ${String(origin)}`);
 	});
 	process.on('unhandledRejection', (reason, promise) => {
-		Logger.error(client, `${'unhandledRejection'.toUpperCase()}: ${reason}\n${promise}`);
+		Logger.error(client, `${'unhandledRejection'.toUpperCase()}: ${reason}\n${String(promise)}`);
 	});
 	process.on('warning', (...args) => Logger.warn(...args));
 	client.rest.on('rateLimited', (rateLimited) => {

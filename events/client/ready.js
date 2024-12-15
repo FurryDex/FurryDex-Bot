@@ -12,7 +12,16 @@ module.exports = {
 	async execute(client) {
 		Logger.client(client, 'Je suis prêt !');
 
-		client.application.commands.set(client.commands.map((cmd) => cmd));
+		client.application.commands.set(client.commands.map((cmd) => cmd)).catch((err) => {
+			if (err) {
+				Logger.warn(client, 'Le nombre de commandes envoyé est superieur au SpeedLimit de Discord', err);
+			}
+		});
+
+		//if (client.user.id == config.bot.Canary) {
+		//	let guild = await client.guilds.cache.get(config.server.ID);
+		//	guild.comands.set(client.commands.map((cmd) => cmd)).catch((err) => Logger.warn('Le nombre de commandes envoyé est superieur au SpeedLimit de Discord'));
+		//}
 
 		client.user.setPresence({
 			activities: [{ name: activity }],
