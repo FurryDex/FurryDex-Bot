@@ -75,8 +75,11 @@ function locales() {
 	}
 }
 
-while (!client.locales == {}) {
-	locales();
+locales();
+while (!client.locales == {} && client.locales.isReady.yes.en_US == 'ready') {
+	setTimeout(() => {
+		let hop = 'hop';
+	}, 1000);
 }
 
 ['commands', 'buttons', 'selects', 'modals', 'blacklist_guild'].forEach((x) => (client[x] = new Collection()));
@@ -128,6 +131,7 @@ if (!debug) {
 }
 
 const winston = require('winston');
+const { setTimeout } = require('node:timers/promises');
 
 const logger = winston.createLogger({
 	level: 'info',
