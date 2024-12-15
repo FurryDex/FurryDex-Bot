@@ -3,7 +3,7 @@ const dotenv = require('dotenv');
 dotenv.config();
 
 try {
-	const manager = new ShardingManager('./bot.js', { token: require('config.json').token });
+	const manager = new ShardingManager('./bot.js', { token: require('./config.json').token });
 
 	manager.on('shardCreate', (shard) => require('./utils/Logger').shard(null, `Lancement de la shard #${shard.id}`));
 
