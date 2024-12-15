@@ -20,7 +20,7 @@ module.exports = async (client) => {
 
 		//try {
 		let locales = client.locales['commands'][cmd.name];
-		console.log(`${cmd.name}: \n${locales}`);
+		console.log(`${cmd.name}: \n${JSON.stringify(locales)}`);
 		cmd.nameLocalizations = locales.name ?? {};
 		cmd.descriptionLocalizations = locales.description ?? {};
 		if (cmd.options && locales.options) {
