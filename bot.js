@@ -1,4 +1,4 @@
-const { Client, Collection, Partials, Status, REST, Routes, GatewayIntentBits } = require('discord.js');
+const { Client, Collection, Partials, GatewayIntentBits } = require('discord.js');
 const fs = require('fs');
 const dotenv = require('dotenv');
 const process = require('node:process');
@@ -35,25 +35,12 @@ const debug = true;
 
 //require('./api/server');
 
-const { GiveawaysManager } = require('discord-giveaways');
 const { isXMinutesPassed, win } = require('./utils/functions/spawn');
-const mysql = require('mysql');
 const config = require('./config');
-const manager = new GiveawaysManager(client, {
-	storage: './giveaways.json',
-	default: {
-		botsCanWin: false,
-		embedColor: '#00BDFF',
-		embedColorEnd: '#01004D',
-		reaction: '🎉',
-	},
-});
-
-client.giveawaysManager = manager;
-
-client.locales = {};
 
 [('commands', 'buttons', 'selects', 'modals', 'blacklist_guild')].forEach((x) => (client[x] = new Collection()));
+
+client.locales = {};
 
 async function locales() {
 	const response = await fetch('http://192.168.1.10:10004/get/');
@@ -117,9 +104,6 @@ if (!debug) {
 }
 
 const winston = require('winston');
-const { setTimeout } = require('node:timers/promises');
-const { stringify } = require('node:querystring');
-const { response } = require('express');
 
 const logger = winston.createLogger({
 	level: 'info',
