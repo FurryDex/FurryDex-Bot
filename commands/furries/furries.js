@@ -12,9 +12,7 @@ module.exports = {
 	options: [
 		{
 			name: 'list',
-			nameLocalizations: locales.options[0].name,
 			description: 'List your furries cards.',
-			descriptionLocalizations: locales.options[0].description,
 			type: ApplicationCommandOptionType.Subcommand,
 			options: [
 				{
@@ -27,9 +25,7 @@ module.exports = {
 		},
 		{
 			name: 'completion',
-			nameLocalizations: locales.options[1].name,
 			description: 'Show your current completion of the Furries Dex.',
-			descriptionLocalizations: locales.options[1].description,
 			type: ApplicationCommandOptionType.Subcommand,
 			options: [
 				{
@@ -62,16 +58,12 @@ module.exports = {
 		},
 		{
 			name: 'last',
-			nameLocalizations: locales.options[2].name,
 			description: 'Display info of your or another users last caught card.',
-			descriptionLocalizations: locales.options[2].description,
 			type: ApplicationCommandOptionType.Subcommand,
 		},
 		{
 			name: 'give',
-			nameLocalizations: locales.options[3].name,
 			description: 'Give a card to a user.',
-			descriptionLocalizations: locales.options[3].description,
 			type: ApplicationCommandOptionType.Subcommand,
 			options: [
 				{
@@ -84,9 +76,7 @@ module.exports = {
 		},
 		{
 			name: 'count',
-			nameLocalizations: locales.options[4].name,
 			description: 'Count how many card you have.',
-			descriptionLocalizations: locales.options[4].description,
 			type: ApplicationCommandOptionType.Subcommand,
 			options: [
 				{
@@ -99,16 +89,16 @@ module.exports = {
 		},
 		{
 			name: 'info',
-			nameLocalizations: locales.options[5].name,
+			//nameLocalizations: locales.options[5].name,
 			description: 'Display info from a specific card.',
-			descriptionLocalizations: locales.options[5].description,
+			//descriptionLocalizations: locales.options[5].description,
 			type: ApplicationCommandOptionType.Subcommand,
 		},
 		{
 			name: 'favorite',
-			nameLocalizations: locales.options[6].name,
+			//nameLocalizations: locales.options[6].name,
 			description: 'Set a card to favorite.',
-			descriptionLocalizations: locales.options[6].description,
+			//descriptionLocalizations: locales.options[6].description,
 			type: ApplicationCommandOptionType.Subcommand,
 		},
 	],
