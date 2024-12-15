@@ -96,10 +96,10 @@ if (!debug) {
 		Logger.error(client, `Bot stopped with code: ${code}`);
 	});
 	process.on('uncaughtException', (err, origin) => {
-		Logger.error(client, `${'uncaughtException'.toUpperCase()}: ${err}\nOrigin: ${origin}`);
+		Logger.error(client, `${'uncaughtException'.toUpperCase()}: ${err}\nOrigin: ${String(origin)}`);
 	});
 	process.on('unhandledRejection', (reason, promise) => {
-		Logger.error(client, `${'unhandledRejection'.toUpperCase()}: ${reason}\n${promise}`);
+		Logger.error(client, `${'unhandledRejection'.toUpperCase()}: ${reason}\n${String(promise)}`);
 	});
 	process.on('warning', (...args) => Logger.warn(...args));
 	client.rest.on('rateLimited', (rateLimited) => {
@@ -133,6 +133,7 @@ if (!debug) {
 
 const winston = require('winston');
 const { setTimeout } = require('node:timers/promises');
+const { stringify } = require('node:querystring');
 
 const logger = winston.createLogger({
 	level: 'info',
