@@ -18,37 +18,36 @@ module.exports = async (client) => {
 			cmd.default_member_permissions = cmd.permissions;
 		}
 
-		//try {
-		let locales = client.locales['commands'][cmd.name];
-		console.log(`${cmd.name}: \n${JSON.stringify(locales)}`);
-		cmd.nameLocalizations = locales.name ?? {};
-		cmd.descriptionLocalizations = locales.description ?? {};
-		if (cmd.options && locales.options) {
-			cmd.options.forEach((option, index) => {
-				option.nameLocalizations = locales.options[option.name].name ?? {};
-				option.descriptionLocalizations = locales.options[option.name].description ?? {};
-				if (option.choices && locales.options[option.name].choices) {
-					suboption.choices.forEach((optionchoices, indexchoices) => {
-						optionchoices.nameLocalizations = locales.options[option.name].choices[optionchoices.name].name ?? {};
-					});
-				}
-				if (option.options && locales.options[option.name].options) {
-					option.options.forEach((suboption, subindex) => {
-						suboption.nameLocalizations = locales.options[option.name].options[suboption.name].name ?? {};
-						suboption.descriptionLocalizations = locales.options[option.name].options[suboption.name].description ?? {};
-						if (suboption.choices && locales.options[option.name].options[suboption.name].choices) {
-							suboption.choices.forEach((suboptionchoices, subindexchoices) => {
-								suboptionchoices.nameLocalizations = locales.options[option.name].options[suboption.name].choices[suboptionchoices.name].name ?? {};
-							});
-						}
-					});
-				}
-			});
+		try {
+			let locales = client.locales['commands'][cmd.name];
+			cmd.nameLocalizations = locales.name ?? {};
+			cmd.descriptionLocalizations = locales.description ?? {};
+			if (cmd.options && locales.options) {
+				cmd.options.forEach((option, index) => {
+					option.nameLocalizations = locales.options[option.name].name ?? {};
+					option.descriptionLocalizations = locales.options[option.name].description ?? {};
+					if (option.choices && locales.options[option.name].choices) {
+						suboption.choices.forEach((optionchoices, indexchoices) => {
+							optionchoices.nameLocalizations = locales.options[option.name].choices[optionchoices.name].name ?? {};
+						});
+					}
+					if (option.options && locales.options[option.name].options) {
+						option.options.forEach((suboption, subindex) => {
+							suboption.nameLocalizations = locales.options[option.name].options[suboption.name].name ?? {};
+							suboption.descriptionLocalizations = locales.options[option.name].options[suboption.name].description ?? {};
+							if (suboption.choices && locales.options[option.name].options[suboption.name].choices) {
+								suboption.choices.forEach((suboptionchoices, subindexchoices) => {
+									suboptionchoices.nameLocalizations = locales.options[option.name].options[suboption.name].choices[suboptionchoices.name].name ?? {};
+								});
+							}
+						});
+					}
+				});
+			}
+		} catch (err) {
+			Logger.warn(null, 'TRANSLATION ERROR on ' + cmd.name);
+			console.error(err);
 		}
-		//} catch (err) {
-		//	Logger.warn(null, 'TRANSLATION ERROR');
-		//	console.error(err);
-		//}
 
 		client.commands.set(cmd.name, cmd);
 		Logger.command(null, `Chargé: ${cmd.name}`);
