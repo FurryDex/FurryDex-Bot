@@ -69,7 +69,7 @@ function locales() {
 }
 
 do {
-	locales;
+	locales();
 } while (!client.locales);
 
 ['commands', 'buttons', 'selects', 'modals', 'blacklist_guild'].forEach((x) => (client[x] = new Collection()));
