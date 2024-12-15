@@ -53,6 +53,8 @@ client.giveawaysManager = manager;
 
 client.locales = {};
 
+[('commands', 'buttons', 'selects', 'modals', 'blacklist_guild')].forEach((x) => (client[x] = new Collection()));
+
 async function locales() {
 	const response = await fetch('http://192.168.1.10:10004/get/');
 	if (await response) {
@@ -66,7 +68,6 @@ async function locales() {
 }
 
 locales().then(() => {
-	[('commands', 'buttons', 'selects', 'modals', 'blacklist_guild')].forEach((x) => (client[x] = new Collection()));
 	['CommandUtil', 'EventUtil', 'ButtonUtil', 'ModalUtil', 'SelectMenuUtil'].forEach((handler) => {
 		require(`./utils/handlers/${handler}`)(client);
 	});
