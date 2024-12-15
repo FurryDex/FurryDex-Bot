@@ -1,6 +1,7 @@
 const { Client, Collection, Partials, Status, REST, Routes, GatewayIntentBits } = require('discord.js');
 const fs = require('fs');
 const dotenv = require('dotenv');
+const process = require('node:process');
 dotenv.config();
 const client = new Client({
 	intents: [
@@ -30,7 +31,7 @@ const client = new Client({
 	partials: [Partials.User, Partials.Channel, Partials.GuildMember, Partials.Message, Partials.Reaction, Partials.GuildScheduledEvent, Partials.ThreadMember],
 });
 const Logger = require('./utils/Logger');
-const debug = true;
+const debug = false;
 
 require('./api/server');
 
