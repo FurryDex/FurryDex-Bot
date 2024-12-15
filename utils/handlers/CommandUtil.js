@@ -22,20 +22,20 @@ module.exports = async (client) => {
 			let locales = client.locales['commands'][cmd.name];
 			cmd.nameLocalizations = locales.name ?? {};
 			cmd.descriptionLocalizations = locales.description ?? {};
-			if (cmd.options) {
+			if (cmd.options && locales.options) {
 				cmd.options.forEach((option, index) => {
 					option.nameLocalizations = locales.options[option.name].name ?? {};
 					option.descriptionLocalizations = locales.options[option.name].description ?? {};
-					if (option.choices) {
+					if (option.choices && locales.options[option.name].choices) {
 						suboption.choices.forEach((optionchoices, indexchoices) => {
 							optionchoices.nameLocalizations = locales.options[option.name].choices[optionchoices.name].name ?? {};
 						});
 					}
-					if (option.options) {
+					if (option.options && locales.options[option.name].options) {
 						option.options.forEach((suboption, subindex) => {
 							suboption.nameLocalizations = locales.options[option.name].options[suboption.name].name ?? {};
 							suboption.descriptionLocalizations = locales.options[option.name].options[suboption.name].description ?? {};
-							if (option.choices) {
+							if (suboption.choices && locales.options[option.name].options[suboption.name].choices) {
 								suboption.choices.forEach((suboptionchoices, subindexchoices) => {
 									suboptionchoices.nameLocalizations = locales.options[option.name].options[suboption.name].choices[suboptionchoices.name].name ?? {};
 								});
