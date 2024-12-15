@@ -32,6 +32,7 @@ module.exports = async (client) => {
 					});
 				}
 				if (option.options && locales.options[option.name].options) {
+					console.log(locales.options[option.name].options);
 					option.options.forEach((suboption, subindex) => {
 						suboption.nameLocalizations = locales.options[option.name].options[suboption.name].name ?? {};
 						suboption.descriptionLocalizations = locales.options[option.name].options[suboption.name].description ?? {};
