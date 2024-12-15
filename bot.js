@@ -69,7 +69,7 @@ function locales() {
 }
 
 while (!client.locales) {
-	console.log(locales);
+	console.log(client.locales);
 	locales();
 }
 
