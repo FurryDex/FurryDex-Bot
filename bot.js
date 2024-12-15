@@ -39,6 +39,9 @@ const { isXMinutesPassed, win } = require('./utils/functions/spawn');
 const config = require('./config');
 
 [('commands', 'buttons', 'selects', 'modals', 'blacklist_guild')].forEach((x) => (client[x] = new Collection()));
+['EventUtil', 'ButtonUtil', 'ModalUtil', 'SelectMenuUtil'].forEach((handler) => {
+	require(`./utils/handlers/${handler}`)(client);
+});
 
 client.locales = {};
 
@@ -55,9 +58,7 @@ async function locales() {
 }
 
 locales().then(() => {
-	['CommandUtil', 'EventUtil', 'ButtonUtil', 'ModalUtil', 'SelectMenuUtil'].forEach((handler) => {
-		require(`./utils/handlers/${handler}`)(client);
-	});
+	require(`./utils/handlers/CommandUtil.js`)(client);
 });
 //
 
