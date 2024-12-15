@@ -31,7 +31,7 @@ const client = new Client({
 	partials: [Partials.User, Partials.Channel, Partials.GuildMember, Partials.Message, Partials.Reaction, Partials.GuildScheduledEvent, Partials.ThreadMember],
 });
 const Logger = require('./utils/Logger');
-const debug = false;
+const debug = true;
 
 if (!require('./config.json').shard) require('./api/server');
 //require('./api/server');
