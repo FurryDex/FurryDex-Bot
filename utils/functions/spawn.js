@@ -174,13 +174,14 @@ async function win(client, message) {
 			.where({ id: message.guild.id })
 			.catch((err) => console.error(err));
 
+		let is_nsfw = false;
 		if (card.album) {
 			let response = await fetch(`https://api.imgur.com/3/album/${card.album}`, {
 				headers: { Authorization: `Bearer ${require('../../config.json').imgur.accesToken}` },
 			});
 			let album = await response.json();
+			is_nsfw = album.data.nsfw;
 		}
-		let is_nsfw = album.data.nsfw;
 
 		setTimeout(() => {
 			if (config.server.enable_log) {
