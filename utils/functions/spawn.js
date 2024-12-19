@@ -174,6 +174,14 @@ async function win(client, message) {
 			.where({ id: message.guild.id })
 			.catch((err) => console.error(err));
 
+		if (card.album) {
+			let response = await fetch(`https://api.imgur.com/3/album/${card.album}`, {
+				headers: { Authorization: `Bearer ${require('../../config.json').imgur.accesToken}` },
+			});
+			let album = await response.json();
+		}
+		let is_nsfw = album.data.nsfw;
+
 		setTimeout(() => {
 			if (config.server.enable_log) {
 				require('./DiscordLogger').writeServer(client, guild.id, {
@@ -194,8 +202,9 @@ async function win(client, message) {
 			);
 			let title = locales.embed.title[serverConfig.locale] ?? locales.embed.title.default;
 			const embed = new EmbedBuilder().setTitle(title).setColor(require('../colors.json').find((color) => (color.name = 'RED')).hex);
+			if (is_nsfw) embed.setDescription('<:Warning:1319349638154682641> Mature card (16+) <:Warning:1319349638154682641>');
 			if (!channel) return;
-			channel.send({ embeds: [embed], components: [button], files: [{ attachment: card.image, name: 'CHEATER.PNG' }] }).then(async (message) => {
+			channel.send({ embeds: [embed], components: [button], files: [{ attachment: card.image, name: is_nsfw ? 'SPOILER_CHEATER.png' : 'CHEATER.png' }] }).then(async (message) => {
 				let channel = await guild.channels.cache.get(message.channelId);
 				setTimeout(async () => {
 					let msg = await channel.messages.fetch(message.id);

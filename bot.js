@@ -131,13 +131,6 @@ client.data = client.knex;
 
 client.login(require('./config.json').token);
 
-client.imgur = new ImgurClient({
-	clientId: require('./config.json').imgur.clientId,
-	clientSecret: require('./config.json').imgur.clientSecret,
-});
-
-//async () => console.log(await client.imgur.getAlbum('XtMnA'));
-
 // --------- COG & SPAWN ----------
 
 client.on('messageCreate', (message) => {
