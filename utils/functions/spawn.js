@@ -202,10 +202,13 @@ async function win(client, message) {
 					.setStyle(ButtonStyle.Danger)
 			);
 			let title = locales.embed.title[serverConfig.locale] ?? locales.embed.title.default;
-			const embed = new EmbedBuilder().setTitle(title).setColor(require('../colors.json').find((color) => (color.name = 'RED')).hex);
-			if (is_nsfw) embed.setDescription('<:Warning:1319349638154682641> Mature card (16+) <:Warning:1319349638154682641>');
+			const embed = new EmbedBuilder()
+				.setTitle(title)
+				.setColor(require('../colors.json').find((color) => (color.name = 'RED')).hex)
+				.setImage(card.image);
+			if (is_nsfw) embed.setDescription('<:Warning:1319349638154682641> Mature content');
 			if (!channel) return;
-			channel.send({ embeds: [embed], components: [button], files: [{ attachment: card.image, name: is_nsfw ? 'SPOILER_CHEATER.png' : 'CHEATER.png' }] }).then(async (message) => {
+			channel.send({ embeds: [embed], components: [button] }).then(async (message) => {
 				let channel = await guild.channels.cache.get(message.channelId);
 				setTimeout(async () => {
 					let msg = await channel.messages.fetch(message.id);
