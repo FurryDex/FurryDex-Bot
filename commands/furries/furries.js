@@ -188,7 +188,7 @@ module.exports = {
 				allCards = await client
 					.knex('cards')
 					.select('*')
-					.where({ category: category })
+					.where({ category })
 					.catch((err) => {
 						console.error(err);
 					});

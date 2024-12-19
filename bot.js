@@ -1,4 +1,5 @@
 const { Client, Collection, Partials, GatewayIntentBits } = require('discord.js');
+const { ImgurClient } = require('imgur');
 const fs = require('fs');
 const dotenv = require('dotenv');
 const process = require('node:process');
@@ -129,6 +130,13 @@ client.knex = require('knex')(require('./config.json').connection);
 client.data = client.knex;
 
 client.login(require('./config.json').token);
+
+client.imgur = new ImgurClient({
+	clientId: require('./config.json').imgur.clientId,
+	clientSecret: require('./config.json').imgur.clientSecret,
+});
+
+console.log(await client.imgur.getAlbum('XtMnA'));
 
 // --------- COG & SPAWN ----------
 

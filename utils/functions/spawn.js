@@ -193,12 +193,9 @@ async function win(client, message) {
 					.setStyle(ButtonStyle.Danger)
 			);
 			let title = locales.embed.title[serverConfig.locale] ?? locales.embed.title.default;
-			const embed = new EmbedBuilder()
-				.setTitle(title)
-				.setImage(card.image)
-				.setColor(require('../colors.json').find((color) => (color.name = 'RED')).hex);
+			const embed = new EmbedBuilder().setTitle(title).setColor(require('../colors.json').find((color) => (color.name = 'RED')).hex);
 			if (!channel) return;
-			channel.send({ embeds: [embed], components: [button] }).then(async (message) => {
+			channel.send({ embeds: [embed], components: [button], files: [{ attachment: card.image, name: 'CHEATER.PNG' }] }).then(async (message) => {
 				let channel = await guild.channels.cache.get(message.channelId);
 				setTimeout(async () => {
 					let msg = await channel.messages.fetch(message.id);
