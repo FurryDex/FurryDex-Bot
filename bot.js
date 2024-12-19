@@ -1,5 +1,4 @@
 const { Client, Collection, Partials, GatewayIntentBits } = require('discord.js');
-const { ImgurClient } = require('imgur');
 const fs = require('fs');
 const dotenv = require('dotenv');
 const process = require('node:process');
