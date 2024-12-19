@@ -136,7 +136,7 @@ client.imgur = new ImgurClient({
 	clientSecret: require('./config.json').imgur.clientSecret,
 });
 
-async () => console.log(await client.imgur.getAlbum('XtMnA'));
+//async () => console.log(await client.imgur.getAlbum('XtMnA'));
 
 // --------- COG & SPAWN ----------
 
