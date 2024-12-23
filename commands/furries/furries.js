@@ -257,7 +257,7 @@ module.exports = {
 						.replace('%date%', `${cd(date.getDate())}/${cd(date.getMonth())}/${cd(date.getFullYear())} ${cd(date.getHours())}H${cd(date.getMinutes())}`),
 				});
 				if (user_cards.length == key + 1) {
-					sendMenu(AllOptions, interaction, user.id, false, 0, 25, 'giveTo');
+					sendMenu(AllOptions, interaction, user.id, false, 0, 25, 'giveTo', true);
 				}
 			});
 		} else {
@@ -269,7 +269,7 @@ module.exports = {
 	},
 };
 
-async function sendMenu(options, interaction, id, edit = false, page = 0, chunkSize = 25, customId) {
+async function sendMenu(options, interaction, id, edit = false, page = 0, chunkSize = 25, customId, ephemeral = false) {
 	const chunkedOptions = chunkArray(options, chunkSize);
 	const currentOptions = chunkedOptions[page];
 
@@ -294,9 +294,9 @@ async function sendMenu(options, interaction, id, edit = false, page = 0, chunkS
 	);
 
 	if (!edit) {
-		await interaction.editReply({ content: 'Please select a card:', components: [row, buttonRow] });
+		await interaction.editReply({ content: 'Please select a card:', components: [row, buttonRow], ephemeral });
 	} else {
-		await interaction.update({ components: [row, buttonRow] });
+		await interaction.update({ components: [row, buttonRow], ephemeral });
 	}
 }
 
