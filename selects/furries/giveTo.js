@@ -55,6 +55,13 @@ module.exports = {
 			content: 'Give',
 		});
 
-		interaction.reply(`card \`#${args[0]}\` from <@${interaction.user.id}> to <@${args[1]}> was give succefully`);
+		let message = '%cardEmoji% `%cardName%` (`#%cardId%`)';
+		interaction.reply(
+			`card ${message
+				.replace('%cardEmoji%', card.emoji)
+				.replace('%cardName%', card.name)
+				.replace('%cardId%', `${uuid}, ${live < 0 ? live : `+${live}`}%/${attacks < 0 ? attacks : `+${attacks}`}%`)
+				.replace('%@player%', `<@${interaction.user.id}>`)} from <@${interaction.user.id}> to <@${args[1]}> was give succefully`
+		);
 	},
 };

@@ -215,16 +215,18 @@ module.exports = {
 				}
 				cards++;
 				if (allCards.length == key + 1) {
-					const embed = new EmbedBuilder()
-						.setTitle(`Furry Dex Completion`)
-						.setDescription(
-							`Dex of <@${user.id}>\nFurries Dex progression: *${Math.round((havedCards.length / cards) * 100)}%*\n\n__**Owned Furries Cards**__\n${havedCards
-								.map((card) => `${card.emoji} ${card.number == 1 ? '' : `x ${card.number}`}`)
-								.join(' ')}\n\n__**Missing Furries Cards**__\n${notHavedCards.map((card) => card.emoji).join(' ')}`
-						)
-						.setColor('#FF9700')
-						.setTimestamp();
-					interaction.editReply({ embeds: [embed] });
+					setTimeout(() => {
+						const embed = new EmbedBuilder()
+							.setTitle(`Furry Dex Completion`)
+							.setDescription(
+								`Dex of <@${user.id}>\nFurries Dex progression: *${Math.round((havedCards.length / cards) * 100)}%*\n\n__**Owned Furries Cards**__\n${havedCards
+									.map((card) => `${card.emoji} ${card.number == 1 ? '' : `x ${card.number}`}`)
+									.join(' ')}\n\n__**Missing Furries Cards**__\n${notHavedCards.map((card) => card.emoji).join(' ')}`
+							)
+							.setColor('#FF9700')
+							.setTimestamp();
+						interaction.editReply({ embeds: [embed] });
+					}, 1500);
 				}
 			});
 		} else if (subcommand == 'count') {
