@@ -55,12 +55,18 @@ module.exports = {
 			content: 'Give',
 		});
 
+		let cardO = await client
+			.knex('cards')
+			.first('*')
+			.where({ id: card.card_id })
+			.catch((err) => console.error(err));
+
 		let message = '%cardEmoji% `%cardName%` (`#%cardId%`)';
 		interaction.reply(
 			`card ${message
-				.replace('%cardEmoji%', card.emoji)
-				.replace('%cardName%', card.name)
-				.replace('%cardId%', `${uuid}, ${live < 0 ? live : `+${live}`}%/${attacks < 0 ? attacks : `+${attacks}`}%`)
+				.replace('%cardEmoji%', cardO.emoji)
+				.replace('%cardName%', cardO.name)
+				.replace('%cardId%', `${card.id}, ${card.live < 0 ? card.live : `+${card.live}`}%/${card.attacks < 0 ? card.attacks : `+${card.attacks}`}%`)
 				.replace('%@player%', `<@${interaction.user.id}>`)} from <@${interaction.user.id}> to <@${args[1]}> was give succefully`
 		);
 	},
