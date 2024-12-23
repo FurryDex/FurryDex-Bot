@@ -296,7 +296,7 @@ async function sendMenu(options, interaction, id, edit = false, page = 0, chunkS
 	if (!edit) {
 		await interaction.editReply({ content: 'Please select a card:', components: [row, buttonRow], ephemeral });
 	} else {
-		await interaction.update({ components: [row, buttonRow], ephemeral });
+		await interaction.update({ components: [row, buttonRow] });
 	}
 }
 
