@@ -490,3 +490,5 @@ config2.json
 
 package-lock.json
 locales.json
+
+*.test.*

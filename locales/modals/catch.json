@@ -8,7 +8,7 @@
 		"fr": "Désolé, %@player%, cette carte à déja été attrapé"
 	},
 	"congrat": {
-		"default": "Congratulations, %@player%, you caught `%cardName%` (`#%cardId%`)",
-		"fr": "Félicitations, %@player%, tu as attrapé `%cardName%` (`#%cardId%`)"
+		"default": "Congratulations, %@player%, you caught %cardEmoji% `%cardName%` (`#%cardId%`)",
+		"fr": "Félicitations, %@player%, tu as attrapé %cardEmoji% `%cardName%` (`#%cardId%`)"
 	}
 }

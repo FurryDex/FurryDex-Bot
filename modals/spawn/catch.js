@@ -55,6 +55,7 @@ module.exports = {
 			let message = locales.congrat[serverConfig.locale] ?? locales.congrat.default;
 			interaction.reply(
 				message
+					.replace('%cardEmoji%', card.emoji)
 					.replace('%cardName%', card.name)
 					.replace('%cardId%', `${uuid}, ${live < 0 ? live : `+${live}`}%/${attacks < 0 ? attacks : `+${attacks}`}%`)
 					.replace('%@player%', `<@${interaction.user.id}>`)

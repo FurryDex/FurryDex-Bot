@@ -174,6 +174,15 @@ async function win(client, message) {
 			.where({ id: message.guild.id })
 			.catch((err) => console.error(err));
 
+		let is_nsfw = false;
+		if (card.album) {
+			let response = await fetch(`https://api.imgur.com/3/album/${card.album}`, {
+				headers: { Authorization: `Bearer ${require('../../config.json').imgur.accesToken}` },
+			});
+			let album = await response.json();
+			is_nsfw = album.data.nsfw;
+		}
+
 		setTimeout(() => {
 			if (config.server.enable_log) {
 				require('./DiscordLogger').writeServer(client, guild.id, {
@@ -195,8 +204,9 @@ async function win(client, message) {
 			let title = locales.embed.title[serverConfig.locale] ?? locales.embed.title.default;
 			const embed = new EmbedBuilder()
 				.setTitle(title)
-				.setImage(card.image)
-				.setColor(require('../colors.json').find((color) => (color.name = 'RED')).hex);
+				.setColor(require('../colors.json').find((color) => (color.name = 'RED')).hex)
+				.setImage(card.image);
+			if (is_nsfw) embed.setDescription('<:Warning:1319349638154682641> Mature content');
 			if (!channel) return;
 			channel.send({ embeds: [embed], components: [button] }).then(async (message) => {
 				let channel = await guild.channels.cache.get(message.channelId);

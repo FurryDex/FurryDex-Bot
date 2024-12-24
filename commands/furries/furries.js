@@ -49,9 +49,9 @@ module.exports = {
 						{ name: 'Tiktok', value: '7' },
 						{ name: 'Instagram', value: '8' },
 						{ name: 'Celebration', value: '9' },
-						{ name: 'Youtube', value: '10' },
+						{ name: 'Youtuber', value: '10' },
 						{ name: 'Twitch', value: '11' },
-						{ name: 'Musicien', value: '12' },
+						{ name: 'Musician', value: '12' },
 					],
 				},
 			],
@@ -188,7 +188,7 @@ module.exports = {
 				allCards = await client
 					.knex('cards')
 					.select('*')
-					.where({ category: category })
+					.where({ category })
 					.catch((err) => {
 						console.error(err);
 					});
@@ -215,16 +215,18 @@ module.exports = {
 				}
 				cards++;
 				if (allCards.length == key + 1) {
-					const embed = new EmbedBuilder()
-						.setTitle(`Furry Dex Completion`)
-						.setDescription(
-							`Dex of <@${user.id}>\nFurries Dex progression: *${Math.round((havedCards.length / cards) * 100)}%*\n\n__**Owned Furries Cards**__\n${havedCards
-								.map((card) => `${card.emoji} ${card.number == 1 ? '' : `x ${card.number}`}`)
-								.join(' ')}\n\n__**Missing Furries Cards**__\n${notHavedCards.map((card) => card.emoji).join(' ')}`
-						)
-						.setColor('#FF9700')
-						.setTimestamp();
-					interaction.editReply({ embeds: [embed] });
+					setTimeout(() => {
+						const embed = new EmbedBuilder()
+							.setTitle(`Furry Dex Completion`)
+							.setDescription(
+								`Dex of <@${user.id}>\nFurries Dex progression: *${Math.round((havedCards.length / cards) * 100)}%*\n\n__**Owned Furries Cards**__\n${havedCards
+									.map((card) => `${card.emoji} ${card.number == 1 ? '' : `x ${card.number}`}`)
+									.join(' ')}\n\n__**Missing Furries Cards**__\n${notHavedCards.map((card) => card.emoji).join(' ')}`
+							)
+							.setColor('#FF9700')
+							.setTimestamp();
+						interaction.editReply({ embeds: [embed] });
+					}, 1500);
 				}
 			});
 		} else if (subcommand == 'count') {
@@ -255,7 +257,7 @@ module.exports = {
 						.replace('%date%', `${cd(date.getDate())}/${cd(date.getMonth())}/${cd(date.getFullYear())} ${cd(date.getHours())}H${cd(date.getMinutes())}`),
 				});
 				if (user_cards.length == key + 1) {
-					sendMenu(AllOptions, interaction, user.id, false, 0, 25, 'giveTo');
+					sendMenu(AllOptions, interaction, user.id, false, 0, 25, 'giveTo', true);
 				}
 			});
 		} else {
@@ -267,7 +269,7 @@ module.exports = {
 	},
 };
 
-async function sendMenu(options, interaction, id, edit = false, page = 0, chunkSize = 25, customId) {
+async function sendMenu(options, interaction, id, edit = false, page = 0, chunkSize = 25, customId, ephemeral = false) {
 	const chunkedOptions = chunkArray(options, chunkSize);
 	const currentOptions = chunkedOptions[page];
 
@@ -292,7 +294,7 @@ async function sendMenu(options, interaction, id, edit = false, page = 0, chunkS
 	);
 
 	if (!edit) {
-		await interaction.editReply({ content: 'Please select a card:', components: [row, buttonRow] });
+		await interaction.editReply({ content: 'Please select a card:', components: [row, buttonRow], ephemeral });
 	} else {
 		await interaction.update({ components: [row, buttonRow] });
 	}
