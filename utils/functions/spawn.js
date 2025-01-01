@@ -175,6 +175,7 @@ async function win(client, message) {
 			.catch((err) => console.error(err));
 
 		let is_nsfw = false;
+		let is_event = false;
 		if (card.album) {
 			let response = await fetch(`https://api.imgur.com/3/album/${card.album}`, {
 				headers: { Authorization: `Bearer ${require('../../config.json').imgur.accesToken}` },
@@ -182,6 +183,9 @@ async function win(client, message) {
 			let album = await response.json();
 			is_nsfw = album.data.nsfw;
 		}
+
+		if (card.nsfw) is_nsfw = true;
+		if (card.event) is_event = true;
 
 		setTimeout(() => {
 			if (config.server.enable_log) {
@@ -206,7 +210,8 @@ async function win(client, message) {
 				.setTitle(title)
 				.setColor(require('../colors.json').find((color) => (color.name = 'RED')).hex)
 				.setImage(card.image);
-			if (is_nsfw) embed.setDescription('<:Warning:1319349638154682641> Mature content');
+			if (is_event) embed.setDescription('<:Warning_Blue:1323986781670080623> Event Card');
+			else if (is_nsfw) embed.setDescription('<:Warning:1319349638154682641> Mature content');
 			if (!channel) return;
 			channel.send({ embeds: [embed], components: [button] }).then(async (message) => {
 				let channel = await guild.channels.cache.get(message.channelId);
