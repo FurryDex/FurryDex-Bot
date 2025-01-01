@@ -33,12 +33,11 @@ async function cardEmbed(client, cardId, locale) {
 	let temp_type = data_type.name;
 	let type = temp_type.charAt(0).toUpperCase() + temp_type.slice(1);
 
-	let color =
-		require('../colors.json').find((color) => color.name == data_type.color ?? originalCardF.color)?.hex ??
-		function () {
-			console.log(`Color error on card ${originalCardF.id}`);
-			return '#000';
-		};
+	let color = require('../colors.json').find((color) => color.name == data_type.color ?? originalCardF.color)?.hex ?? '#000';
+
+	if (color == '#000') {
+		console.log('Color Error at card ' + card.card_id);
+	}
 
 	let date = new Date(cardF.date);
 	let description = locales.embed.description[locale] ?? locales.embed.description.default;
