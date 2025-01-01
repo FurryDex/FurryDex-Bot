@@ -34,7 +34,7 @@ async function cardEmbed(client, cardId, locale) {
 	let type = temp_type.charAt(0).toUpperCase() + temp_type.slice(1);
 
 	let color =
-		require('../colors.json').find((color) => color.name == data_type.color ?? originalCardF.color).hex ??
+		require('../colors.json').find((color) => color.name == data_type.color ?? originalCardF.color)?.hex ??
 		function () {
 			console.log(`Color error on card ${originalCardF.id}`);
 			return '#000';
