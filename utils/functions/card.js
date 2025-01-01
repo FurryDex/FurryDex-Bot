@@ -33,12 +33,11 @@ async function cardEmbed(client, cardId, locale) {
 	let temp_type = data_type.name;
 	let type = temp_type.charAt(0).toUpperCase() + temp_type.slice(1);
 
-	let color =
-		require('../colors.json').find((color) => color.name == data_type.color ?? originalCardF.color).hex ??
-		function () {
-			console.log(`Color error on card ${originalCardF.id}`);
-			return '#000';
-		};
+	let color = require('../colors.json').find((color) => color.name == (data_type.color ?? originalCardF.color))?.hex ?? '#000000';
+
+	if (color == '#000000') {
+		console.log('Color Error at card ' + cardF.card_id);
+	}
 
 	let date = new Date(cardF.date);
 	let description = locales.embed.description[locale] ?? locales.embed.description.default;
@@ -49,12 +48,12 @@ async function cardEmbed(client, cardId, locale) {
 		.replace('%id%', cardF.id)
 		.replace('%emoji_3%', '🪪')
 		.replace('%name%', originalCardF.name)
-		.replace('%emoji_4%', '🔧')
-		.replace('%type%', type)
-		.replace('%emoji_5%', '🐺')
-		.replace('%species%', formatArrayToText(species))
-		.replace('%emoji_6%', '📅')
+		.replace('%emoji_4%', '📅')
 		.replace('%time%', `${time(date, TimestampStyles.LongDateTime)} (${time(date, TimestampStyles.RelativeTime)})`)
+		.replace('%emoji_5%', '🔧')
+		.replace('%type%', type)
+		.replace('%emoji_6%', '🐺')
+		.replace('%species%', formatArrayToText(species))
 		.replace('%emoji_7%', '❤️')
 		.replace('%live%', cardF.live < 0 ? originalCardF.live - (originalCardF.live * cardF.live.replace('-', '')) / 100 : originalCardF.live + (originalCardF.live * cardF.live) / 100) //cardF.live < 0 ? originalCardF.live-(originalCardF.live*cardF.live/100) : originalCardF.live+(originalCardF.live*cardF.live/100)
 		.replace('%live_2%', cardF.live)
