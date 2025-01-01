@@ -35,6 +35,7 @@ async function cardEmbed(client, cardId, locale) {
 
 	console.log(data_type.color);
 	console.log(originalCardF.color);
+	console.log(require('../colors.json').find((color) => color.name == data_type.color ?? originalCardF.color));
 
 	let color = require('../colors.json').find((color) => color.name == data_type.color ?? originalCardF.color)?.hex ?? '#000000';
 
