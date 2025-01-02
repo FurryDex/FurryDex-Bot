@@ -1,4 +1,3 @@
-const locales = require('../../locales/modals/catch.json');
 const { ActionRowBuilder, ButtonBuilder } = require('discord.js');
 const uid = function () {
 	return Date.now().toString(36) + Math.random().toString(36).substr(2);
@@ -7,6 +6,7 @@ module.exports = {
 	name: 'catch',
 	async run(client, interaction) {
 		const guess = interaction.fields.getTextInputValue('guess').toLowerCase();
+		const locales = client.locales.modals.catch;
 		let serverConfig = await client
 			.knex('guilds')
 			.first('*')

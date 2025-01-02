@@ -1,8 +1,6 @@
 const { EmbedBuilder, ButtonStyle, ActionRowBuilder, ButtonBuilder } = require('discord.js');
 const config = require('../../config');
 const Logger = require('../Logger.js');
-const locales = require('../../locales/utils/function/spawn.json');
-const { startTimer } = require('winston');
 
 async function isXMinutesPassed(message, client) {
 	try {
@@ -113,6 +111,7 @@ async function isXMinutesPassed(message, client) {
 }
 
 async function win(client, message) {
+	const locales = client.locales.utils.function.spawn;
 	let serverConfig = await client
 		.knex('guilds')
 		.first('*')
@@ -210,8 +209,8 @@ async function win(client, message) {
 				.setTitle(title)
 				.setColor(require('../colors.json').find((color) => (color.name = 'RED')).hex)
 				.setImage(card.image);
-			if (is_event) embed.setDescription('<:Warning_Blue:1323986781670080623> Event Card');
-			else if (is_nsfw) embed.setDescription('<:Warning:1319349638154682641> Mature content');
+			if (is_event) embed.setDescription('###<:Warning_Blue:1323986781670080623> Event Card');
+			else if (is_nsfw) embed.setDescription('##<:Warning:1319349638154682641> Mature content');
 			if (!channel) return;
 			channel.send({ embeds: [embed], components: [button] }).then(async (message) => {
 				let channel = await guild.channels.cache.get(message.channelId);

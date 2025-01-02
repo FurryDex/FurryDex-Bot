@@ -1,7 +1,5 @@
 const { ApplicationCommandOptionType, StringSelectMenuBuilder, ActionRowBuilder, PermissionFlagsBits } = require('discord.js');
 
-const locales = require('../../locales/commands/config.json');
-
 module.exports = {
 	name: 'config',
 	description: 'base config command',
@@ -143,6 +141,7 @@ module.exports = {
 		const subcommand = interaction.options.getSubcommand();
 
 		await interaction.deferReply();
+		const locales = client.locales.commands.config;
 		let serverConfig = await client
 			.knex('guilds')
 			.first('*')

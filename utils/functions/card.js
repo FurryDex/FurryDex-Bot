@@ -1,7 +1,7 @@
 const { EmbedBuilder, time, TimestampStyles } = require('discord.js');
-const locales = require('../../locales/utils/function/cards.json');
 
 async function cardEmbed(client, cardId, locale) {
+	const locales = client.locales.utils.funciton.cards;
 	let cardF = {};
 	let originalCardF = {};
 	await card(client, cardId).then((card) => {
@@ -74,7 +74,7 @@ async function cardEmbed(client, cardId, locale) {
 	}
 	let embed = new EmbedBuilder()
 		.setColor(color)
-		.setTitle(`${originalCardF.name}`)
+		.setTitle(`${originalCardF.emoji} ${originalCardF.name}`)
 		.setDescription(description)
 		//%emoji_1%, <:atlanta_crown:598174064183607317> | %author%, originalCardF.author | %emoji_2%, <:atlanta_id:598162717232332811> | %id%, cardF.id | %emoji_3%, 🪪
 		//%name%`, originalCardF.name | %emoji_4%, 📅 | %time%, ${time(date, TimestampStyles.LongDateTime)} (${time(date, TimestampStyles.RelativeTime)}) | %emoji_5%, ❤️

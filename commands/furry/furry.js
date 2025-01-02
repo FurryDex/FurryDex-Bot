@@ -1,23 +1,22 @@
 const { ApplicationCommandOptionType, StringSelectMenuBuilder, ActionRowBuilder, EmbedBuilder, ButtonBuilder, ButtonStyle } = require('discord.js');
 const fs = require('fs');
-const locales = require('../../locales/commands/furries.json');
 
 module.exports = {
-	name: 'furries',
+	name: 'furry',
 	description: 'base furry command',
-	category: 'furries',
+	category: 'furry',
 	fullyTranslated: true,
 	permissions: null,
 	run: (client, message, args) => {},
 	options: [
 		{
 			name: 'list',
-			description: 'List your furries cards.',
+			description: 'Send a deck of all your/user card.',
 			type: ApplicationCommandOptionType.Subcommand,
 			options: [
 				{
 					name: 'user',
-					description: "The user who you wan't to see card",
+					description: 'The user you want to see all cards.',
 					required: false,
 					type: ApplicationCommandOptionType.User,
 				},
@@ -25,18 +24,18 @@ module.exports = {
 		},
 		{
 			name: 'completion',
-			description: 'Show your current completion of the Furries Dex.',
+			description: 'Show your current completion/progress of Furry Cards.',
 			type: ApplicationCommandOptionType.Subcommand,
 			options: [
 				{
 					name: 'user',
-					description: "The user who you wan't to see completion",
+					description: 'The user you want to see their progress.',
 					required: false,
 					type: ApplicationCommandOptionType.User,
 				},
 				{
 					name: 'category',
-					description: 'The category completion',
+					description: 'Get a completion from a specific category of card.',
 					required: false,
 					type: ApplicationCommandOptionType.String,
 					choices: [
@@ -56,11 +55,11 @@ module.exports = {
 				},
 			],
 		},
-		{
-			name: 'last',
-			description: 'Display info of your or another users last caught card.',
-			type: ApplicationCommandOptionType.Subcommand,
-		},
+		//{
+		//	name: 'last',
+		//	description: 'Display info of your or another users last caught card.',
+		//	type: ApplicationCommandOptionType.Subcommand,
+		//},
 		{
 			name: 'give',
 			description: 'Give a card to a user.',
@@ -68,7 +67,7 @@ module.exports = {
 			options: [
 				{
 					name: 'give-to',
-					description: "The user who you wan't to give a card",
+					description: 'The user you want to give a card to.',
 					required: true,
 					type: ApplicationCommandOptionType.User,
 				},
@@ -81,29 +80,30 @@ module.exports = {
 			options: [
 				{
 					name: 'user',
-					description: "The user who you wan't to know the number of card",
+					description: 'The user you want to count cards.',
 					required: false,
 					type: ApplicationCommandOptionType.User,
 				},
 			],
 		},
-		{
-			name: 'info',
-			//nameLocalizations: locales.options[5].name,
-			description: 'Display info from a specific card.',
-			//descriptionLocalizations: locales.options[5].description,
-			type: ApplicationCommandOptionType.Subcommand,
-		},
-		{
-			name: 'favorite',
-			//nameLocalizations: locales.options[6].name,
-			description: 'Set a card to favorite.',
-			//descriptionLocalizations: locales.options[6].description,
-			type: ApplicationCommandOptionType.Subcommand,
-		},
+		//{
+		//	name: 'info',
+		//	//nameLocalizations: locales.options[5].name,
+		//	description: 'Display info from a specific card.',
+		//	//descriptionLocalizations: locales.options[5].description,
+		//	type: ApplicationCommandOptionType.Subcommand,
+		//},
+		//{
+		//	name: 'favorite',
+		//	//nameLocalizations: locales.options[6].name,
+		//	description: 'Set a card to favorite.',
+		//	//descriptionLocalizations: locales.options[6].description,
+		//	type: ApplicationCommandOptionType.Subcommand,
+		//},
 	],
 	runSlash: async (client, interaction) => {
 		await interaction.deferReply();
+		const locales = client.locales.commands.furries;
 		const subcommand = interaction.options.getSubcommand();
 		let user = interaction.options.getUser('user') ?? interaction.user;
 		let user_cards = await client
