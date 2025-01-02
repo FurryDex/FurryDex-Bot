@@ -1,7 +1,7 @@
 const { EmbedBuilder, time, TimestampStyles } = require('discord.js');
-const locales = require('../../locales/utils/function/cards.json');
 
 async function cardEmbed(client, cardId, locale) {
+	const locales = client.locales.utils.funciton.cards;
 	let cardF = {};
 	let originalCardF = {};
 	await card(client, cardId).then((card) => {

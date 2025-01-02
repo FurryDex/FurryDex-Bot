@@ -28,7 +28,7 @@ module.exports = async (client) => {
 					option.descriptionLocalizations = locales.options[option.name].description ?? {};
 					if (option.choices && locales.options[option.name].choices) {
 						suboption.choices.forEach((optionchoices, indexchoices) => {
-							optionchoices.nameLocalizations = locales.options[option.name].choices[optionchoices.name].name ?? {};
+							optionchoices.nameLocalizations = locales.options[option.name].choices[optionchoices.name] ?? {};
 						});
 					}
 					if (option.options && locales.options[option.name].options) {
@@ -37,7 +37,7 @@ module.exports = async (client) => {
 							suboption.descriptionLocalizations = locales.options[option.name].options[suboption.name].description ?? {};
 							if (suboption.choices && locales.options[option.name].options[suboption.name].choices) {
 								suboption.choices.forEach((suboptionchoices, subindexchoices) => {
-									suboptionchoices.nameLocalizations = locales.options[option.name].options[suboption.name].choices[suboptionchoices.name].name ?? {};
+									suboptionchoices.nameLocalizations = locales.options[option.name].options[suboption.name].choices[suboptionchoices.name] ?? {};
 								});
 							}
 						});

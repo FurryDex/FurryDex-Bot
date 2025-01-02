@@ -1,9 +1,9 @@
 const { ModalBuilder, TextInputStyle, ActionRowBuilder, TextInputBuilder, EmbedBuilder, ButtonBuilder, ButtonStyle } = require('discord.js');
-const locales = require('../../locales/buttons/catch.json');
 
 module.exports = {
 	name: 'catch',
 	run: async (client, interaction) => {
+		const locales = client.locales.buttons.spawn;
 		let userData = await client
 			.knex('users')
 			.first('*')
@@ -40,14 +40,14 @@ module.exports = {
 		}
 
 		const modal = new ModalBuilder()
-			.setTitle(locales.models.title[interaction.locale] ?? locales.models.title.default)
+			.setTitle(locales.modal.title[interaction.locale] ?? locales.modal.title.default)
 			.setCustomId('catch')
 			.setComponents(
 				new ActionRowBuilder().addComponents(
 					new TextInputBuilder()
 						.setCustomId('guess')
-						.setLabel(locales.models.question[interaction.locale] ?? locales.models.question.default)
-						.setPlaceholder(locales.models.placeholder[interaction.locale] ?? locales.models.placeholder.default)
+						.setLabel(locales.modal.question[interaction.locale] ?? locales.modal.question.default)
+						.setPlaceholder(locales.modal.placeholder[interaction.locale] ?? locales.modal.placeholder.default)
 						.setRequired(true)
 						.setStyle(TextInputStyle.Short)
 				)

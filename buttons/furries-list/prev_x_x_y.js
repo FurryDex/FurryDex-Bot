@@ -1,10 +1,9 @@
-const { StringSelectMenuBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle, StringSelectMenuOptionBuilder } = require('discord.js');
-const fs = require('fs');
-const locales = require('../../locales/commands/furries.json');
+const { StringSelectMenuBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle } = require('discord.js');
 
 module.exports = {
 	name: 'prev_x_x_y',
 	run: async (client, interaction) => {
+		const locales = client.locales.commands.furries;
 		let user = interaction.options.getUser('user') ?? interaction.user;
 		let user_cards = await client
 			.knex('user_cards')
