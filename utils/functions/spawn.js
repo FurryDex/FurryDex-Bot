@@ -252,10 +252,12 @@ async function win(client, message) {
         .setImage(card.image);
       if (is_event)
         embed.setDescription(
-          "###<:Warning_Blue:1324412874344632341> Event Card"
+          "### <:Warning_Blue:1324412874344632341> Event Card"
         );
       else if (is_nsfw)
-        embed.setDescription("##<:Warning:1324412876185796689> Mature content");
+        embed.setDescription(
+          "## <:Warning:1324412876185796689> Mature content"
+        );
       if (!channel) return;
       channel
         .send({ embeds: [embed], components: [button] })
