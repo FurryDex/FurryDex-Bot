@@ -24,8 +24,8 @@ module.exports = async (client) => {
 			cmd.descriptionLocalizations = locales.description ?? {};
 			if (cmd.options && locales.options) {
 				cmd.options.forEach((option, index) => {
-					option.nameLocalizations = locales.options[option.name].name ?? {};
-					option.descriptionLocalizations = locales.options[option.name].description ?? {};
+					option.nameLocalizations = locales.options[option.name]?.name ?? {};
+					option.descriptionLocalizations = locales.options[option.name]?.description ?? {};
 					if (option.choices && locales.options[option.name].choices) {
 						suboption.choices.forEach((optionchoices, indexchoices) => {
 							optionchoices.nameLocalizations = locales.options[option.name].choices[optionchoices.name] ?? {};
@@ -33,8 +33,8 @@ module.exports = async (client) => {
 					}
 					if (option.options && locales.options[option.name].options) {
 						option.options.forEach((suboption, subindex) => {
-							suboption.nameLocalizations = locales.options[option.name].options[suboption.name].name ?? {};
-							suboption.descriptionLocalizations = locales.options[option.name].options[suboption.name].description ?? {};
+							suboption.nameLocalizations = locales.options[option.name].options[suboption.name]?.name ?? {};
+							suboption.descriptionLocalizations = locales.options[option.name].options[suboption.name]?.description ?? {};
 							if (suboption.choices && locales.options[option.name].options[suboption.name].choices) {
 								suboption.choices.forEach((suboptionchoices, subindexchoices) => {
 									suboptionchoices.nameLocalizations = locales.options[option.name].options[suboption.name].choices[suboptionchoices.name] ?? {};
