@@ -3,7 +3,7 @@ const { ModalBuilder, TextInputStyle, ActionRowBuilder, TextInputBuilder, EmbedB
 module.exports = {
 	name: 'catch',
 	run: async (client, interaction) => {
-		const locales = client.locales.buttons.spawn;
+		const locales = client.locales.buttons.catch;
 		let userData = await client
 			.knex('users')
 			.first('*')
