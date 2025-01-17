@@ -33,11 +33,18 @@ const client = new Client({
 const Logger = require('./utils/Logger');
 const debug = false;
 
-if (!require('./config.json').shard) require('./api/server');
+let config;
+
+try {
+	client.config = yaml.load(fs.readFileSync('./config/config.yaml', 'utf8'));
+} catch (e) {
+	return console.error('Config file does not exist !', e);
+}
+
+if (config.bot.shard && config.bot.api.enable) require('./api/server');
 //require('./api/server');
 
 const { isXMinutesPassed, win } = require('./utils/functions/spawn');
-const config = require('./config');
 
 ['commands', 'buttons', 'selects', 'modals'].forEach((x) => (client[x] = new Collection()));
 ['EventUtil', 'ButtonUtil', 'ModalUtil', 'SelectMenuUtil'].forEach((handler) => {
@@ -124,19 +131,18 @@ logger.add(
 	})
 );
 
-client.knex = require('knex')(require('./config.json').connection);
+client.knex = require('knex')(client.config.database);
 
 client.data = client.knex;
 
-client.login(require('./config.json').token);
+client.login(client.config.bot.token);
 
 // --------- COG & SPAWN ----------
 
 client.on('messageCreate', (message) => {
-	if (client.user.id == config.bot.Canary) {
-		if (message.guild.members.cache.get(config.bot.Stable)) return;
-	}
+	if (config.disable.bot.includes(message.guild.members.cache.get(client.user.id)?.id ?? '.')) return;
 	if (message.author.bot) return;
+
 	isXMinutesPassed(message, client);
 });
 

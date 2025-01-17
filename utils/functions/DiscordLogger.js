@@ -5,6 +5,7 @@ let knex_channel, type;
 const categoryList = { other: '1284433127095140444', player: '1302640066866446347', server: '1284433198629126198' };
 
 async function write(client, destination, embed) {
+	if (!client.config.log.enable) return;
 	let color = require('../colors.json').find((x) => x.name == embed.color.toUpperCase());
 
 	let logEmbed = new EmbedBuilder()
@@ -20,6 +21,7 @@ async function write(client, destination, embed) {
 }
 
 async function writePlayer(client, playerId, embed) {
+	if (!client.config.log.enable) return;
 	playerId = playerId.toString();
 	if (client.user.id == config.bot.Stable) {
 		knex_channel = 'log_channel';
@@ -114,6 +116,7 @@ async function writePlayer(client, playerId, embed) {
 }
 
 async function writeServer(client, serverId, embed) {
+	if (!client.config.log.enable) return;
 	if (client.user.id == config.bot.Stable) {
 		knex_channel = 'log_channel';
 		type = 'STABLE';

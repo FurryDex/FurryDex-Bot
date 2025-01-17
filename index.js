@@ -1,10 +1,14 @@
-const config = require('./config.json');
+let config;
 
-if (config.shard) {
+try {
+	config = yaml.load(fs.readFileSync('./config/config.yaml', 'utf8'));
+} catch (e) {
+	return console.error('Config file does not exist !', e);
+}
+
+if (config.bot.shard) {
 	const { ShardingManager } = require('discord.js');
-	const dotenv = require('dotenv');
-	dotenv.config();
-	require('./api/server');
+	if (config.bot.api.enable) require('./api/server');
 
 	try {
 		const manager = new ShardingManager('./bot.js', { token: config.token });
