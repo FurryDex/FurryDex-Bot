@@ -53,7 +53,8 @@ const { isXMinutesPassed, win } = require('./utils/functions/spawn');
 client.locales = {};
 
 async function locales() {
-	const response = await fetch('http://192.168.1.10:10004/get/');
+	if (!client.config.third_party.crowdin.Crowdin_to_Discord_API) return;
+	const response = await fetch(client.config.third_party.crowdin.Crowdin_to_Discord_API);
 	if (await response) {
 		client.locales = await response.json();
 		await fs.writeFileSync('./locales.json', JSON.stringify(client.locales));
