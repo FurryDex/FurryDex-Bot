@@ -1,17 +1,15 @@
 const express = require('express');
-const dotenv = require('dotenv');
-//const fetch = import("node-fetch");
-dotenv.config({ path: '../.env' });
 const cors = require('cors');
 const path = require('path');
-
 const app = express();
-const port = require('../config.json').api;
-
 const corsOptions = {
 	origin: '*', //(https://your-client-app.com)
 	optionsSuccessStatus: 200,
 };
+const yaml = require('js-yaml');
+let config;
+
+config = yaml.load(fs.readFileSync('./config/config.yaml', 'utf8'));
 
 app.use(cors(corsOptions));
 
@@ -34,8 +32,8 @@ app.get('/info.json', function (req, res) {
 	res.send({ version: require('../package.json').version, status: '🟢 Online' });
 });
 
+// ACTIVITY API
 app.post('/api/token', async (req, res) => {
-	// Exchange the code for an access_token
 	const response = await fetch(`https://discord.com/api/oauth2/token`, {
 		method: 'POST',
 		headers: {
@@ -49,12 +47,10 @@ app.post('/api/token', async (req, res) => {
 		}),
 	});
 
-	// Retrieve the access_token from the response
 	const { access_token } = await response.json();
-	// Return the access_token to our client as { access_token: "..."}
 	res.send({ access_token });
 });
 
-app.listen(port, () => {
-	console.log(`Server listening at http://192.168.1.10:${port}`);
+app.listen(config.bot.api.port, () => {
+	console.log(`Server listening at http://192.168.1.10:${config.bot.api.port}`);
 });

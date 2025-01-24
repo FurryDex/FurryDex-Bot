@@ -1,7 +1,5 @@
-const config = require('../../config');
 const Logger = require('../../utils/Logger');
 const { REST, Routes } = require('discord.js');
-const { clientId, token } = require('../../config.json');
 const fs = require('fs');
 
 let activity = 'count my card ...';
@@ -18,30 +16,9 @@ module.exports = {
 			}
 		});
 
-		//if (client.user.id == config.bot.Canary) {
-		//	let guild = await client.guilds.cache.get(config.server.ID);
-		//	guild.comands.set(client.commands.map((cmd) => cmd)).catch((err) => Logger.warn('Le nombre de commandes envoyé est superieur au SpeedLimit de Discord'));
-		//}
-
 		client.user.setPresence({
 			activities: [{ name: activity }],
 		});
-
-		if (client.user.id == config.bot.Stable) {
-			let guild = await client.guilds.cache.get('1235970684556021890');
-			let channel = await guild.channels.cache.get('1236239805973663846');
-			fetch('http://192.168.1.10:10002/info.json', {
-				method: 'GET',
-				headers: {
-					Accept: 'application/json',
-				},
-			})
-				.then(async (response) => {
-					const { version } = await response.json();
-					channel.setTopic(`Actual Stable Version: V${require('../../package.json').version}, Actual Canary Version: V${version}`);
-				})
-				.catch((err) => {});
-		}
 
 		client
 			.knex('guilds')

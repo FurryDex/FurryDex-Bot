@@ -2,9 +2,10 @@ const { EmbedBuilder, ThreadAutoArchiveDuration } = require('discord.js');
 const config = require('../../config');
 let knex_channel, type;
 
-const categoryList = { other: '1284433127095140444', player: '1302640066866446347', server: '1284433198629126198' };
+const categoryList = client.config.log.category;
 
 async function write(client, destination, embed) {
+	if (!client.config.log.enable) return;
 	let color = require('../colors.json').find((x) => x.name == embed.color.toUpperCase());
 
 	let logEmbed = new EmbedBuilder()
@@ -14,20 +15,16 @@ async function write(client, destination, embed) {
 		.setFields(embed.info)
 		.setTimestamp();
 	const logGuild = await client.guilds.cache.get(config.server.ID);
-	const category = await logGuild.channels.cache.get(categoryList[destination.category]);
+	const category = await logGuild.channels.cache.get(categoryList[destination.category.forum]);
 	const channel = await category.threads.cache.get(destination.channel);
 	channel.send({ embeds: [logEmbed] });
 }
 
 async function writePlayer(client, playerId, embed) {
+	if (!client.config.log.enable) return;
 	playerId = playerId.toString();
-	if (client.user.id == config.bot.Stable) {
-		knex_channel = 'log_channel';
-		type = 'STABLE';
-	} else {
-		knex_channel = 'log_canary';
-		type = 'CANARY';
-	}
+
+	knex_channel = client.config.log.data;
 
 	let color = require('../colors.json').find((x) => x.name == embed.color.toUpperCase());
 
@@ -42,16 +39,13 @@ async function writePlayer(client, playerId, embed) {
 		.where({ user_id: playerId })
 		.catch((err) => console.error(err));
 	const user = await client.users.cache.get(playerId);
-
-	if (!userDb.premium) userDb.premium = false;
-
-	const logGuild = await client.guilds.cache.get(config.server.ID);
+	const logGuild = await client.guilds.cache.get(client.config.bot.guild);
 	const category = await logGuild.channels.cache.get(categoryList['player']);
 
 	let playerEmbed = new EmbedBuilder()
 		.setTitle(`${user.displayName} (${playerId})`)
 		.setColor('Orange')
-		.setDescription(`Log from the serveur \`${user.displayName}\` for furry dex`)
+		.setDescription(`Log from the player \`${user.displayName}\` for furry dex`)
 		.setFields([
 			{
 				name: '[FD] Premium',
@@ -77,7 +71,7 @@ async function writePlayer(client, playerId, embed) {
 	if (!userDb[knex_channel] || !channel) {
 		await category.threads
 			.create({
-				name: `${user.displayName} (${playerId}) - ${type}`,
+				name: `${client.config.log.prefix}${user.displayName} (${playerId})`,
 				autoArchiveDuration: ThreadAutoArchiveDuration.OneWeek,
 				message: {
 					content: 'Initialising...',
@@ -114,13 +108,9 @@ async function writePlayer(client, playerId, embed) {
 }
 
 async function writeServer(client, serverId, embed) {
-	if (client.user.id == config.bot.Stable) {
-		knex_channel = 'log_channel';
-		type = 'STABLE';
-	} else {
-		knex_channel = 'log_canary';
-		type = 'CANARY';
-	}
+	if (!client.config.log.enable) return;
+
+	knex_channel = client.config.log.data;
 
 	let color = require('../colors.json').find((x) => x.name == embed.color.toUpperCase());
 
@@ -136,13 +126,13 @@ async function writeServer(client, serverId, embed) {
 		.catch((err) => console.error(err));
 	const guild = await client.guilds.cache.get(serverId);
 
-	const logGuild = await client.guilds.cache.get(config.server.ID);
+	const logGuild = await client.guilds.cache.get(client.config.bot.guild);
 	const category = await logGuild.channels.cache.get(categoryList['server']);
 
 	let guildEmbed = new EmbedBuilder()
 		.setTitle(`${guild.name} (${serverId})`)
 		.setColor('Orange')
-		.setDescription(`Log from the serveur \`${guild.name}\` for furry dex`)
+		.setDescription(`Log from the guild \`${guild.name}\` for furry dex`)
 		.setFields([
 			{
 				name: '[FD] Enable',
@@ -180,7 +170,7 @@ async function writeServer(client, serverId, embed) {
 	if (!serverConfig[knex_channel] || !channel) {
 		await category.threads
 			.create({
-				name: `${guild.name} (${serverId}) - ${type}`,
+				name: `${client.config.log.prefix}${guild.name} (${serverId})`,
 				autoArchiveDuration: ThreadAutoArchiveDuration.OneWeek,
 				message: {
 					content: 'Initialising...',
@@ -207,7 +197,7 @@ async function writeServer(client, serverId, embed) {
 	} while (!channel);
 	let message = await channel.fetchStarterMessage();
 
-	message.edit({ content: 'Log', embeds: [guildEmbed] });
+	message.edit({ content: `Log`, embeds: [guildEmbed] });
 
 	let logEmbed = new EmbedBuilder()
 		.setTitle(`[${embed.tag}] ${embed.content}`)
