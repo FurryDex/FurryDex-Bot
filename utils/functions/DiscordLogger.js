@@ -1,9 +1,8 @@
 const { EmbedBuilder, ThreadAutoArchiveDuration } = require('discord.js');
 let knex_channel, type;
 
-const categoryList = client.config.log.category;
-
 async function write(client, destination, embed) {
+	const categoryList = client.config.log.category;
 	if (!client.config.log.enable) return;
 	let color = require('../colors.json').find((x) => x.name == embed.color.toUpperCase());
 
@@ -20,6 +19,7 @@ async function write(client, destination, embed) {
 }
 
 async function writePlayer(client, playerId, embed) {
+	const categoryList = client.config.log.category;
 	if (!client.config.log.enable) return;
 	playerId = playerId.toString();
 
@@ -107,6 +107,7 @@ async function writePlayer(client, playerId, embed) {
 }
 
 async function writeServer(client, serverId, embed) {
+	const categoryList = client.config.log.category;
 	if (!client.config.log.enable) return;
 
 	knex_channel = client.config.log.data;
