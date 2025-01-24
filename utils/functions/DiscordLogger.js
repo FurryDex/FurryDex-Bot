@@ -1,5 +1,4 @@
 const { EmbedBuilder, ThreadAutoArchiveDuration } = require('discord.js');
-const config = require('../../config');
 let knex_channel, type;
 
 const categoryList = client.config.log.category;
