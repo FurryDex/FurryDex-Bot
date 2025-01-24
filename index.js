@@ -1,5 +1,6 @@
-let config;
+const yaml = require('js-yaml');
 
+let config;
 try {
 	config = yaml.load(fs.readFileSync('./config/config.yaml', 'utf8'));
 } catch (e) {
