@@ -1,4 +1,5 @@
 const yaml = require('js-yaml');
+const fs = require('fs');
 
 let config;
 try {
