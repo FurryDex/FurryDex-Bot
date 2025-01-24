@@ -40,7 +40,7 @@ try {
 	return console.error('Config file does not exist !', e);
 }
 
-if (client.config.bot.shard && config.bot.api.enable) require('./api/server');
+if (client.config.bot.shard && client.config.bot.api.enable) require('./api/server');
 //require('./api/server');
 
 const { isXMinutesPassed, win } = require('./utils/functions/spawn');
