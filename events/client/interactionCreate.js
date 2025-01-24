@@ -1,5 +1,4 @@
 const { InteractionType, EmbedBuilder } = require('discord.js');
-const config = require('../../config');
 const Logger = require('../../utils/Logger.js');
 module.exports = {
 	name: 'interactionCreate',
@@ -23,7 +22,7 @@ module.exports = {
 					});
 			}
 			if (cmd.ownerOnly) {
-				if (interaction.user.id != config.creator) return interaction.reply('You need to be the creator for execute this command.');
+				if (interaction.user.id != client.config.owner) return interaction.reply('You need to be the creator for execute this command.');
 			}
 
 			cmd.runSlash(client, interaction);

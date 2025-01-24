@@ -1,17 +1,15 @@
 const express = require('express');
-const dotenv = require('dotenv');
-//const fetch = import("node-fetch");
-dotenv.config({ path: '../.env' });
 const cors = require('cors');
 const path = require('path');
-
 const app = express();
-const port = require('../config.json').api;
-
 const corsOptions = {
 	origin: '*', //(https://your-client-app.com)
 	optionsSuccessStatus: 200,
 };
+const yaml = require('js-yaml');
+let config;
+
+config = yaml.load(fs.readFileSync('./config/config.yaml', 'utf8'));
 
 app.use(cors(corsOptions));
 
@@ -53,6 +51,6 @@ app.post('/api/token', async (req, res) => {
 	res.send({ access_token });
 });
 
-app.listen(port, () => {
-	console.log(`Server listening at http://192.168.1.10:${port}`);
+app.listen(config.bot.api.port, () => {
+	console.log(`Server listening at http://192.168.1.10:${config.bot.api.port}`);
 });

@@ -2,6 +2,7 @@ const { Client, Collection, Partials, GatewayIntentBits } = require('discord.js'
 const fs = require('fs');
 const dotenv = require('dotenv');
 const process = require('node:process');
+const yaml = require('js-yaml');
 dotenv.config();
 const client = new Client({
 	intents: [
@@ -32,8 +33,6 @@ const client = new Client({
 });
 const Logger = require('./utils/Logger');
 const debug = false;
-
-let config;
 
 try {
 	client.config = yaml.load(fs.readFileSync('./config/config.yaml', 'utf8'));
