@@ -13,7 +13,7 @@ if (config.bot.shard) {
 	if (config.bot.api.enable) require('./api/server');
 
 	try {
-		const manager = new ShardingManager('./bot.js', { token: config.token });
+		const manager = new ShardingManager('./bot.js', { token: config.bot.token });
 
 		manager.on('shardCreate', (shard) => require('./utils/Logger').shard(null, `Lancement de la shard #${shard.id}`));
 
