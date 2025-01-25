@@ -118,7 +118,7 @@ client.login(client.config.bot.token);
 // --------- COG & SPAWN ----------
 
 client.on('messageCreate', (message) => {
-	if (client.config.disable.bot.includes(message.guild.members.cache.get(client.user.id)?.id ?? '.')) return;
+	if(client.config.disable.bot) if (message.guild.members.cache.hasAny(client.config.disable.bot) ?? '.') return;
 	if (message.author.bot) return;
 
 	isXMinutesPassed(message, client);
