@@ -32,13 +32,13 @@ const client = new Client({
 	partials: [Partials.User, Partials.Channel, Partials.GuildMember, Partials.Message, Partials.Reaction, Partials.GuildScheduledEvent, Partials.ThreadMember],
 });
 const Logger = require('./utils/Logger');
-const debug = false;
 
 try {
 	client.config = yaml.load(fs.readFileSync('./config/config.yaml', 'utf8'));
 } catch (e) {
 	return console.error('Config file does not exist !', e);
 }
+const debug = client.config.dev.debug;
 
 if (!client.config.bot.shard && client.config.bot.api.enable) require('./api/server');
 
