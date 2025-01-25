@@ -12,7 +12,7 @@ async function write(client, destination, embed) {
 		.setDescription(embed.description || ' ')
 		.setFields(embed.info)
 		.setTimestamp();
-	const logGuild = await client.guilds.cache.get(config.server.ID);
+	const logGuild = await client.guilds.cache.get(client.config.bot.guild);
 	const category = await logGuild.channels.cache.get(categoryList[destination.category.forum]);
 	const channel = await category.threads.cache.get(destination.channel);
 	channel.send({ embeds: [logEmbed] });
