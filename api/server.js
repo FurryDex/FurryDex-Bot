@@ -7,6 +7,7 @@ const corsOptions = {
 	optionsSuccessStatus: 200,
 };
 const yaml = require('js-yaml');
+const fs = require('fs');
 let config;
 
 config = yaml.load(fs.readFileSync('./config/config.yaml', 'utf8'));

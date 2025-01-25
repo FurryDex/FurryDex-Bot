@@ -1,9 +1,7 @@
 const { Client, Collection, Partials, GatewayIntentBits } = require('discord.js');
 const fs = require('fs');
-const dotenv = require('dotenv');
 const process = require('node:process');
 const yaml = require('js-yaml');
-dotenv.config();
 const client = new Client({
 	intents: [
 		GatewayIntentBits.Guilds,
@@ -32,18 +30,17 @@ const client = new Client({
 	partials: [Partials.User, Partials.Channel, Partials.GuildMember, Partials.Message, Partials.Reaction, Partials.GuildScheduledEvent, Partials.ThreadMember],
 });
 const Logger = require('./utils/Logger');
-const debug = false;
 
 try {
 	client.config = yaml.load(fs.readFileSync('./config/config.yaml', 'utf8'));
 } catch (e) {
 	return console.error('Config file does not exist !', e);
 }
+const debug = client.config.dev.debug;
 
-if (config.bot.shard && config.bot.api.enable) require('./api/server');
-//require('./api/server');
+if (!client.config.bot.shard && client.config.bot.api.enable) require('./api/server');
 
-const { isXMinutesPassed, win } = require('./utils/functions/spawn');
+const { isXMinutesPassed } = require('./utils/functions/spawn');
 
 ['commands', 'buttons', 'selects', 'modals'].forEach((x) => (client[x] = new Collection()));
 ['EventUtil', 'ButtonUtil', 'ModalUtil', 'SelectMenuUtil'].forEach((handler) => {
@@ -53,24 +50,24 @@ const { isXMinutesPassed, win } = require('./utils/functions/spawn');
 client.locales = {};
 
 async function locales() {
-	if (!client.config.third_party.crowdin.Crowdin_to_Discord_API) return;
-	const response = await fetch(client.config.third_party.crowdin.Crowdin_to_Discord_API);
-	if (await response) {
-		client.locales = await response.json();
-		await fs.writeFileSync('./locales.json', JSON.stringify(client.locales));
-	} else {
-		logger.error(client, 'Locales', err);
-		client.locales = await fs.readFileSync('./locales.json');
-	}
-	return;
+	if (client.config.third_party.crowdin.Crowdin_to_Discord_API) {
+		const response = await fetch(client.config.third_party.crowdin.Crowdin_to_Discord_API);
+		if (await response) {
+			client.locales = await response.json();
+			await fs.writeFileSync('./locales.json', JSON.stringify(client.locales));
+		} else no_locales();
+		return;
+	} else no_locales();
+}
+
+async function no_locales() {
+	logger.error(client, 'Locales', err);
+	client.locales = await fs.readFileSync('./locales.json');
 }
 
 locales().then(() => {
 	require(`./utils/handlers/CommandUtil.js`)(client);
 });
-//
-
-//require("./api/index.js");
 
 if (!debug) {
 	process.on('exit', (code) => {
@@ -112,25 +109,6 @@ if (!debug) {
 	});
 }
 
-const winston = require('winston');
-
-const logger = winston.createLogger({
-	level: 'info',
-	format: winston.format.json(),
-	defaultMeta: { service: 'user-service' },
-	transports: [new winston.transports.Console(), new winston.transports.File({ filename: 'error.log', level: 'error' }), new winston.transports.File({ filename: 'all.log' })],
-});
-
-//
-// If we're not in production then log to the `console` with the format:
-// `${info.level}: ${info.message} JSON.stringify({ ...rest }) `
-//
-logger.add(
-	new winston.transports.Console({
-		format: winston.format.simple(),
-	})
-);
-
 client.knex = require('knex')(client.config.database);
 
 client.data = client.knex;
@@ -140,7 +118,7 @@ client.login(client.config.bot.token);
 // --------- COG & SPAWN ----------
 
 client.on('messageCreate', (message) => {
-	if (config.disable.bot.includes(message.guild.members.cache.get(client.user.id)?.id ?? '.')) return;
+	if(client.config.bot.disable.bot) if (message.guild.members.cache.hasAny(client.config.bot.disable.bot) ?? '.') return;
 	if (message.author.bot) return;
 
 	isXMinutesPassed(message, client);
