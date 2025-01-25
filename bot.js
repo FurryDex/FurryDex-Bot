@@ -1,9 +1,7 @@
 const { Client, Collection, Partials, GatewayIntentBits } = require('discord.js');
 const fs = require('fs');
-const dotenv = require('dotenv');
 const process = require('node:process');
 const yaml = require('js-yaml');
-dotenv.config();
 const client = new Client({
 	intents: [
 		GatewayIntentBits.Guilds,
@@ -120,7 +118,7 @@ client.login(client.config.bot.token);
 // --------- COG & SPAWN ----------
 
 client.on('messageCreate', (message) => {
-	if (config.disable.bot.includes(message.guild.members.cache.get(client.user.id)?.id ?? '.')) return;
+	if (client.config.disable.bot.includes(message.guild.members.cache.get(client.user.id)?.id ?? '.')) return;
 	if (message.author.bot) return;
 
 	isXMinutesPassed(message, client);
