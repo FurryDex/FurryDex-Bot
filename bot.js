@@ -41,9 +41,8 @@ try {
 }
 
 if (!client.config.bot.shard && client.config.bot.api.enable) require('./api/server');
-//require('./api/server');
 
-const { isXMinutesPassed, win } = require('./utils/functions/spawn');
+const { isXMinutesPassed } = require('./utils/functions/spawn');
 
 ['commands', 'buttons', 'selects', 'modals'].forEach((x) => (client[x] = new Collection()));
 ['EventUtil', 'ButtonUtil', 'ModalUtil', 'SelectMenuUtil'].forEach((handler) => {
@@ -53,24 +52,24 @@ const { isXMinutesPassed, win } = require('./utils/functions/spawn');
 client.locales = {};
 
 async function locales() {
-	if (!client.config.third_party.crowdin.Crowdin_to_Discord_API) return;
-	const response = await fetch(client.config.third_party.crowdin.Crowdin_to_Discord_API);
-	if (await response) {
-		client.locales = await response.json();
-		await fs.writeFileSync('./locales.json', JSON.stringify(client.locales));
-	} else {
-		logger.error(client, 'Locales', err);
-		client.locales = await fs.readFileSync('./locales.json');
-	}
-	return;
+	if (client.config.third_party.crowdin.Crowdin_to_Discord_API) {
+		const response = await fetch(client.config.third_party.crowdin.Crowdin_to_Discord_API);
+		if (await response) {
+			client.locales = await response.json();
+			await fs.writeFileSync('./locales.json', JSON.stringify(client.locales));
+		} else no_locales();
+		return;
+	} else no_locales();
+}
+
+async function no_locales() {
+	logger.error(client, 'Locales', err);
+	client.locales = await fs.readFileSync('./locales.json');
 }
 
 locales().then(() => {
 	require(`./utils/handlers/CommandUtil.js`)(client);
 });
-//
-
-//require("./api/index.js");
 
 if (!debug) {
 	process.on('exit', (code) => {
@@ -111,25 +110,6 @@ if (!debug) {
 		Logger.shard(client, `${'shardResume'.toUpperCase()} - ID: ${id}: ${event}`);
 	});
 }
-
-const winston = require('winston');
-
-const logger = winston.createLogger({
-	level: 'info',
-	format: winston.format.json(),
-	defaultMeta: { service: 'user-service' },
-	transports: [new winston.transports.Console(), new winston.transports.File({ filename: 'error.log', level: 'error' }), new winston.transports.File({ filename: 'all.log' })],
-});
-
-//
-// If we're not in production then log to the `console` with the format:
-// `${info.level}: ${info.message} JSON.stringify({ ...rest }) `
-//
-logger.add(
-	new winston.transports.Console({
-		format: winston.format.simple(),
-	})
-);
 
 client.knex = require('knex')(client.config.database);
 
