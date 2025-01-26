@@ -103,7 +103,7 @@ module.exports = {
 	],
 	runSlash: async (client, interaction) => {
 		await interaction.deferReply();
-		const locales = client.locales.commands.furries;
+		const locales = client.locales.commands.furry;
 		const subcommand = interaction.options.getSubcommand();
 		let user = interaction.options.getUser('user') ?? interaction.user;
 		let user_cards = await client
