@@ -10,12 +10,6 @@ module.exports = {
 	async execute(client) {
 		Logger.client(client, 'Je suis prêt !');
 
-		client.application.commands.set(client.commands.map((cmd) => cmd)).catch((err) => {
-			if (err) {
-				Logger.warn(client, 'Le nombre de commandes envoyé est superieur au SpeedLimit de Discord', err);
-			}
-		});
-
 		client.user.setPresence({
 			activities: [{ name: activity }],
 		});

@@ -51,18 +51,18 @@ client.locales = {};
 
 async function locales() {
 	if (client.config.third_party.crowdin.Crowdin_to_Discord_API) {
-		const response = await fetch(client.config.third_party.crowdin.Crowdin_to_Discord_API);
-		if (await response) {
+		const response = await fetch(client.config.third_party.crowdin.Crowdin_to_Discord_API).catch((err) => no_locales(err));
+		if (response) {
 			client.locales = await response.json();
-			await fs.writeFileSync('./locales.json', JSON.stringify(client.locales));
-		} else no_locales();
+			fs.writeFileSync('./locales.json', JSON.stringify(client.locales));
+		}
 		return;
-	} else no_locales();
+	} else no_locales('No locales API');
 }
 
-async function no_locales() {
-	logger.error(client, 'Locales', err);
-	client.locales = await fs.readFileSync('./locales.json');
+async function no_locales(err) {
+	Logger.warn(client, `Error for Locales modules: ${err}`);
+	client.locales = JSON.parse(fs.readFileSync('./locales.json'));
 }
 
 locales().then(() => {
@@ -118,7 +118,7 @@ client.login(client.config.bot.token);
 // --------- COG & SPAWN ----------
 
 client.on('messageCreate', (message) => {
-	if(client.config.bot.disable.bot) if (message.guild.members.cache.hasAny(client.config.bot.disable.bot) ?? '.') return;
+	if (client.config.bot.disable.bot) if (message.guild.members.cache.hasAny(client.config.bot.disable.bot) ?? '.') return;
 	if (message.author.bot) return;
 
 	isXMinutesPassed(message, client);

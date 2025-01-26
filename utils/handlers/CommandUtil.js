@@ -52,6 +52,12 @@ module.exports = async (client) => {
 		client.commands.set(cmd.name, cmd);
 		Logger.command(null, `Chargé: ${cmd.name}`);
 	});
+	while (!client.application) setTimeout(() => {}, 1);
+	client.application.commands.set(client.commands.map((cmd) => cmd)).catch((err) => {
+		if (err) {
+			Logger.warn(client, 'Le nombre de commandes envoyé est superieur au SpeedLimit de Discord', err);
+		}
+	});
 };
 
 const permissionList = [
