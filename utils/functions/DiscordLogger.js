@@ -12,7 +12,7 @@ async function write(client, destination, embed) {
 		.setDescription(embed.description || ' ')
 		.setFields(embed.info)
 		.setTimestamp();
-	const logGuild = await client.guilds.cache.get(client.config.bot.guild);
+	const logGuild = await client.guilds.cache.get(client.config.log.guild ?? client.config.bot.guild);
 	const category = await logGuild.channels.cache.get(categoryList[destination.category.forum]);
 	const channel = await category.threads.cache.get(destination.channel);
 	channel.send({ embeds: [logEmbed] });
@@ -38,7 +38,7 @@ async function writePlayer(client, playerId, embed) {
 		.where({ user_id: playerId })
 		.catch((err) => console.error(err));
 	const user = await client.users.cache.get(playerId);
-	const logGuild = await client.guilds.cache.get(client.config.bot.guild);
+	const logGuild = await client.guilds.cache.get(client.config.log.guild ?? client.config.bot.guild);
 	const category = await logGuild.channels.cache.get(categoryList['player']);
 
 	let playerEmbed = new EmbedBuilder()
@@ -126,7 +126,7 @@ async function writeServer(client, serverId, embed) {
 		.catch((err) => console.error(err));
 	const guild = await client.guilds.cache.get(serverId);
 
-	const logGuild = await client.guilds.cache.get(client.config.bot.guild);
+	const logGuild = await client.guilds.cache.get(client.config.log.guild ?? client.config.bot.guild);
 	const category = await logGuild.channels.cache.get(categoryList['server']);
 
 	let guildEmbed = new EmbedBuilder()
