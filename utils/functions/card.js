@@ -1,4 +1,5 @@
 const { EmbedBuilder, time, TimestampStyles } = require('discord.js');
+const Logger = require('../Logger');
 
 async function cardEmbed(client, cardId, locale) {
 	const locales = client.locales.utils.function.cards;
@@ -36,41 +37,43 @@ async function cardEmbed(client, cardId, locale) {
 	let color = require('../colors.json').find((color) => color.name == (data_type.color ?? originalCardF.color))?.hex ?? '#000000';
 
 	if (color == '#000000') {
-		console.log('Color Error at card ' + cardF.card_id);
+		Logger.warn('Color Error at card ' + cardF.card_id);
 	}
 
 	let date = new Date(cardF.date);
-	let description = locales.embed.description[locale] ?? locales.embed.description.default;
+
+	let description = locales.embed.description[locale] ?? locales.embed.description['en-US'];
 	description = description
-		.replace('%emoji_1%', '<:atlanta_crown:598174064183607317>')
 		.replace('%author%', `<@${originalCardF.authorId}>`)
-		.replace('%emoji_2%', '<:atlanta_id:598162717232332811>')
 		.replace('%id%', cardF.id)
-		.replace('%emoji_3%', '🪪')
 		.replace('%name%', originalCardF.name)
-		.replace('%emoji_4%', '📅')
 		.replace('%time%', `${time(date, TimestampStyles.LongDateTime)} (${time(date, TimestampStyles.RelativeTime)})`)
-		.replace('%emoji_5%', '🔧')
 		.replace('%type%', type)
-		.replace('%emoji_6%', '🐺')
 		.replace('%species%', formatArrayToText(species))
-		.replace('%emoji_7%', '❤️')
 		.replace('%live%', cardF.live < 0 ? originalCardF.live - (originalCardF.live * cardF.live.replace('-', '')) / 100 : originalCardF.live + (originalCardF.live * cardF.live) / 100) //cardF.live < 0 ? originalCardF.live-(originalCardF.live*cardF.live/100) : originalCardF.live+(originalCardF.live*cardF.live/100)
 		.replace('%live_2%', cardF.live)
-		.replace('%emoji_8%', '<:atlanta_minecraft:598170502963396620>')
 		.replace('%attacks%', cardF.attacks < 0 ? originalCardF.attacks - (originalCardF.attacks * cardF.attacks.replace('-', '')) / 100 : originalCardF.attacks + (originalCardF.attacks * cardF.attacks) / 100) //cardF.attacks < 0 ? originalCardF.attacks-(originalCardF.attacks*cardF.attacks/100) : originalCardF.attacks+(originalCardF.attacks*cardF.attacks/100)
 		.replace('%attacks_2%', cardF.attacks);
 	if (cardF.gived != 0) {
 		let giveDate = new Date(cardF.giveDate);
 		description = description.replace(
 			'%gived%',
-			`${(locales.embed.giveBy[locale] ?? locales.embed.giveBy.default)
-				.replace('%emoji%', '<:atlanta_add:598176235700355083>')
-				.replace('%giver%', `<@${cardF.gived}>`)
-				.replace('%giveTime%', `${time(giveDate, TimestampStyles.LongDateTime)} (${time(giveDate, TimestampStyles.RelativeTime)})`)}\n`
+			`${(locales.embed.giveBy[locale] ?? locales.embed.giveBy['en-US']).replace('%giver%', `<@${cardF.gived}>`).replace('%giveTime%', `${time(giveDate, TimestampStyles.LongDateTime)} (${time(giveDate, TimestampStyles.RelativeTime)})`)}\n`
 		);
 	} else {
 		description = description.replace('%gived%', ``);
+	}
+	if (originalCardF.birthday) {
+		let birthday = new Date(originalCardF.birthday);
+		let nextBirthday = new Date(originalCardF.birthday);
+		nextBirthday.setFullYear(new Date().getFullYear());
+		if (nextBirthday < new Date()) nextBirthday.setFullYear(new Date().getFullYear() + 1);
+		description = description.replace(
+			'%birthday%',
+			`${(locales.embed.birthday[locale] ?? locales.embed.birthday['en-US']).replace('%birthday%', `${time(birthday, TimestampStyles.ShortDateTime)} (${time(birthday, TimestampStyles.RelativeTime)}) → ${time(nextBirthday, TimestampStyles.RelativeTime)}`)}\n`
+		);
+	} else {
+		description = description.replace('%birthday%', ``).replace('%nextBirthday%', ``);
 	}
 	let embed = new EmbedBuilder()
 		.setColor(color)
