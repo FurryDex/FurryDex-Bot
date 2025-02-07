@@ -93,9 +93,22 @@ async function leaderboard_update(client) {
 				]);
 				embeds.push(embed);
 			}
-			if (guildConfig.leaderboard_edit && guildConfig.leaderboard_msg) {
-				let message = (await channel.messages.fetch(guildConfig.leaderboard_msg)) ?? null;
-				if (!message)
+			if (guildConfig.leaderboard_edit) {
+				if (guildConfig.leaderboard_msg) {
+					let message = (await channel.messages.fetch(guildConfig.leaderboard_msg)) ?? null;
+					if (!message)
+						channel.send({ embeds }).then((msg) => {
+							message = msg;
+							client
+								.knex('guilds')
+								.update({ leaderboard_msg: msg.id })
+								.where({ id: guild.id })
+								.catch((err) => {
+									console.error(err);
+								});
+						});
+					else message.edit({ embeds });
+				} else {
 					channel.send({ embeds }).then((msg) => {
 						message = msg;
 						client
@@ -106,7 +119,7 @@ async function leaderboard_update(client) {
 								console.error(err);
 							});
 					});
-				else message.edit({ embeds });
+				}
 			} else channel.send({ embeds });
 		}
 	});
