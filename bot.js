@@ -50,19 +50,22 @@ const { isXMinutesPassed } = require('./utils/functions/spawn');
 client.locales = {};
 
 async function locales() {
-	if (client.config.third_party.crowdin.Crowdin_to_Discord_API) {
-		const response = await fetch(client.config.third_party.crowdin.Crowdin_to_Discord_API).catch((err) => no_locales(err));
-		if (response) {
-			client.locales = await response.json();
-			fs.writeFileSync('./locales.json', JSON.stringify(client.locales));
-		}
-		return;
-	} else no_locales('No locales API');
+	try {
+		if (client.config.third_party.crowdin.Crowdin_to_Discord_API) {
+			const response = await fetch(client.config.third_party.crowdin.Crowdin_to_Discord_API);
+			if (response) {
+				client.locales = await response.json();
+				fs.writeFileSync('./locales.json', JSON.stringify(client.locales));
+			}
+		} else no_locales('No locales API');
+	} catch (err) {
+		no_locales(err);
+	}
 }
 
 async function no_locales(err) {
 	Logger.warn(client, `Error for Locales modules: ${err}`);
-	client.locales = JSON.parse(fs.readFileSync('./locales.json'));
+	client.locales = JSON.parse(fs.readFileSync('./locales.json').catch((err) => console.error(err)));
 }
 
 locales().then(() => {
@@ -111,8 +114,6 @@ if (!debug) {
 
 client.knex = require('knex')(client.config.database);
 
-client.data = client.knex;
-
 client.login(client.config.bot.token);
 
 // --------- COG & SPAWN ----------
@@ -128,6 +129,7 @@ let callAmount = 0;
 process.on('SIGINT', function () {
 	if (callAmount < 1) {
 		Logger.succes(client, '✅ - Desactivation du bot ...', 'Veuillez patientez');
+		client.destroy();
 		setTimeout(() => process.exit(0), 1000);
 	}
 

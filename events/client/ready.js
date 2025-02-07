@@ -19,6 +19,16 @@ module.exports = {
 			.update({ last_card: null })
 			.catch((err) => console.error(err));
 
+		client.application.commands.set(client.commands.map((cmd) => cmd)).catch((err) => {
+			if (err) {
+				Logger.warn(client, 'Le nombre de commandes envoyé est superieur au SpeedLimit de Discord', err);
+			}
+		});
+
 		Logger.succes(client, 'Bot démaré avec succès !');
+
+		require('../../utils/functions/leaderboard').leaderboard_start(client);
+		require('../../utils/functions/update').upgrade_data(client);
+		require('../../utils/functions/update').update_data(client);
 	},
 };

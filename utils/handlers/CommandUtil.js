@@ -9,10 +9,10 @@ const pGlob = promisify(glob);
 module.exports = async (client) => {
 	(await pGlob(`./commands/*/*.js`)).map(async (cmdFile) => {
 		const cmd = require(cmdFile.replace('.', process.cwd()));
-		if (!cmd.name) return Logger.warn(client, `Nom Non Definie\nFichier: ${cmdFile}`);
-		if (!cmd.description) return Logger.warn(client, `Description Non Definie\nFichier: ${cmdFile}`);
+		if (!cmd.name) return Logger.warn(null, `Nom Non Definie\nFichier: ${cmdFile}`);
+		if (!cmd.description) return Logger.warn(null, `Description Non Definie\nFichier: ${cmdFile}`);
 		if (!cmd.dm_permission) cmd.dm_permission = false;
-		if (!cmd.category) return Logger.warn(client, `Catégorie Non Definie\nFichier: ${cmdFile}`);
+		if (!cmd.category) return Logger.warn(null, `Catégorie Non Definie\nFichier: ${cmdFile}`);
 
 		if (cmd.permissions != null) {
 			cmd.default_member_permissions = cmd.permissions;
@@ -51,12 +51,6 @@ module.exports = async (client) => {
 
 		client.commands.set(cmd.name, cmd);
 		Logger.command(null, `Chargé: ${cmd.name}`);
-	});
-	while (!client.application) setTimeout(() => {}, 1);
-	client.application.commands.set(client.commands.map((cmd) => cmd)).catch((err) => {
-		if (err) {
-			Logger.warn(client, 'Le nombre de commandes envoyé est superieur au SpeedLimit de Discord', err);
-		}
 	});
 };
 
