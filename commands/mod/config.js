@@ -1,4 +1,5 @@
 const { ApplicationCommandOptionType, StringSelectMenuBuilder, ActionRowBuilder, PermissionFlagsBits } = require('discord.js');
+const leaderboard = require('../../selects/mod/leaderboard');
 
 module.exports = {
 	name: 'config',
@@ -136,6 +137,47 @@ module.exports = {
 			description: 'Automatic set the base-lang for the server.',
 			type: ApplicationCommandOptionType.Subcommand,
 		},
+		{
+			name: 'leaderboard_channel',
+			description: 'set the channel for the leaderboard.',
+			type: ApplicationCommandOptionType.Subcommand,
+			options: [
+				{
+					name: 'channel',
+					description: 'The channel where card will spawn',
+					type: ApplicationCommandOptionType.Channel,
+					required: true,
+				},
+			],
+		},
+		{
+			name: 'leaderboard',
+			description: 'set the different leaderboards to show.',
+			type: ApplicationCommandOptionType.Subcommand,
+		},
+		{
+			name: 'leaderboard_edit',
+			description: 'replace the leaderboard message instead of send another one.',
+			type: ApplicationCommandOptionType.Subcommand,
+			options: [
+				{
+					name: 'enable',
+					description: 'enable or disable the leaderboard edit function.',
+					type: ApplicationCommandOptionType.String,
+					required: true,
+					choices: [
+						{
+							name: 'Enable',
+							value: 'true',
+						},
+						{
+							name: 'Disable',
+							value: 'false',
+						},
+					],
+				},
+			],
+		},
 	],
 	runSlash: async (client, interaction) => {
 		const subcommand = interaction.options.getSubcommand();
@@ -207,6 +249,55 @@ module.exports = {
 				.catch((err) => console.error(err));
 			let message = locales.run.changed[interaction.locale] ?? locales.run.changed.default;
 			interaction.editReply(message.replace('%lang%', local));
+		}
+		if (subcommand == 'leaderboard_channel') {
+			await client
+				.knex('guilds')
+				.update({ leaderboard_channel: interaction.options.getChannel('channel').id })
+				.where({ id: interaction.guild.id })
+				.catch((err) => console.error(err));
+			let message = locales.run.changedLeaderChan[interaction.locale] ?? locales.run.changedLeaderChan.default;
+			interaction.editReply(message.replace('%channel%', interaction.options.getChannel('channel').name));
+		}
+		if (subcommand == 'leaderboard') {
+			let option = JSON.parse(
+				await client
+					.knex('guilds')
+					.update({ leaderboard: JSON.stringify(interaction.values) })
+					.where({ id: interaction.guild.id })
+					.catch((err) => console.log(err))
+			);
+			const row = new ActionRowBuilder().addComponents(
+				new StringSelectMenuBuilder()
+					.setCustomId('leaderboard')
+					.setPlaceholder('Select different leaderboards to show')
+					.addOptions([
+						{ label: `1. Cards completion Leaderboard`, value: `1`, default: option.has('1') },
+						{ label: `2. Cards Leaderboard`, value: `2`, default: option.has('2') },
+						{ label: `3. Global Cards completion Leaderboard`, value: `3`, default: option.has('3') },
+						{ label: `4. Global Cards Leaderboard`, value: `4`, default: option.has('4') },
+					])
+					.setMaxValues(4)
+					.setMinValues(0)
+			);
+
+			await interaction.editReply({ content: 'Please select different leaderboards to show:', components: [row], ephemeral: true });
+		}
+
+		if (subcommand == 'leaderboard_edit') {
+			let guild = await client.guilds.cache.get(interaction.guild.id);
+			let channel = await guild.channels.cache.get(serverConfig.leaderboard_edit);
+			if (!channel) {
+				client
+					.knex('guilds')
+					.update({ leaderboard_edit: interaction.options.getString('enable') == 'true' ? true : false })
+					.where({ id: interaction.guild.id })
+					.catch((err) => console.error(err));
+			} else {
+				return interaction.editReply('Cannot enable leaderboard if the channel is not set, use `/config leaderboard_channel <channel>`');
+			}
+			let message = locales.run.changedLeaderEna[interaction.locale] ?? locales.run.changedLeaderEna.default;
+			interaction.editReply(message.replace('%enable%', interaction.options.getString('enable') == 'true' ? 'Enable' : 'Disable'));
 		}
 	},
 };
