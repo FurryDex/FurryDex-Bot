@@ -14,6 +14,7 @@ async function leaderboard_update(client) {
 	serverConfig.forEach(async (guildConfig) => {
 		if (guildConfig.leaderboard && guildConfig.leaderboard_channel) {
 			let guild = client.guilds.cache.get(guildConfig.id);
+			if (client.config.bot.disable.bot) if (guild.members.cache.hasAny(client.config.bot.disable.bot) ?? false) return;
 			let members = await guild.members.fetch();
 			let channel = guild.channels.cache.get(guildConfig.leaderboard_channel);
 			let embeds = [];
