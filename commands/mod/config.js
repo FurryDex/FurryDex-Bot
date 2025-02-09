@@ -139,7 +139,7 @@ module.exports = {
 		},
 		{
 			name: 'leaderboard_channel',
-			description: 'set the channel for the leaderboard.',
+			description: 'Set the channel for the leaderboard.',
 			type: ApplicationCommandOptionType.Subcommand,
 			options: [
 				{
@@ -152,17 +152,17 @@ module.exports = {
 		},
 		{
 			name: 'leaderboard',
-			description: 'set the different leaderboards to show.',
+			description: 'Set the different leaderboards to show.',
 			type: ApplicationCommandOptionType.Subcommand,
 		},
 		{
 			name: 'leaderboard_edit',
-			description: 'replace the leaderboard message instead of send another one.',
+			description: 'Replace the leaderboard message instead of send another one.',
 			type: ApplicationCommandOptionType.Subcommand,
 			options: [
 				{
 					name: 'enable',
-					description: 'enable or disable the leaderboard edit function.',
+					description: 'Enable or disable the leaderboard edit function.',
 					type: ApplicationCommandOptionType.String,
 					required: true,
 					choices: [
