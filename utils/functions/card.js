@@ -86,6 +86,32 @@ async function cardEmbed(client, cardId, locale) {
 	return embed;
 }
 
+// Fonction pour récupérer les cartes possédées par un utilisateur
+async function getUserCards(client, userId) {
+	return await client
+		.knex('cards')
+		.whereIn('id', function () {
+			this.select('card_id').from('user_cards').where({ user_id: userId });
+		})
+		.select('*')
+		.catch((err) => {
+			console.error(err);
+		});
+}
+
+// Fonction pour récupérer les cartes que l'utilisateur n'a pas
+async function getMissingCards(client, userId, category = '') {
+	return await client
+		.knex('cards')
+		.whereNotIn('id', function () {
+			this.select('card_id').from('user_cards').where({ user_id: userId });
+		})
+		.select('*')
+		.catch((err) => {
+			console.error(err);
+		});
+}
+
 async function originalCard(client, cardId) {
 	return await client
 		.knex('cards')
@@ -121,4 +147,4 @@ function formatArrayToText(array) {
 	}
 }
 
-module.exports = { card, cardEmbed, originalCard };
+module.exports = { card, cardEmbed, originalCard, getMissingCards, getUserCards };

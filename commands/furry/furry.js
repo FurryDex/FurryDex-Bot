@@ -196,39 +196,21 @@ module.exports = {
 					const embed = new EmbedBuilder().setTitle(`Furry Dex Completion`).setDescription(`There no card in this category`).setColor('#FF9700').setTimestamp();
 					interaction.editReply({ embeds: [embed] });
 				}
-			}
-			let havedCards = [];
-			let notHavedCards = [];
+			} else category = undefined;
 			let cards = 0;
-			allCards.forEach(async (card, key) => {
-				let user_this_cards = await client
-					.knex('user_cards')
-					.select('*')
-					.where({ card_id: card.id, user_id: user.id })
-					.catch((err) => {
-						console.error(err);
-					});
-				if (user_this_cards.length != 0) {
-					havedCards.push({ id: card.id, emoji: card.emoji, number: user_this_cards.length });
-				} else {
-					notHavedCards.push({ id: card.id, emoji: card.emoji });
-				}
-				cards++;
-				if (allCards.length == key + 1) {
-					setTimeout(() => {
-						const embed = new EmbedBuilder()
-							.setTitle(`Furry Dex Completion`)
-							.setDescription(
-								`Dex of <@${user.id}>\nFurries Dex progression: *${Math.round((havedCards.length / cards) * 100)}%*\n\n__**Owned Furries Cards**__\n${havedCards
-									.map((card) => `${card.emoji} ${card.number == 1 ? '' : `x ${card.number}`}`)
-									.join(' ')}\n\n__**Missing Furries Cards**__\n${notHavedCards.map((card) => card.emoji).join(' ')}`
-							)
-							.setColor('#FF9700')
-							.setTimestamp();
-						interaction.editReply({ embeds: [embed] });
-					}, 1500);
-				}
-			});
+			let havedCards = await require('../../utils/functions/card').getUserCards(client, user.id, category);
+			let notHavedCards = await require('../../utils/functions/card').getMissingCards(client, user.id, category);
+
+			const embed = new EmbedBuilder()
+				.setTitle(`Furry Dex Completion`)
+				.setDescription(
+					`Dex of <@${user.id}>\nFurries Dex progression: *${Math.round((havedCards.length / allCards.length) * 100)}%*\n\n__**Owned Furries Cards**__\n${havedCards.map((card) => `${card.emoji}`).join(' ')}\n\n__**Missing Furries Cards**__\n${notHavedCards
+						.map((card) => card.emoji)
+						.join(' ')}`
+				)
+				.setColor('#FF9700')
+				.setTimestamp();
+			interaction.editReply({ embeds: [embed] });
 		} else if (subcommand == 'count') {
 			if (user_cards.length == 0) return interaction.editReply({ content: locales.run['no-furry'][interaction.locale] ?? locales.run['no-furry'].default, ephemeral: true });
 			return interaction.editReply({ content: `The deck got \`%number%\` cards`.replace('%number%', user_cards.length) });

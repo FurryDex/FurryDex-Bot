@@ -13,8 +13,10 @@ async function leaderboard_update(client) {
 
 	serverConfig.forEach(async (guildConfig) => {
 		if (guildConfig.leaderboard && guildConfig.leaderboard_channel) {
-			let guild = client.guilds.cache.get(guildConfig.id);
-			if (client.config.bot.disable.bot) if (guild.members.cache.hasAny(client.config.bot.disable.bot) ?? false) return;
+			let guild = await client.guilds.cache.get(guildConfig.id);
+			if (!guild) return;
+			if (client.config.bot.disable.bot) if (guild.members.cache.hasAny(...client.config.bot.disable.bot)) return;
+
 			let members = await guild.members.fetch();
 			let channel = guild.channels.cache.get(guildConfig.leaderboard_channel);
 			let embeds = [];
@@ -95,8 +97,8 @@ async function leaderboard_update(client) {
 				embeds.push(embed);
 			}
 			if (guildConfig.leaderboard_edit) {
-				if (guildConfig.leaderboard_msg) {
-					let message = (await channel.messages.fetch(guildConfig.leaderboard_msg)) ?? null;
+				if (guildConfig.leaderboard_msg && channel.messages.cache.has(guildConfig.leaderboard_msg)) {
+					let message = await channel.messages.fetch(guildConfig.leaderboard_msg);
 					if (!message || !message.editable)
 						channel.send({ embeds }).then((msg) => {
 							message = msg;
