@@ -67,7 +67,7 @@ async function locales() {
 
 async function no_locales(err) {
 	Logger.warn(client, `Error for Locales modules: ${err}`);
-	if (err == 'No locales API') client.locales = JSON.parse(fs.readFileSync('./src/locales.js'));
+	if (err == 'No locales API') client.locales = JSON.parse(require('./src/locales.js'));
 	else client.locales = JSON.parse(fs.readFileSync('./locales.json').catch((err) => console.error(err)));
 }
 
