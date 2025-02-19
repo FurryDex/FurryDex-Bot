@@ -3,9 +3,11 @@ const Logger = require('../Logger');
 
 function leaderboard_start(client) {
 	leaderboard_update(client);
-	setInterval(async () => {
-		leaderboard_update(client);
-	}, 60 * 60 * 1000);
+	setTimeout(() => {
+		setInterval(async () => {
+			leaderboard_update(client);
+		}, 60 * 60 * 1000);
+	}, 60 * 1000);
 }
 
 async function leaderboard_update(client) {

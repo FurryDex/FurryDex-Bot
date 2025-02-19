@@ -10,13 +10,12 @@ module.exports = async (client) => {
 	(await pGlob(`./commands/*/*.js`)).map(async (cmdFile) => {
 		const cmd = require(cmdFile.replace('.', process.cwd()));
 		if (!cmd.name) return Logger.warn(null, `Nom Non Definie\nFichier: ${cmdFile}`);
+		if (cmd.name == 'furry' && client.config.bot.base_command) cmd.name = client.config.bot.base_command;
 		if (!cmd.description) return Logger.warn(null, `Description Non Definie\nFichier: ${cmdFile}`);
 		if (!cmd.dm_permission) cmd.dm_permission = false;
 		if (!cmd.category) return Logger.warn(null, `Catégorie Non Definie\nFichier: ${cmdFile}`);
 
-		if (cmd.permissions != null) {
-			cmd.default_member_permissions = cmd.permissions;
-		}
+		if (cmd.permissions != null) cmd.default_member_permissions = cmd.permissions;
 
 		try {
 			let locales = client.locales['commands'][cmd.name];
