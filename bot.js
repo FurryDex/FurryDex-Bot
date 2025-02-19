@@ -57,7 +57,9 @@ async function locales() {
 				client.locales = await response.json();
 				fs.writeFileSync('./locales.json', JSON.stringify(client.locales));
 			}
-		} else no_locales('No locales API');
+		} else {
+			no_locales('No locales API');
+		}
 	} catch (err) {
 		no_locales(err);
 	}
@@ -65,7 +67,8 @@ async function locales() {
 
 async function no_locales(err) {
 	Logger.warn(client, `Error for Locales modules: ${err}`);
-	client.locales = JSON.parse(fs.readFileSync('./locales.json').catch((err) => console.error(err)));
+	if (err == 'No locales API') client.locales = JSON.parse(fs.readFileSync('./src/locales.json'));
+	else client.locales = JSON.parse(fs.readFileSync('./locales.json').catch((err) => console.error(err)));
 }
 
 locales().then(() => {
@@ -135,5 +138,3 @@ process.on('SIGINT', function () {
 
 	callAmount++;
 });
-
-module.exports = { client };

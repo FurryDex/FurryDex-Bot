@@ -18,6 +18,7 @@ module.exports = async (client) => {
 		if (cmd.permissions != null) cmd.default_member_permissions = cmd.permissions;
 
 		try {
+			if (client.locales == {}) return;
 			let locales = client.locales['commands'][cmd.name];
 			cmd.nameLocalizations = locales.name ?? {};
 			cmd.descriptionLocalizations = locales.description ?? {};
