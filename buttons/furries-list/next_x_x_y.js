@@ -4,17 +4,16 @@ module.exports = {
 	name: 'next_x_x_y',
 	run: async (client, interaction) => {
 		const locales = client.locales.commands.furries;
-		let user = interaction.options.getUser('user') ?? interaction.user;
-		let user_cards = await client
-			.knex('user_cards')
-			.select('*')
-			.where({ user_id: user.id })
-			.catch((err) => {
-				console.error(err);
-			});
 		const args = interaction.customId.toString().split('_');
 		args.shift();
 		const userId = args[0];
+		let user_cards = await client
+			.knex('user_cards')
+			.select('*')
+			.where({ user_id: userId })
+			.catch((err) => {
+				console.error(err);
+			});
 
 		AllOptions = [];
 		user_cards.forEach(async (card, key) => {
