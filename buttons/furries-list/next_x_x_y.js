@@ -3,7 +3,7 @@ const { StringSelectMenuBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle } 
 module.exports = {
 	name: 'next_x_x_y',
 	run: async (client, interaction) => {
-		const locales = client.locales.commands.furries;
+		const locales = client.locales.commands.furry;
 		const args = interaction.customId.toString().split('_');
 		args.shift();
 		const userId = args[0];
@@ -22,7 +22,7 @@ module.exports = {
 			let description = locales.run.list[interaction.locale] ?? locales.run.list.default;
 			let card_info = await client
 				.knex('cards')
-				.select('*')
+				.first('*')
 				.where({ id: card.card_id })
 				.catch((err) => {
 					console.error(err);
