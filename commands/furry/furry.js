@@ -60,19 +60,19 @@ module.exports = {
 		//	description: 'Display info of your or another users last caught card.',
 		//	type: ApplicationCommandOptionType.Subcommand,
 		//},
-		{
-			name: 'give',
-			description: 'Give a card to a user.',
-			type: ApplicationCommandOptionType.Subcommand,
-			options: [
-				{
-					name: 'give-to',
-					description: 'The user you want to give a card to.',
-					required: true,
-					type: ApplicationCommandOptionType.User,
-				},
-			],
-		},
+		//{
+		//	name: 'give',
+		//	description: 'Give a card to a user.',
+		//	type: ApplicationCommandOptionType.Subcommand,
+		//	options: [
+		//		{
+		//			name: 'give-to',
+		//			description: 'The user you want to give a card to.',
+		//			required: true,
+		//			type: ApplicationCommandOptionType.User,
+		//		},
+		//	],
+		//},
 		{
 			name: 'count',
 			description: 'Count how many card you have.',
