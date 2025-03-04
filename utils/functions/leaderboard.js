@@ -99,8 +99,9 @@ async function leaderboard_update(client) {
 				embeds.push(embed);
 			}
 			if (guildConfig.leaderboard_edit) {
-				if (guildConfig.leaderboard_msg && channel.messages.cache.has(guildConfig.leaderboard_msg)) {
+				if (guildConfig.leaderboard_msg && (await channel.messages.cache.has(guildConfig.leaderboard_msg))) {
 					let message = await channel.messages.fetch(guildConfig.leaderboard_msg);
+					(await channel.messages.cache.find((msg) => msg.author.id === client.user.id))?.delete();
 					if (!message || !message.editable)
 						channel.send({ embeds }).then((msg) => {
 							message = msg;
