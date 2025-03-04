@@ -473,7 +473,7 @@ dist
 
 # End of https://mrkandreev.name/snippets/gitignore-generator/#vs,Node
 
-# Flyzar
+# FD - Custom
 DB*/
 DB/
 DB*/*
