@@ -123,7 +123,7 @@ async function updateMetadata(userId) {
 						.where({ user_id: userId })
 						.first('*')
 						.catch((err) => console.error(err))
-				).pourcent ?? 0,
+				).card_completion ?? 0,
 			bug_hunt_card: (await knex('user_cards')
 				.where({ user_id: userId, card_id: 16 })
 				.first('*')
