@@ -33,6 +33,11 @@ app.get('/info.json', function (req, res) {
 	res.send({ version: require('../package.json').version, status: '🟢 Online' });
 });
 
+app.get('/verify-user', function (req, res) {
+	console.log(req);
+	console.log(res);
+});
+
 // ACTIVITY API
 app.post('/api/token', async (req, res) => {
 	const response = await fetch(`https://discord.com/api/oauth2/token`, {
