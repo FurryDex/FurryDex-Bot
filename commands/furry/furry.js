@@ -1,5 +1,6 @@
-const { ApplicationCommandOptionType, StringSelectMenuBuilder, ActionRowBuilder, EmbedBuilder, ButtonBuilder, ButtonStyle } = require('discord.js');
+const { ApplicationCommandOptionType, StringSelectMenuBuilder, ActionRowBuilder, EmbedBuilder, ButtonBuilder, ButtonStyle, BaseInteraction, SelectMenuInteraction } = require('discord.js');
 const fs = require('fs');
+const { cardEmbed } = require('../../utils/functions/card');
 
 module.exports = {
 	name: 'furry',
@@ -60,19 +61,19 @@ module.exports = {
 		//	description: 'Display info of your or another users last caught card.',
 		//	type: ApplicationCommandOptionType.Subcommand,
 		//},
-		//{
-		//	name: 'give',
-		//	description: 'Give a card to a user.',
-		//	type: ApplicationCommandOptionType.Subcommand,
-		//	options: [
-		//		{
-		//			name: 'give-to',
-		//			description: 'The user you want to give a card to.',
-		//			required: true,
-		//			type: ApplicationCommandOptionType.User,
-		//		},
-		//	],
-		//},
+		{
+			name: 'give',
+			description: 'Give a card to a user.',
+			type: ApplicationCommandOptionType.Subcommand,
+			options: [
+				{
+					name: 'give-to',
+					description: 'The user you want to give a card to.',
+					required: true,
+					type: ApplicationCommandOptionType.User,
+				},
+			],
+		},
 		{
 			name: 'count',
 			description: 'Count how many card you have.',
@@ -179,7 +180,12 @@ module.exports = {
 						.replace('%date%', `${cd(date.getDate())}/${cd(date.getMonth())}/${cd(date.getFullYear())} ${cd(date.getHours())}H${cd(date.getMinutes())}`),
 				});
 				if (user_cards.length == key + 1) {
-					sendMenu(AllOptions, interaction, user.id, false, 0, 25, 'cards');
+					sendMenu(AllOptions, interaction, false, 0, 25, 'cards', async (response) => {
+						response.deferReply().then(() => response.deleteReply());
+						cardEmbed(client, response.values[0], response.locale).then((embed) => {
+							interaction.editReply({ embeds: [embed], components: [], content: ' ' });
+						});
+					});
 				}
 			});
 		} else if (subcommand == 'completion') {
@@ -231,7 +237,7 @@ module.exports = {
 					});
 				AllOptions.push({
 					label: `(#${card.id}) ${card_info.name}`,
-					value: `${card.id}_${giveTo.id}`,
+					value: `${card.id}`,
 					emoji: `${card_info.emoji}`,
 					description: description
 						.replace('%attacks%', card.attacks)
@@ -239,7 +245,72 @@ module.exports = {
 						.replace('%date%', `${cd(date.getDate())}/${cd(date.getMonth())}/${cd(date.getFullYear())} ${cd(date.getHours())}H${cd(date.getMinutes())}`),
 				});
 				if (user_cards.length == key + 1) {
-					sendMenu(AllOptions, interaction, user.id, false, 0, 25, 'giveTo', true);
+					sendMenu(AllOptions, interaction, false, 0, 25, 'giveTo', async (response) => {
+						let user = await client
+							.knex('users')
+							.first('*')
+							.where({ id: giveTo.id })
+							.catch((err) => console.error(err));
+
+						if (!user) {
+							client
+								.knex('users')
+								.insert({ user_id: giveTo.id })
+								.catch((err) => console.error(err));
+						}
+
+						let card = await client
+							.knex('user_cards')
+							.first('*')
+							.where({ user_id: response.user.id, id: response.values[0] })
+							.catch((err) => console.error(err));
+
+						if (!card) return response.reply('You are not the owner of the card');
+
+						let date = new Date();
+						client
+							.knex('user_cards')
+							.update({ user_id: giveTo.id, gived: response.user.id, giveDate: date.toISOString() })
+							.where({ user_id: response.user.id, id: response.values[0] })
+							.catch((err) => console.error(err));
+
+						require('../../utils/functions/DiscordLogger').writePlayer(client, response.user.id, {
+							tag: 'GIVE',
+							color: 'PINK',
+							description: 'Card Give',
+							info: [
+								{ name: 'to', value: `<@${giveTo.id}>` },
+								{ name: 'card', value: `${response.values[0]}` },
+							],
+							content: 'Give',
+						});
+
+						require('../../utils/functions/DiscordLogger').writePlayer(client, response.user.id, {
+							tag: 'GIVE',
+							color: 'PINK',
+							description: 'Card Recieved',
+							info: [
+								{ name: 'from', value: `${response.user.id}` },
+								{ name: 'card', value: `${response.values[0]}` },
+							],
+							content: 'Give',
+						});
+
+						let cardO = await client
+							.knex('cards')
+							.first('*')
+							.where({ id: card.card_id })
+							.catch((err) => console.error(err));
+
+						let message = '%cardEmoji% `%cardName%` (`#%cardId%`)';
+						response.reply(
+							`card ${message
+								.replace('%cardEmoji%', cardO.emoji)
+								.replace('%cardName%', cardO.name)
+								.replace('%cardId%', `${card.id}, ${card.live < 0 ? card.live : `+${card.live}`}%/${card.attacks < 0 ? card.attacks : `+${card.attacks}`}%`)
+								.replace('%@player%', `<@${response.user.id}>`)} from <@${response.user.id}> to <@${giveTo.id}> was give succefully`
+						);
+					});
 				}
 			});
 		} else {
@@ -251,38 +322,75 @@ module.exports = {
 	},
 };
 
-async function sendMenu(options, interaction, id, edit = false, page = 0, chunkSize = 25, customId, ephemeral = false) {
+/**
+ *
+ * @callback callback
+ * @param {Object}  options - List of options for the menu
+ * @param {BaseInteraction, Message}  interaction - The interaction
+ * @param {Boolean} isMessage - Is message ? (default false)
+ * @param {Number} page - The page (default 0)
+ * @param {Number} chunkSize - The chunk size (default 25, max 25)
+ * @param {String} customId - The customId
+ * @param {callback} callback - The callback
+ * @param {String} content - The content of the interaction / message
+ * @returns {Promise<SelectMenuInteraction>}
+ * @example
+ * sendMenu(options, interaction, message, page, chunkSize, customId, callback);
+ * @example
+ * sendMenu(options, interaction, false, 0, 25, 'cards', callback);
+ *
+ */
+
+async function sendMenu(options, interaction, isMessage = false, page = 0, chunkSize = 25, customId, callback, content = 'Select a card: ') {
 	const chunkedOptions = chunkArray(options, chunkSize);
 	const currentOptions = chunkedOptions[page];
 
-	const row = new ActionRowBuilder().addComponents(new StringSelectMenuBuilder().setCustomId(customId).setPlaceholder('Select a card').addOptions(currentOptions));
+	const row = new ActionRowBuilder().addComponents(new StringSelectMenuBuilder().setCustomId(customId).addOptions(currentOptions));
+	let rows = [row];
 
-	const buttonRow = new ActionRowBuilder().addComponents(
-		new ButtonBuilder()
-			.setCustomId(`prev_${id}_${Number(page) - 1}_{${customId}}`)
-			.setLabel('«')
-			.setStyle(page == 0 ? ButtonStyle.Primary : ButtonStyle.Danger)
-			.setDisabled(page == 0),
-		new ButtonBuilder()
-			.setCustomId(`nothing`)
-			.setLabel(`${Number(page) + 1}`)
-			.setStyle(ButtonStyle.Success)
-			.setDisabled(chunkedOptions.length == 1),
-		new ButtonBuilder()
-			.setCustomId(`next_${id}_${Number(page) + 1}_{${customId}}`)
-			.setLabel('»')
-			.setStyle(page == chunkedOptions.length - 1 ? ButtonStyle.Primary : ButtonStyle.Danger)
-			.setDisabled(page == chunkedOptions.length - 1)
-	);
+	if (chunkedOptions.length == 0) return interaction.editReply({ content: 'No options to select', ephemeral: true });
 
-	if (!edit) {
-		await interaction.editReply({ content: 'Please select a card:', components: [row, buttonRow], ephemeral });
+	if (chunkedOptions.length > 1) {
+		const buttonRow = new ActionRowBuilder().addComponents(
+			new ButtonBuilder()
+				.setCustomId(`${customId}--prev`)
+				.setLabel('«')
+				.setStyle(page == 0 ? ButtonStyle.Primary : ButtonStyle.Danger)
+				.setDisabled(page == 0),
+			new ButtonBuilder()
+				.setCustomId(`nothing`)
+				.setLabel(`${Number(page) + 1}`)
+				.setStyle(ButtonStyle.Success)
+				.setDisabled(chunkedOptions.length == 1),
+			new ButtonBuilder()
+				.setCustomId(`${customId}--next`)
+				.setLabel('»')
+				.setStyle(page == chunkedOptions.length - 1 ? ButtonStyle.Primary : ButtonStyle.Danger)
+				.setDisabled(page == chunkedOptions.length - 1)
+		);
+		rows.push(buttonRow);
+	}
+
+	let message;
+	if (!isMessage) {
+		message = await interaction.editReply({ content, components: rows });
 	} else {
-		await interaction.update({ components: [row, buttonRow] });
+		message = await interaction.update({ components: rows });
+	}
+
+	if (!message) return;
+
+	const response = await message.awaitMessageComponent();
+
+	if (response.customId == `${customId}--prev`) {
+		sendMenu(options, interaction, isMessage, page - 1, chunkSize, customId, callback);
+	} else if (response.customId == `${customId}--next`) {
+		sendMenu(options, interaction, isMessage, page + 1, chunkSize, customId, callback);
+	} else if (response.customId == customId) {
+		callback(response);
+		return response;
 	}
 }
-
-// carte / carteTotal * 100
 function chunkArray(array, chunkSize = 25) {
 	const chunks = [];
 	for (let i = 0; i < array.length; i += chunkSize) {
@@ -290,5 +398,3 @@ function chunkArray(array, chunkSize = 25) {
 	}
 	return chunks;
 }
-
-//(3 - card.rarity) * 10

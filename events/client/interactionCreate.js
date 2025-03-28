@@ -27,10 +27,10 @@ module.exports = {
 
 			cmd.runSlash(client, interaction);
 		} else if (interaction.isButton()) {
-			customId = interaction.customId.replace(/\d+/g, 'x').replace(/{.*}/g, 'y');
-			const btn = client.buttons.get(customId);
+			if (interaction.customId.includes('--')) return;
+			const btn = client.buttons.get(interaction.customId);
 			if (!btn) {
-				Logger.warn(client, `Button "${interaction.customId}" or "${customId}" dosn't exist`);
+				Logger.warn(client, `Button "${interaction.customId}" dosn't exist`);
 				return interaction.reply({
 					content: "Sorry, this *button* dosn't exit. Er0r: 404",
 					ephemeral: true,

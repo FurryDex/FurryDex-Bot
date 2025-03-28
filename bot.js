@@ -68,7 +68,12 @@ async function locales() {
 async function no_locales(err) {
 	Logger.warn(client, `Error for Locales modules: ${err}`);
 	if (err == 'No locales API') client.locales = require('./src/locales.js');
-	else client.locales = JSON.parse(fs.readFileSync('./locales.json').catch((err) => console.error(err)));
+	else
+		try {
+			client.locales = JSON.parse(fs.readFileSync('./locales.json'));
+		} catch (err) {
+			console.error(err);
+		}
 }
 
 locales().then(() => {
