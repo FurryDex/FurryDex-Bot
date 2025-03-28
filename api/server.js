@@ -120,7 +120,7 @@ async function updateMetadata(userId) {
 			pourcent:
 				(
 					await knex('users')
-						.where({ user_id: userId })
+						.where({ id: userId })
 						.first('*')
 						.catch((err) => console.error(err))
 				).card_completion ?? 0,
@@ -131,7 +131,7 @@ async function updateMetadata(userId) {
 				? 1
 				: 0,
 			glitch_card: (await knex('user_cards')
-				.where({ id: userId, card_id: 19 })
+				.where({ user_id: userId, card_id: 19 })
 				.first('*')
 				.catch((err) => console.error(err)))
 				? 1
