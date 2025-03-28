@@ -8,7 +8,7 @@
 		"start": "node index.js --global --location=global"
 	},
 	"keywords": [],
-	"author": "",
+	"author": "Flyzar73",
 	"license": "ISC",
 	"dependencies": {
 		"@dotenvx/dotenvx": "^0.37.1",
