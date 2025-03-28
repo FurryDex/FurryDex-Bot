@@ -14,11 +14,13 @@ module.exports = {
 			activities: [{ name: activity }],
 		});
 
-		client
-			.knex('guilds')
-			.update({ last_card: null })
-			//.when('client.config.log.data', '!=', 0)
-			.catch((err) => console.error(err));
+		client.guilds.cache.forEach((guild) => {
+			client
+				.knex('guilds')
+				.update({ last_card: null })
+				.where({ id: guild.id })
+				.catch((err) => {});
+		});
 
 		client.application.commands.set(client.commands.map((cmd) => cmd)).catch((err) => {
 			if (err) {
