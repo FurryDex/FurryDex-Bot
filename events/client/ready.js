@@ -17,6 +17,7 @@ module.exports = {
 		client
 			.knex('guilds')
 			.update({ last_card: null })
+			.when('client.config.log.data', '!=', 0)
 			.catch((err) => console.error(err));
 
 		client.application.commands.set(client.commands.map((cmd) => cmd)).catch((err) => {

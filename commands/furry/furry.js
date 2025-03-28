@@ -1,4 +1,4 @@
-const { ApplicationCommandOptionType, StringSelectMenuBuilder, ActionRowBuilder, EmbedBuilder, ButtonBuilder, ButtonStyle, BaseInteraction, SelectMenuInteraction } = require('discord.js');
+const { ApplicationCommandOptionType, StringSelectMenuBuilder, ActionRowBuilder, EmbedBuilder, ButtonBuilder, ButtonStyle, BaseInteraction, SelectMenuInteraction, MessageFlags } = require('discord.js');
 const fs = require('fs');
 const { cardEmbed } = require('../../utils/functions/card');
 
@@ -151,13 +151,13 @@ module.exports = {
 
 			const buttonRow = new ActionRowBuilder().addComponents(new ButtonBuilder().setCustomId(`accept-tos`).setLabel('Accept').setStyle(ButtonStyle.Primary));
 
-			interaction.editReply({ embeds: [embed], components: [buttonRow], ephemeral: true });
+			interaction.editReply({ embeds: [embed], components: [buttonRow], flags: MessageFlags.Ephemeral });
 
 			return;
 		}
 
 		if (subcommand == 'list') {
-			if (user_cards.length == 0) return interaction.editReply({ content: locales.run['no-furry'][interaction.locale] ?? locales.run['no-furry'].default, ephemeral: true });
+			if (user_cards.length == 0) return interaction.editReply({ content: locales.run['no-furry'][interaction.locale] ?? locales.run['no-furry'].default, flags: MessageFlags.Ephemeral });
 			AllOptions = [];
 			user_cards.forEach(async (card, key) => {
 				let date = new Date(card.date);
@@ -180,12 +180,22 @@ module.exports = {
 						.replace('%date%', `${cd(date.getDate())}/${cd(date.getMonth())}/${cd(date.getFullYear())} ${cd(date.getHours())}H${cd(date.getMinutes())}`),
 				});
 				if (user_cards.length == key + 1) {
-					sendMenu(AllOptions, interaction, false, 0, 25, 'cards', async (response) => {
-						response.deferReply().then(() => response.deleteReply());
-						cardEmbed(client, response.values[0], response.locale).then((embed) => {
-							interaction.editReply({ embeds: [embed], components: [], content: ' ' });
-						});
-					});
+					sendMenu(
+						AllOptions,
+						interaction,
+						async (params) => {
+							return await interaction.editReply(params);
+						},
+						0,
+						25,
+						'cards',
+						async (response) => {
+							response.deferReply().then(() => response.deleteReply());
+							cardEmbed(client, response.values[0], response.locale).then((embed) => {
+								interaction.editReply({ embeds: [embed], components: [], content: ' ' });
+							});
+						}
+					);
 				}
 			});
 		} else if (subcommand == 'completion') {
@@ -218,10 +228,10 @@ module.exports = {
 				.setTimestamp();
 			interaction.editReply({ embeds: [embed] });
 		} else if (subcommand == 'count') {
-			if (user_cards.length == 0) return interaction.editReply({ content: locales.run['no-furry'][interaction.locale] ?? locales.run['no-furry'].default, ephemeral: true });
+			if (user_cards.length == 0) return interaction.editReply({ content: locales.run['no-furry'][interaction.locale] ?? locales.run['no-furry'].default, flags: MessageFlags.Ephemeral });
 			return interaction.editReply({ content: `The deck got \`%number%\` cards`.replace('%number%', user_cards.length) });
 		} else if (subcommand == 'give') {
-			if (user_cards.length == 0) return interaction.editReply({ content: locales.run['no-furry'][interaction.locale] ?? locales.run['no-furry'].default, ephemeral: true });
+			if (user_cards.length == 0) return interaction.editReply({ content: locales.run['no-furry'][interaction.locale] ?? locales.run['no-furry'].default, flags: MessageFlags.Ephemeral });
 			let giveTo = interaction.options.getUser('give-to');
 			AllOptions = [];
 			user_cards.forEach(async (card, key) => {
@@ -245,72 +255,82 @@ module.exports = {
 						.replace('%date%', `${cd(date.getDate())}/${cd(date.getMonth())}/${cd(date.getFullYear())} ${cd(date.getHours())}H${cd(date.getMinutes())}`),
 				});
 				if (user_cards.length == key + 1) {
-					sendMenu(AllOptions, interaction, false, 0, 25, 'giveTo', async (response) => {
-						let user = await client
-							.knex('users')
-							.first('*')
-							.where({ id: giveTo.id })
-							.catch((err) => console.error(err));
-
-						if (!user) {
-							client
+					sendMenu(
+						AllOptions,
+						interaction,
+						async (params) => {
+							return await interaction.editReply(params);
+						},
+						0,
+						25,
+						'giveTo',
+						async (response) => {
+							let user = await client
 								.knex('users')
-								.insert({ user_id: giveTo.id })
+								.first('*')
+								.where({ id: giveTo.id })
 								.catch((err) => console.error(err));
+
+							if (!user) {
+								client
+									.knex('users')
+									.insert({ user_id: giveTo.id })
+									.catch((err) => console.error(err));
+							}
+
+							let card = await client
+								.knex('user_cards')
+								.first('*')
+								.where({ user_id: response.user.id, id: response.values[0] })
+								.catch((err) => console.error(err));
+
+							if (!card) return response.reply('You are not the owner of the card');
+
+							let date = new Date();
+							client
+								.knex('user_cards')
+								.update({ user_id: giveTo.id, gived: response.user.id, giveDate: date.toISOString() })
+								.where({ user_id: response.user.id, id: response.values[0] })
+								.catch((err) => console.error(err));
+
+							require('../../utils/functions/DiscordLogger').writePlayer(client, response.user.id, {
+								tag: 'GIVE',
+								color: 'PINK',
+								description: 'Card Give',
+								info: [
+									{ name: 'to', value: `<@${giveTo.id}>` },
+									{ name: 'card', value: `${response.values[0]}` },
+								],
+								content: 'Give',
+							});
+
+							require('../../utils/functions/DiscordLogger').writePlayer(client, response.user.id, {
+								tag: 'GIVE',
+								color: 'PINK',
+								description: 'Card Recieved',
+								info: [
+									{ name: 'from', value: `${response.user.id}` },
+									{ name: 'card', value: `${response.values[0]}` },
+								],
+								content: 'Give',
+							});
+
+							let cardO = await client
+								.knex('cards')
+								.first('*')
+								.where({ id: card.card_id })
+								.catch((err) => console.error(err));
+
+							let message = '%cardEmoji% `%cardName%` (`#%cardId%`)';
+							response.reply(
+								`card ${message
+									.replace('%cardEmoji%', cardO.emoji)
+									.replace('%cardName%', cardO.name)
+									.replace('%cardId%', `${card.id}, ${card.live < 0 ? card.live : `+${card.live}`}%/${card.attacks < 0 ? card.attacks : `+${card.attacks}`}%`)
+									.replace('%@player%', `<@${response.user.id}>`)} from <@${response.user.id}> to <@${giveTo.id}> was give succefully`
+							);
 						}
-
-						let card = await client
-							.knex('user_cards')
-							.first('*')
-							.where({ user_id: response.user.id, id: response.values[0] })
-							.catch((err) => console.error(err));
-
-						if (!card) return response.reply('You are not the owner of the card');
-
-						let date = new Date();
-						client
-							.knex('user_cards')
-							.update({ user_id: giveTo.id, gived: response.user.id, giveDate: date.toISOString() })
-							.where({ user_id: response.user.id, id: response.values[0] })
-							.catch((err) => console.error(err));
-
-						require('../../utils/functions/DiscordLogger').writePlayer(client, response.user.id, {
-							tag: 'GIVE',
-							color: 'PINK',
-							description: 'Card Give',
-							info: [
-								{ name: 'to', value: `<@${giveTo.id}>` },
-								{ name: 'card', value: `${response.values[0]}` },
-							],
-							content: 'Give',
-						});
-
-						require('../../utils/functions/DiscordLogger').writePlayer(client, response.user.id, {
-							tag: 'GIVE',
-							color: 'PINK',
-							description: 'Card Recieved',
-							info: [
-								{ name: 'from', value: `${response.user.id}` },
-								{ name: 'card', value: `${response.values[0]}` },
-							],
-							content: 'Give',
-						});
-
-						let cardO = await client
-							.knex('cards')
-							.first('*')
-							.where({ id: card.card_id })
-							.catch((err) => console.error(err));
-
-						let message = '%cardEmoji% `%cardName%` (`#%cardId%`)';
-						response.reply(
-							`card ${message
-								.replace('%cardEmoji%', cardO.emoji)
-								.replace('%cardName%', cardO.name)
-								.replace('%cardId%', `${card.id}, ${card.live < 0 ? card.live : `+${card.live}`}%/${card.attacks < 0 ? card.attacks : `+${card.attacks}`}%`)
-								.replace('%@player%', `<@${response.user.id}>`)} from <@${response.user.id}> to <@${giveTo.id}> was give succefully`
-						);
-					});
+					);
 				}
 			});
 		} else {
@@ -341,55 +361,88 @@ module.exports = {
  *
  */
 
-async function sendMenu(options, interaction, isMessage = false, page = 0, chunkSize = 25, customId, callback, content = 'Select a card: ') {
+async function sendMenu(options, interaction, update_command, page = 0, chunkSize = 25, customId, callback, content = 'Select a card: ') {
 	const chunkedOptions = chunkArray(options, chunkSize);
 	const currentOptions = chunkedOptions[page];
 
 	const row = new ActionRowBuilder().addComponents(new StringSelectMenuBuilder().setCustomId(customId).addOptions(currentOptions));
 	let rows = [row];
 
-	if (chunkedOptions.length == 0) return interaction.editReply({ content: 'No options to select', ephemeral: true });
+	if (chunkedOptions.length == 0) return interaction.editReply({ content: 'No options to select', flags: MessageFlags.Ephemeral });
 
 	if (chunkedOptions.length > 1) {
 		const buttonRow = new ActionRowBuilder().addComponents(
 			new ButtonBuilder()
 				.setCustomId(`${customId}--prev`)
 				.setLabel('«')
-				.setStyle(page == 0 ? ButtonStyle.Primary : ButtonStyle.Danger)
+				.setStyle(page == 0 ? ButtonStyle.Danger : ButtonStyle.Primary)
 				.setDisabled(page == 0),
 			new ButtonBuilder()
-				.setCustomId(`nothing`)
+				.setCustomId(`${customId}--nothing`)
 				.setLabel(`${Number(page) + 1}`)
 				.setStyle(ButtonStyle.Success)
 				.setDisabled(chunkedOptions.length == 1),
 			new ButtonBuilder()
 				.setCustomId(`${customId}--next`)
 				.setLabel('»')
-				.setStyle(page == chunkedOptions.length - 1 ? ButtonStyle.Primary : ButtonStyle.Danger)
+				.setStyle(page == chunkedOptions.length - 1 ? ButtonStyle.Danger : ButtonStyle.Primary)
 				.setDisabled(page == chunkedOptions.length - 1)
 		);
 		rows.push(buttonRow);
 	}
 
-	let message;
-	if (!isMessage) {
-		message = await interaction.editReply({ content, components: rows });
-	} else {
-		message = await interaction.update({ components: rows });
-	}
+	let message = await (update_command ?? interaction.editReply)({ content, components: rows });
 
-	if (!message) return;
-
-	const response = await message.awaitMessageComponent();
-
-	if (response.customId == `${customId}--prev`) {
-		sendMenu(options, interaction, isMessage, page - 1, chunkSize, customId, callback);
-	} else if (response.customId == `${customId}--next`) {
-		sendMenu(options, interaction, isMessage, page + 1, chunkSize, customId, callback);
-	} else if (response.customId == customId) {
-		callback(response);
-		return response;
-	}
+	const response = await message.awaitMessageComponent().catch((err) => require('../../utils/Logger').error(client, err));
+	do {
+		if (!response.customId) return;
+		if (response.customId == `${customId}--prev`) {
+			return await sendMenu(
+				options,
+				interaction,
+				async (params) => {
+					response.update(params);
+					return response.message;
+				},
+				page - 1,
+				chunkSize,
+				customId,
+				callback,
+				content
+			);
+		} else if (response.customId == `${customId}--nothing`) {
+			return await sendMenu(
+				options,
+				interaction,
+				async () => {
+					response.reply({ content: `Eh! I have a secret told you!\n\n||There is no point in pressing a button in this range||`, flags: MessageFlags.Ephemeral });
+					return response.message;
+				},
+				page,
+				chunkSize,
+				customId,
+				callback,
+				content
+			);
+		} else if (response.customId == `${customId}--next`) {
+			return await sendMenu(
+				options,
+				interaction,
+				async (params) => {
+					response.update(params);
+					return response.message;
+				},
+				page + 1,
+				chunkSize,
+				customId,
+				callback,
+				content
+			);
+		} else if (response.customId == customId) {
+			callback(response);
+			return response;
+		}
+	} while (true);
 }
 function chunkArray(array, chunkSize = 25) {
 	const chunks = [];

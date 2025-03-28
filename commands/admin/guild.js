@@ -8,6 +8,6 @@ module.exports = {
 	ownerOnly: true,
 	run: (client, message, args) => {},
 	runSlash: (client, interaction) => {
-		interaction.reply({ content: `Guild: ${client.guilds.cache.map((guild, index) => `\n> [${index}] ${guild.name} (${guild.memberCount})`).join('')}`, ephemeral: true });
+		interaction.reply({ content: `Guild: ${client.guilds.cache.map((guild, index) => `\n> [${index}] ${guild.name} (${guild.memberCount})`).join('')}`, flags: MessageFlags.Ephemeral });
 	},
 };

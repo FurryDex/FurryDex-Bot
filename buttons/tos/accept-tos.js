@@ -9,7 +9,7 @@ module.exports = {
 				console.error(err);
 			})
 			.then(() => {
-				interaction.reply({ content: '✅ Thank you. Enjoy the bot !', ephemeral: true });
+				interaction.reply({ content: '✅ Thank you. Enjoy the bot !', flags: MessageFlags.Ephemeral });
 			});
 	},
 };

@@ -35,7 +35,7 @@ async function isXMinutesPassed(message, client) {
 			if (bypass)
 				message.reply({
 					content: 'Sorry, the bot is not enable in this server',
-					ephemeral: true,
+					flags: MessageFlags.Ephemeral,
 				});
 			return false; // Le bot n'est pas activé pour ce serveur
 		}
@@ -44,7 +44,7 @@ async function isXMinutesPassed(message, client) {
 			if (bypass)
 				message.reply({
 					content: 'Sorry, the last card is not catch',
-					ephemeral: true,
+					flags: MessageFlags.Ephemeral,
 				});
 			return false; // Le bot n'est pas activé pour ce serveur
 		}

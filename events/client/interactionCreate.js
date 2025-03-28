@@ -18,7 +18,7 @@ module.exports = {
 				if (!interaction.member.permissions.has([cmd.permissions]))
 					return interaction.reply({
 						content: "You dosn't have the nescessary permission",
-						ephemeral: true,
+						flags: MessageFlags.Ephemeral,
 					});
 			}
 			if (cmd.ownerOnly) {
@@ -33,7 +33,7 @@ module.exports = {
 				Logger.warn(client, `Button "${interaction.customId}" dosn't exist`);
 				return interaction.reply({
 					content: "Sorry, this *button* dosn't exit. Er0r: 404",
-					ephemeral: true,
+					flags: MessageFlags.Ephemeral,
 				});
 			}
 			interaction.customId = interaction.customId.replace(/{*}*/g, '');
@@ -44,7 +44,7 @@ module.exports = {
 				Logger.warn(client, `Modal "${interaction.customId}" dosn't exist`);
 				return interaction.reply({
 					content: "Sorry, this *form* dosn't exit. Er0r: 404",
-					ephemeral: true,
+					flags: MessageFlags.Ephemeral,
 				});
 			}
 			modal.run(client, interaction);
@@ -54,7 +54,7 @@ module.exports = {
 				Logger.warn(client, `Select "${interaction.customId}" dosn't exist`);
 				return interaction.reply({
 					content: "Sorry, this *select menu* dosn't exit. Er0r: 404",
-					ephemeral: true,
+					flags: MessageFlags.Ephemeral,
 				});
 			}
 			select.run(client, interaction);

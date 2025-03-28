@@ -58,7 +58,7 @@ module.exports = {
 					},
 				]);
 			}
-			return interaction.reply({ embeds: [noArgsEmbed], ephemeral: true });
+			return interaction.reply({ embeds: [noArgsEmbed], flags: MessageFlags.Ephemeral });
 		}
 
 		const cmd = client.commands.get(cmdName);

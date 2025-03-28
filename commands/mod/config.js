@@ -281,7 +281,7 @@ module.exports = {
 					.setMinValues(0)
 			);
 
-			await interaction.editReply({ content: 'Please select different leaderboards to show:', components: [row], ephemeral: true });
+			await interaction.editReply({ content: 'Please select different leaderboards to show:', components: [row], flags: MessageFlags.Ephemeral });
 		}
 
 		if (subcommand == 'leaderboard_edit') {
