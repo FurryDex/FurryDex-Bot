@@ -131,7 +131,7 @@ async function updateMetadata(userId) {
 				? 1
 				: 0,
 			glitch_card: (await knex('user_cards')
-				.where({ user_id: userId, card_id: 19 })
+				.where({ id: userId, card_id: 19 })
 				.first('*')
 				.catch((err) => console.error(err)))
 				? 1
