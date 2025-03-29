@@ -64,7 +64,7 @@ function write(client, content, tagColor = 'black', bgTagColor, tag, error = fal
 	}
 
 	if (client && client != null && client != undefined && client.guilds && !error) {
-		require('./functions/DiscordLogger').write(client, { category: 'other', channel: client.config.log.category.other.bot }, { tag: tag, color: color, description: '', info: [{ name: 'Write in host console', value: 'Yes' }], content: content });
+		require('./functions/DiscordLogger').write(client, { category: 'other', channel: client.config.log.thread.bot }, { tag: tag, color: color, description: '', info: [{ name: 'Write in host console', value: 'Yes' }], content: content });
 	} else if (client && client != null && client != undefined && client.guilds && error) {
 		require('./functions/DiscordLogger').write(
 			client,

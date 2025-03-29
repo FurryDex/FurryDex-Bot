@@ -12,8 +12,8 @@ async function write(client, destination, embed) {
 		.setDescription(embed.description || ' ')
 		.setFields(embed.info)
 		.setTimestamp();
-	const logGuild = await client.guilds.cache.get(client.config.log.guild ?? client.config.bot.guild);
-	const category = await logGuild.channels.cache.get(categoryList[destination.category.forum]);
+	const logGuild = await client.guilds.cache.get(client.config.log.guild);
+	const category = await logGuild.channels.cache.get(categoryList[destination.category]);
 	const channel = await category.threads.cache.get(destination.channel);
 	channel.send({ embeds: [logEmbed] });
 }
@@ -23,7 +23,7 @@ async function writePlayer(client, playerId, embed) {
 	if (!client.config.log.enable) return;
 	playerId = playerId.toString();
 
-	knex_channel = client.config.log.data;
+	knex_channel = client.config.log.mysql;
 
 	let color = require('../colors.json').find((x) => x.name == embed.color.toUpperCase());
 
@@ -38,7 +38,7 @@ async function writePlayer(client, playerId, embed) {
 		.where({ user_id: playerId })
 		.catch((err) => console.error(err));
 	const user = await client.users.cache.get(playerId);
-	const logGuild = await client.guilds.cache.get(client.config.log.guild ?? client.config.bot.guild);
+	const logGuild = await client.guilds.cache.get(client.config.log.guild);
 	const category = await logGuild.channels.cache.get(categoryList['player']);
 
 	let playerEmbed = new EmbedBuilder()
@@ -110,7 +110,7 @@ async function writeServer(client, serverId, embed) {
 	const categoryList = client.config.log.category;
 	if (!client.config.log.enable) return;
 
-	knex_channel = client.config.log.data;
+	knex_channel = client.config.log.mysql;
 
 	let color = require('../colors.json').find((x) => x.name == embed.color.toUpperCase());
 
@@ -126,8 +126,8 @@ async function writeServer(client, serverId, embed) {
 		.catch((err) => console.error(err));
 	const guild = await client.guilds.cache.get(serverId);
 
-	const logGuild = await client.guilds.cache.get(client.config.log.guild ?? client.config.bot.guild);
-	const category = await logGuild.channels.cache.get(categoryList['server']);
+	const logGuild = await client.guilds.cache.get(client.config.log.guild);
+	const category = await logGuild.channels.cache.get(categoryList['guild']);
 
 	let guildEmbed = new EmbedBuilder()
 		.setTitle(`${guild.name} (${serverId})`)
