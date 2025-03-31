@@ -216,7 +216,7 @@ async function win(client, message) {
 				new ButtonBuilder()
 					.setCustomId('catch')
 					.setDisabled(false)
-					.setEmoji('<:hunt:1284221526270410814>')
+					.setEmoji('<:Bug_hunt:1324413128817250457>')
 					.setLabel(locales.button.text[serverConfig.locale] ?? locales.button.text.default)
 					.setStyle(ButtonStyle.Danger)
 			);
