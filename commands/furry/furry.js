@@ -366,9 +366,7 @@ async function sendMenu(options, interaction, update_command, page = 0, chunkSiz
 	const chunkedOptions = chunkArray(options, chunkSize);
 	const currentOptions = chunkedOptions[page];
 
-	const row = new ActionRowBuilder().addComponents(new StringSelectMenuBuilder().setCustomId(customId).addOptions(currentOptions)).catch((err) => {
-		console.error(err, currentOptions);
-	});
+	const row = new ActionRowBuilder().addComponents(new StringSelectMenuBuilder().setCustomId(customId).addOptions(currentOptions));
 	if (!row) return;
 	let rows = [row];
 
