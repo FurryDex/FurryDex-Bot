@@ -1,3 +1,5 @@
+const { MessageFlags } = require('discord.js');
+
 module.exports = {
 	name: 'accept-tos',
 	run: async (client, interaction) => {
