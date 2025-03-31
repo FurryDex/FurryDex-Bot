@@ -190,9 +190,10 @@ module.exports = {
 						25,
 						'cards',
 						async (response) => {
-							response.deferReply().then(() => response.deleteReply());
 							cardEmbed(client, response.values[0], response.locale).then((embed) => {
-								interaction.editReply({ embeds: [embed], components: [], content: ' ' });
+								response.update({ embeds: [embed], components: [], content: ' ' }).catch((err) => {
+									console.error(err, response.values[0]);
+								});
 							});
 						}
 					);
@@ -365,7 +366,10 @@ async function sendMenu(options, interaction, update_command, page = 0, chunkSiz
 	const chunkedOptions = chunkArray(options, chunkSize);
 	const currentOptions = chunkedOptions[page];
 
-	const row = new ActionRowBuilder().addComponents(new StringSelectMenuBuilder().setCustomId(customId).addOptions(currentOptions));
+	const row = new ActionRowBuilder().addComponents(new StringSelectMenuBuilder().setCustomId(customId).addOptions(currentOptions)).catch((err) => {
+		console.error(err, currentOptions);
+	});
+	if (!row) return;
 	let rows = [row];
 
 	if (chunkedOptions.length == 0) return interaction.editReply({ content: 'No options to select', flags: MessageFlags.Ephemeral });
@@ -391,7 +395,9 @@ async function sendMenu(options, interaction, update_command, page = 0, chunkSiz
 		rows.push(buttonRow);
 	}
 
-	let message = await (update_command ?? interaction.editReply)({ content, components: rows });
+	let message = await (update_command ?? interaction.editReply)({ content, components: rows }).catch((err) => {
+		console.error(err, currentOptions);
+	});
 
 	const response = await message.awaitMessageComponent().catch((err) => require('../../utils/Logger').error(client, err));
 	do {
