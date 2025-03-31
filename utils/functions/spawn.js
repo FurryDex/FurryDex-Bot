@@ -1,4 +1,4 @@
-const { EmbedBuilder, ButtonStyle, ActionRowBuilder, ButtonBuilder } = require('discord.js');
+const { EmbedBuilder, ButtonStyle, ActionRowBuilder, ButtonBuilder, MessageFlags } = require('discord.js');
 const Logger = require('../Logger.js');
 
 async function isXMinutesPassed(message, client) {

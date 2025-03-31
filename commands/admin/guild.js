@@ -1,4 +1,4 @@
-const { ApplicationCommandOptionType, PermissionFlagsBits } = require('discord.js');
+const { ApplicationCommandOptionType, PermissionFlagsBits, MessageFlags } = require('discord.js');
 
 module.exports = {
 	name: 'guild',
@@ -8,6 +8,6 @@ module.exports = {
 	ownerOnly: true,
 	run: (client, message, args) => {},
 	runSlash: (client, interaction) => {
-		interaction.reply({ content: `Guild: ${client.guilds.cache.map((guild, index) => `\n> [${index}] ${guild.name} (${guild.memberCount})`).join('')}`, flags: MessageFlags.Ephemeral });
+		interaction.reply({ content: `Guild: ${client.guilds.cache.map((guild, index) => `\n> [${index}] ${guild.name} (${guild.memberCount})`).join('')}`, flags: MessageFlagss.Ephemeral });
 	},
 };

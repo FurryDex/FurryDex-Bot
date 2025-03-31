@@ -1,4 +1,4 @@
-const { EmbedBuilder, ApplicationCommandOptionType } = require('discord.js');
+const { EmbedBuilder, ApplicationCommandOptionType, MessageFlags } = require('discord.js');
 const { readdirSync } = require('fs');
 const { examples } = require('./ping');
 const commandFolder = readdirSync('./commands');
