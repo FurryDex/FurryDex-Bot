@@ -151,6 +151,31 @@ async function isXMinutesPassed(message, client) {
 				message.author.send({ embeds: [embed] });
 			}
 
+			if (user.cheat >= 85 && before < 85) {
+				const embed = new EmbedBuilder()
+					.setColor(require('../colors.json').find((color) => (color.name = 'RED')).hex)
+					.setTitle('Warning')
+					.setDescription('You are close to the limit ! Stop farming !')
+					.addFields({ name: 'Cheat pourcent detected', value: `${user.cheat} / 100`, inline: true }, { name: 'Limit before suspend', value: `85`, inline: true })
+					.setFooter({ text: 'You can spawn cards every 1 hour' })
+					.setTimestamp()
+					.setAuthor({
+						name: message.author.username,
+						iconURL: message.author.displayAvatarURL(),
+					});
+
+				message.author.send({ embeds: [embed] });
+
+				require('./DiscordLogger').writePlayer(client, user.id, {
+					tag: 'CHEAT REPORT',
+					color: 'RED',
+					description: 'Cheat report on the anti-cheat system: 85% detected',
+					info: [{ name: 'Actual pourcent', value: `${user.cheat}` }],
+					content: 'Give',
+					mention: '1356333567306891415',
+				});
+			}
+
 			return true;
 		} else {
 			client
