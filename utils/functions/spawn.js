@@ -31,6 +31,10 @@ async function isXMinutesPassed(message, client) {
 				.catch((err) => console.error(err));
 		}
 
+		if (user.cheat >= 85 || !bypass) {
+			return false; // Le joueur farm trop de cartes
+		}
+
 		if (!serverConfig || !serverConfig.enabled) {
 			if (bypass)
 				message.reply({
@@ -116,8 +120,44 @@ async function isXMinutesPassed(message, client) {
 				content: 'Spawning',
 			});
 			win(client, message);
+
+			let add = 3;
+
+			add = add - (100 - user.cheat);
+
+			if (add < 0) add = 0;
+
+			let before = user.cheat;
+
+			client
+				.knex('users')
+				.update({ cheat: user.cheat + add })
+				.where({ id: message.author.id })
+				.catch((err) => console.error(err));
+
+			if (user.cheat >= 75 && before < 75) {
+				const embed = new EmbedBuilder()
+					.setColor(require('../colors.json').find((color) => (color.name = 'RED')).hex)
+					.setTitle('Warning')
+					.setDescription('You are close to the limit ! Stop farming !')
+					.addFields({ name: 'Cheat pourcent detected', value: `${user.cheat} / 100`, inline: true }, { name: 'Limit before suspend', value: `85`, inline: true })
+					.setFooter({ text: 'You can spawn cards every 1 hour' })
+					.setTimestamp()
+					.setAuthor({
+						name: message.author.username,
+						iconURL: message.author.displayAvatarURL(),
+					});
+
+				message.author.send({ embeds: [embed] });
+			}
+
 			return true;
 		} else {
+			client
+				.knex('users')
+				.update({ cheat: user.cheat - 1 })
+				.where({ id: message.author.id })
+				.catch((err) => console.error(err));
 			return false;
 		}
 	} catch (error) {
