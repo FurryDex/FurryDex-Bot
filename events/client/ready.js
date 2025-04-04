@@ -31,6 +31,7 @@ module.exports = {
 		Logger.succes(client, 'Bot démaré avec succès !');
 
 		require('../../utils/functions/leaderboard').leaderboard_start(client);
+		require('../../utils/functions/anticheat').anticheat_start(client);
 		require('../../utils/functions/update').upgrade_data(client);
 		require('../../utils/functions/update').update_data(client);
 	},

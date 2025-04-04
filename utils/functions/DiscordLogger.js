@@ -102,7 +102,10 @@ async function writePlayer(client, playerId, embed) {
 		.setDescription(embed.description || ' ')
 		.setFields(embed.info)
 		.setTimestamp();
-	channel.send({ embeds: [logEmbed] });
+
+	let content = !!embed.mention ? `<@${embed.mention}>` : '';
+
+	channel.send({ content, embeds: [logEmbed] });
 }
 
 async function writeServer(client, serverId, embed) {
