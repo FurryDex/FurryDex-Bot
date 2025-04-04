@@ -32,11 +32,6 @@ async function writePlayer(client, playerId, embed) {
 		.first('*')
 		.where({ id: playerId })
 		.catch((err) => console.error(err));
-	let cardsDb = await client
-		.knex('user_cards')
-		.select('*')
-		.where({ user_id: playerId })
-		.catch((err) => console.error(err));
 	const user = await client.users.cache.get(playerId);
 	const logGuild = await client.guilds.cache.get(client.config.log.guild);
 	const category = await logGuild.channels.cache.get(categoryList['player']);
@@ -52,7 +47,11 @@ async function writePlayer(client, playerId, embed) {
 			},
 			{
 				name: '[FD] Cards',
-				value: `${(cardsDb ?? []).length} cards`,
+				value: `${userDb.card_number} cards (${userDb.card_completion} %) `,
+			},
+			{
+				name: '[FD] Anti-cheat',
+				value: `${userDb.anticheat} %`,
 			},
 			{
 				name: 'Created at',
