@@ -160,7 +160,6 @@ async function win(client, message) {
 
 		if (!(serverConfig.premium == 1 && serverConfig.spawnAllCards == 1)) {
 			cartes = cards.filter((carte) => membres.some((member) => (typeof JSON.parse(carte.authorId) == 'number' ? [carte.authorId.toString()] : JSON.parse(carte.authorId)).includes(member.id)));
-			console.log(cartes);
 		} else {
 			cartes = cards;
 		}
