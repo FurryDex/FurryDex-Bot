@@ -305,7 +305,7 @@ module.exports = {
 								content: 'Give',
 							});
 
-							require('../../utils/functions/DiscordLogger').writePlayer(client, response.user.id, {
+							require('../../utils/functions/DiscordLogger').writePlayer(client, giveTo.id, {
 								tag: 'GIVE',
 								color: 'PINK',
 								description: 'Card Recieved',
