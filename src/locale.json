@@ -1,0 +1,260 @@
+{
+	"buttons": {
+		"catch": {
+			"modal": {
+				"title": "Catch this Furry Card !",
+				"question": "Name of this Furry",
+				"placeholder": "Your guess"
+			}
+		}
+	},
+	"commands": {
+		"config": {
+			"name": "config",
+			"description": "base config command",
+			"options": {
+				"enable": {
+					"name": "enable",
+					"description": "enable or disable the card spawn.",
+					"options": {
+						"enable": {
+							"name": "enable",
+							"description": "enable or disable the card spawn.",
+							"choices": {
+								"Enable": "Enable",
+								"Disable": "Disable"
+							}
+						}
+					}
+				},
+
+				"channel": {
+					"name": "channel",
+					"description": "Channel where card will spawn.",
+					"options": {
+						"channel": {
+							"name": "channel",
+							"description": "Channel where card will spawn."
+						}
+					}
+				},
+				"locale": {
+					"name": "locale",
+					"description": "Set the base-lang for the server.",
+					"options": {
+						"lang": {
+							"name": "lang",
+							"description": "Set the base-lang for the server.",
+							"choices": {
+								"German": "German",
+								"English": "English",
+								"Spanish": "Spanish",
+								"French": "French",
+								"Italian": "Italian",
+								"Dutch": "Dutch",
+								"Norwegian": "Norwegian",
+								"Polish": "Polish",
+								"Portugese": "Portugese",
+								"Romanian": "Romanian",
+								"Finish": "Finish",
+								"Swedish": "Swedish",
+								"Bulgarian": "Bulgarian",
+								"Russian": "Russian",
+								"Ukrainian": "Ukrainian",
+								"Chinese": "Chinese",
+								"Japanese": "Japanese",
+								"Korean": "Korean"
+							}
+						}
+					}
+				},
+				"auto-locale": {
+					"name": "auto-locale",
+					"description": "Automaticly set the base-lang for the server."
+				},
+				"leaderboard_channel": {
+					"name": "leaderboard_channel",
+					"description": "Set the channel for the leaderboard."
+				},
+				"leaderboard": {
+					"name": "leaderboard",
+					"description": "Set the different leaderboards to show."
+				},
+				"leaderboard_edit": {
+					"name": "leaderboard_edit",
+					"description": "Replace the leaderboard message instead of send another one.",
+					"options": {
+						"enable": {
+							"name": "enable",
+							"description": "Enable or disable the leaderboard edit function.",
+							"choices": {
+								"Enable": "Enable",
+								"Disable": "Disable"
+							}
+						}
+					}
+				}
+			},
+			"run": {
+				"changed": "The language have been set to `%lang%`",
+				"changedChan": "The channel have been set to `%channel%`",
+				"changedEna": "The bot is now `%enable%`",
+				"changedLeaderEna": "The edit function for leaderboard is now %enable%",
+				"changedLeaderChan": "The channel for Leaderboard have been set to %channel%"
+			}
+		},
+		"generate-id": {
+			"name": "generate-id",
+			"description": "Generate an ID for a card."
+		},
+		"emit": {
+			"name": "emit",
+			"description": "Emit an event.",
+			"options": {
+				"event": {
+					"guildMemberAdd": "guildMemberAdd",
+					"guildMemberRemove": "guildMemberRemove"
+				}
+			}
+		},
+		"guild": {
+			"name": "guild",
+			"description": "Send all guilds."
+		},
+		"furry": {
+			"name": "furry",
+			"description": "base furry command.",
+			"options": {
+				"list": {
+					"name": "list",
+					"description": "Send a deck of all your/user card.",
+					"options": {
+						"user": {
+							"name": "user",
+							"description": "The user you want to see all cards."
+						}
+					}
+				},
+				"completion": {
+					"name": "completion",
+					"description": "Show your current completion/progress of Furry Cards.",
+					"options": {
+						"user": {
+							"name": "user",
+							"description": "The user you want to see all cards."
+						},
+						"category": {
+							"name": "category",
+							"description": "Get a completion from a specific category of card.",
+							"choices": {
+								"Normal": "Normal",
+								"Classic": "Classic",
+								"Special": "Special",
+								"Furry Dex": "Furry Dex",
+								"Furry Dex Special": "Furry Dex Special",
+								"Director": "Director",
+								"Tiktok": "Tiktok",
+								"Instagram": "Instagram",
+								"Celebration": "Celebration",
+								"Youtuber": "Youtuber",
+								"Twitch": "Twitch",
+								"Musician": "Musician"
+							}
+						}
+					}
+				},
+				"give": {
+					"name": "give",
+					"description": "Give a card to a user.",
+					"options": {
+						"give-to": {
+							"name": "give-to",
+							"description": "The user you want to give a card to."
+						}
+					}
+				},
+				"count": {
+					"name": "count",
+					"description": "Count how many card you have.",
+					"options": {
+						"give-to": {
+							"name": "user",
+							"description": "The user you want to count cards."
+						}
+					}
+				}
+			},
+			"run": {
+				"no-furry": "`0` furry in this dex",
+				"list": "ATK: %attacks%% • HP: %live%% • Caught on %date%"
+			}
+		},
+		"clear": {
+			"name": "clear",
+			"description": "Delete a wanted number message.",
+			"options": {
+				"message": {
+					"name": "message",
+					"description": "number of message you want to delete (1 - 99)"
+				}
+			}
+		},
+		"send": {
+			"name": "send",
+			"description": "Send a message.",
+			"options": {
+				"name": {
+					"name": "channel",
+					"description": "Channel where the message will be send"
+				},
+				"message": {
+					"name": "message",
+					"description": "Message to send"
+				}
+			}
+		},
+		"help": {
+			"name": "help",
+			"description": "Need help ?",
+			"options": {
+				"command": {
+					"name": "command",
+					"description": "Get help for a specific command"
+				}
+			}
+		},
+		"ping": {
+			"name": "ping",
+			"description": "Ping-Pong❗ 🏓 | Send the latence of the bot."
+		}
+	},
+	"events": {},
+	"modals": {
+		"catch": {
+			"no": "Sorry, %@player%, this is not the right name ! Guess: `%guess%`",
+			"already": "Sorry, %@player%, this card was caught already!",
+			"congrat": "Congratulations, %@player%, you caught %cardEmoji% `%cardName%` (`#%cardId%`)"
+		}
+	},
+	"selects": {},
+	"utils": {
+		"function": {
+			"cards": {
+				"embed": {
+					"description": "👑 • Card by %author%\n🆔 • ID: `#%id%`\n🪪 • Name: `%name%`\n📅 • Caught on %time%\n🔧 • Type(s): `%type%`\n🐺 • Species: `%species%`\n%gived%%birthday%\n❤️ • HP: `%live%` (`%live_2%%`)\n⚔️ • ATK: `%attacks%` (`%attacks_2%%`)",
+					"giveBy": "❇️ • Offered by %giver% the %giveTime%",
+					"birthday": "✨ • Birthday: %birthday%"
+				}
+			},
+			"spawn": {
+				"embed": {
+					"title": "Oh ! A wild *Furry Card* spawn !"
+				},
+				"button": {
+					"text": "Catch Me !"
+				}
+			}
+		}
+	},
+	"isReady": { "yes": "ready" }
+}

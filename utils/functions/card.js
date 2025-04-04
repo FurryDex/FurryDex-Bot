@@ -73,7 +73,7 @@ async function cardEmbed(client, cardId, locale) {
 			`${(locales.embed.birthday[locale] ?? locales.embed.birthday['en-US']).replace('%birthday%', `${time(birthday, TimestampStyles.ShortDateTime)} (${time(birthday, TimestampStyles.RelativeTime)}) → ${time(nextBirthday, TimestampStyles.RelativeTime)}`)}\n`
 		);
 	} else {
-		description = description.replace('%birthday%', ``).replace('%nextBirthday%', ``);
+		description = description.replace('%birthday%', ``);
 	}
 	let embed = new EmbedBuilder()
 		.setColor(color)
