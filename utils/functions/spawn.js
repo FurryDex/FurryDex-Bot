@@ -31,6 +31,10 @@ async function isXMinutesPassed(message, client) {
 				.catch((err) => console.error(err));
 		}
 
+		if (user.can_spawn != 1 && !bypass) {
+			return false; // Le joueur farm trop de cartes
+		}
+
 		if (!serverConfig || !serverConfig.enabled) {
 			if (bypass)
 				message.reply({
@@ -116,6 +120,7 @@ async function isXMinutesPassed(message, client) {
 				content: 'Spawning',
 			});
 			win(client, message);
+
 			return true;
 		} else {
 			return false;

@@ -130,7 +130,9 @@ client.on('messageCreate', (message) => {
 	if (client.config.bot.disable.bot) if (message.guild.members.cache.hasAny(...client.config.bot.disable.bot)) return;
 	if (message.author.bot) return;
 
-	isXMinutesPassed(message, client);
+	isXMinutesPassed(message, client).then((result) => {
+		require('./utils/functions/anticheat.js').anticheat_message(client, message, message.author.id, result ? 1 : 0);
+	});
 });
 
 let callAmount = 0;
