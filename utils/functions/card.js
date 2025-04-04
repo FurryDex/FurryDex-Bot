@@ -44,7 +44,7 @@ async function cardEmbed(client, cardId, locale) {
 
 	let description = locales.embed.description[locale] ?? locales.embed.description['en-US'];
 	description = description
-		.replace('%author%', `<@${originalCardF.authorId}>`)
+		.replace('%author%', formatArrayToText((typeof JSON.parse(originalCardF.authorId) == 'number' ? [originalCardF.authorId.toString()] : JSON.parse(originalCardF.authorId)).map((x) => `<@${x}>`)))
 		.replace('%id%', cardF.id)
 		.replace('%name%', originalCardF.name)
 		.replace('%time%', `${time(date, TimestampStyles.LongDateTime)} (${time(date, TimestampStyles.RelativeTime)})`)
