@@ -41,6 +41,16 @@ async function anticheat_update(client) {
 		let pourcent = (messages.map((x) => x.have_spawn_card)?.reduce((a, b) => a + b, 0) / messages.length) * 100;
 		if (!pourcent) return;
 
+		let before = user.anticheat;
+		let after = pourcent;
+
+		if (before < 50 && after >= 50)
+			client
+				.knex('users')
+				.update({ ToS: 0 })
+				.where({ id: user.id })
+				.catch((err) => console.error(err));
+
 		client
 			.knex('users')
 			.update({ anticheat: pourcent, can_spawn: pourcent < 75 ? 1 : 0 })
