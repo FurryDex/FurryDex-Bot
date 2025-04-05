@@ -88,7 +88,8 @@ if (!debug) {
 		Logger.error(client, `${'uncaughtException'.toUpperCase()}: ${err}\nOrigin: ${String(origin)}`);
 	});
 	process.on('unhandledRejection', (reason, promise) => {
-		Logger.error(client, `${'unhandledRejection'.toUpperCase()}: ${reason}\n at`, promise);
+		console.log('Unhandled Rejection at:', promise, 'reason:', reason);
+		Logger.error(client, `${'unhandledRejection'.toUpperCase()}: at`, promise, 'reason:', reason);
 	});
 	process.on('warning', (...args) => Logger.warn(...args));
 	client.rest.on('rateLimited', (rateLimited) => {
