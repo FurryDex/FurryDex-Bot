@@ -203,7 +203,7 @@ module.exports = {
 
 		if (subcommand == 'enable') {
 			let channel = await interaction.guild.channels.cache.get(serverConfig.spawn_channel);
-			if (!channel) {
+			if (channel) {
 				client
 					.knex('guilds')
 					.update({ enabled: interaction.options.getString('enable') == 'true' ? true : false })
