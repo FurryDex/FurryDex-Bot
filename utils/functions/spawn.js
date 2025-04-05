@@ -233,10 +233,15 @@ async function win(client, message) {
 			if (is_event) embed.setDescription('### <:Warning_Blue:1324412874344632341> Event Card');
 			else if (is_nsfw) embed.setDescription('## <:Warning:1324412876185796689> Mature content');
 			if (!channel) return;
-			channel.send({ embeds: [embed], components: [button] }).then(async (message) => {
-				let channel = await guild.channels.cache.get(message.channelId);
+			channel.send({ embeds: [embed], components: [button] }).then(async (m) => {
+				let channel = await guild.channels.cache.get(m.channelId);
+				client
+					.knex('anti-cheat_messages')
+					.update({ spawnMessage: m.id })
+					.where({ message_id: message.id })
+					.catch((err) => console.error(err));
 				setTimeout(async () => {
-					let msg = await channel.messages.fetch(message.id);
+					let msg = await channel.messages.fetch(m.id);
 
 					serverConfig = await client
 						.knex('guilds')
