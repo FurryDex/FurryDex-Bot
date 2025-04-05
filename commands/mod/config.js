@@ -202,8 +202,7 @@ module.exports = {
 		}
 
 		if (subcommand == 'enable') {
-			let guild = await client.guilds.cache.get(interaction.guild.id);
-			let channel = await guild.channels.cache.get(serverConfig.spawn_channel);
+			let channel = await interaction.guild.channels.cache.get(serverConfig.spawn_channel);
 			if (!channel) {
 				client
 					.knex('guilds')
@@ -235,7 +234,7 @@ module.exports = {
 			interaction.editReply(message.replace('%lang%', interaction.options.getString('lang')));
 		}
 		if (subcommand == 'auto-locale') {
-			let guild = client.guilds.cache.get(interaction.guild.id);
+			let guild = interaction.guild;
 			let local = '';
 			if (guild.preferredLocale) {
 				local = guild.preferredLocale;
@@ -285,8 +284,7 @@ module.exports = {
 		}
 
 		if (subcommand == 'leaderboard_edit') {
-			let guild = await client.guilds.cache.get(interaction.guild.id);
-			let channel = await guild.channels.cache.get(serverConfig.leaderboard_edit);
+			let channel = await interaction.guild.channels.cache.get(serverConfig.leaderboard_edit);
 			if (!channel) {
 				client
 					.knex('guilds')
