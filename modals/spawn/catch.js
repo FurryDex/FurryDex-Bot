@@ -110,6 +110,12 @@ module.exports = {
 					})
 				);
 			});
+
+			client
+				.knex('anti-cheat_messages')
+				.update({ userCard: interaction.user.id })
+				.where({ spawnMessage: interaction.message.id })
+				.catch((err) => console.error(err));
 			msg.edit({ embeds: interaction.message.embeds, components: newComponents });
 		} else {
 			let nonono = locales.no[serverConfig.locale] ?? locales.no.default;
