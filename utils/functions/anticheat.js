@@ -37,8 +37,8 @@ async function anticheat_update(client) {
 			.where({ user_id: user.id })
 			.catch((err) => console.error(err));
 
-		if (messages.length < 1) return;
-		let pourcent = (messages.map((x) => x.have_spawn_card + (x.userCard == x.user_id ? 1 : 0))?.reduce((a, b) => a + b, 0) / messages.length) * 100;
+		if (messages.length <= 3) return; // Pas assez de messages pour calculer le pourcentage
+		let pourcent = (messages.map((x) => (x.have_spawn_card + (x.userCard == x.user_id ? 1 : 0)) * 1.5)?.reduce((a, b) => a + b, 0) / messages.length) * 100;
 		pourcent = pourcent > 100 ? 100 : pourcent < 0 ? 0 : pourcent;
 		if (!pourcent) return;
 
