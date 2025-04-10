@@ -101,8 +101,8 @@ async function leaderboard_update(client) {
 			if (guildConfig.leaderboard_edit) {
 				if (guildConfig.leaderboard_msg && (await channel.messages.cache.has(guildConfig.leaderboard_msg))) {
 					let message = await channel.messages.fetch(guildConfig.leaderboard_msg);
-					(await channel.messages.cache.find((msg) => msg.author.id === client.user.id))?.delete();
-					if (!message || !message.editable)
+					if (!message || !message.editable) {
+						(await channel.messages.cache.find((msg) => msg.author.id === client.user.id))?.delete();
 						channel.send({ embeds }).then((msg) => {
 							message = msg;
 							client
@@ -113,7 +113,7 @@ async function leaderboard_update(client) {
 									console.error(err);
 								});
 						});
-					else message.edit({ embeds });
+					} else message.edit({ embeds });
 				} else {
 					channel.send({ embeds }).then((msg) => {
 						message = msg;
