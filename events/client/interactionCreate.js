@@ -24,6 +24,9 @@ module.exports = {
 			if (cmd.ownerOnly) {
 				if (interaction.user.id != client.config.owner) return interaction.reply('You need to be the creator for execute this command.');
 			}
+			if (cmd.staffOnly) {
+				if (!client.config.staff.includes(interaction.user.id)) return interaction.reply('You need to be a staff for execute this command.');
+			}
 
 			cmd.runSlash(client, interaction);
 		} else if (interaction.isButton()) {

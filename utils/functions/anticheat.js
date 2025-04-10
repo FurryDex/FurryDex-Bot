@@ -36,11 +36,11 @@ async function anticheat_update(client) {
 			.select('*')
 			.where({ user_id: user.id })
 			.catch((err) => console.error(err));
-			let spawn = await client
-				.knex('anti-cheat_messages')
-				.select('*')
-				.where({ userCard: user.id })
-				.catch((err) => console.error(err));
+		let spawn = await client
+			.knex('anti-cheat_messages')
+			.select('*')
+			.where({ userCard: user.id })
+			.catch((err) => console.error(err));
 
 		if (messages.length <= 7) return; // Pas assez de messages pour calculer le pourcentage
 		let pourcent = ([...messages.map((x) => x.have_spawn_card + (x.userCard == x.user_id ? 3 : 0)), ...spawn.map((x) => 1)]?.reduce((a, b) => a + b, 0) / messages.length) * 100;

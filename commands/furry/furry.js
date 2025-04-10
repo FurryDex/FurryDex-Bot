@@ -1,4 +1,4 @@
-const { ApplicationCommandOptionType, StringSelectMenuBuilder, ActionRowBuilder, EmbedBuilder, ButtonBuilder, ButtonStyle, BaseInteraction, SelectMenuInteraction, MessageFlags } = require('discord.js');
+const { ApplicationCommandOptionType, StringSelectMenuBuilder, ActionRowBuilder, EmbedBuilder, ButtonBuilder, ButtonStyle, BaseInteraction, SelectMenuInteraction, MessageFlags, InteractionContextType } = require('discord.js');
 const fs = require('fs');
 const { cardEmbed } = require('../../utils/functions/card');
 
@@ -8,6 +8,7 @@ module.exports = {
 	category: 'furry',
 	fullyTranslated: true,
 	permissions: null,
+	contexts: [InteractionContextType.PrivateChannel, InteractionContextType.Guild, InteractionContextType.BotDM],
 	run: (client, message, args) => {},
 	options: [
 		{

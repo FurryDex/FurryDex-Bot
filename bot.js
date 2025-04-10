@@ -128,6 +128,7 @@ client.login(client.config.bot.token);
 // --------- COG & SPAWN ----------
 
 client.on('messageCreate', (message) => {
+	if (message.channel.isDMBased()) return;
 	if (client.config.bot.disable.bot) if (message.guild.members.cache.hasAny(...client.config.bot.disable.bot)) return;
 	if (message.author.bot) return;
 
