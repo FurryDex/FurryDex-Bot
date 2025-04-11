@@ -43,7 +43,7 @@ async function anticheat_update(client) {
 			.catch((err) => console.error(err));
 
 		if (messages.length <= 7) return; // Pas assez de messages pour calculer le pourcentage
-		let pourcent = ([...messages.map((x) => x.have_spawn_card + (x.userCard == x.user_id ? 3 : 0)), ...spawn.map((x) => 1)]?.reduce((a, b) => a + b, 0) / messages.length) * 100;
+		let pourcent = ([...messages.map((x) => x.have_spawn_card / 2 + (x.userCard == x.user_id ? 3 + 1 / 2 : 0)), ...spawn.map((x) => 1)]?.reduce((a, b) => a + b, 0) / messages.length) * 100;
 		pourcent = pourcent > 100 ? 100 : pourcent < 0 ? 0 : pourcent;
 		if (!pourcent) return;
 
@@ -59,7 +59,7 @@ async function anticheat_update(client) {
 
 		client
 			.knex('users')
-			.update({ anticheat: pourcent, can_spawn: pourcent < 75 ? 1 : 0 })
+			.update({ anticheat: pourcent, can_spawn: pourcent < 65 ? 1 : 0 })
 			.where({ id: user.id })
 			.catch((err) => console.error(err));
 	});
