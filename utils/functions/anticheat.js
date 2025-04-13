@@ -59,7 +59,7 @@ async function anticheat_update(client) {
 
 		client
 			.knex('users')
-			.update({ anticheat: pourcent, can_spawn: pourcent < 65 ? 1 : 0 })
+			.update({ anticheat: pourcent, can_spawn: pourcent < 65 ? 1 : pourcent < 75 ? 0 : undefined })
 			.where({ id: user.id })
 			.catch((err) => console.error(err));
 	});
