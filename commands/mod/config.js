@@ -1,4 +1,4 @@
-const { ApplicationCommandOptionType, StringSelectMenuBuilder, ActionRowBuilder, PermissionFlagsBits } = require('discord.js');
+const { ApplicationCommandOptionType, StringSelectMenuBuilder, ActionRowBuilder, PermissionFlagsBits, MessageFlags } = require('discord.js');
 const leaderboard = require('../../selects/mod/leaderboard');
 
 module.exports = {
@@ -139,7 +139,7 @@ module.exports = {
 		},
 		{
 			name: 'leaderboard_channel',
-			description: 'set the channel for the leaderboard.',
+			description: 'Set the channel for the leaderboard.',
 			type: ApplicationCommandOptionType.Subcommand,
 			options: [
 				{
@@ -152,17 +152,17 @@ module.exports = {
 		},
 		{
 			name: 'leaderboard',
-			description: 'set the different leaderboards to show.',
+			description: 'Set the different leaderboards to show.',
 			type: ApplicationCommandOptionType.Subcommand,
 		},
 		{
 			name: 'leaderboard_edit',
-			description: 'replace the leaderboard message instead of send another one.',
+			description: 'Replace the leaderboard message instead of send another one.',
 			type: ApplicationCommandOptionType.Subcommand,
 			options: [
 				{
 					name: 'enable',
-					description: 'enable or disable the leaderboard edit function.',
+					description: 'Enable or disable the leaderboard edit function.',
 					type: ApplicationCommandOptionType.String,
 					required: true,
 					choices: [
@@ -202,9 +202,8 @@ module.exports = {
 		}
 
 		if (subcommand == 'enable') {
-			let guild = await client.guilds.cache.get(interaction.guild.id);
-			let channel = await guild.channels.cache.get(serverConfig.spawn_channel);
-			if (!channel) {
+			let channel = await interaction.guild.channels.cache.get(serverConfig.spawn_channel);
+			if (channel) {
 				client
 					.knex('guilds')
 					.update({ enabled: interaction.options.getString('enable') == 'true' ? true : false })
@@ -235,7 +234,7 @@ module.exports = {
 			interaction.editReply(message.replace('%lang%', interaction.options.getString('lang')));
 		}
 		if (subcommand == 'auto-locale') {
-			let guild = client.guilds.cache.get(interaction.guild.id);
+			let guild = interaction.guild;
 			let local = '';
 			if (guild.preferredLocale) {
 				local = guild.preferredLocale;
@@ -282,12 +281,11 @@ module.exports = {
 					.setMinValues(0)
 			);
 
-			await interaction.editReply({ content: 'Please select different leaderboards to show:', components: [row], ephemeral: true });
+			await interaction.editReply({ content: 'Please select different leaderboards to show:', components: [row], flags: MessageFlags.Ephemeral });
 		}
 
 		if (subcommand == 'leaderboard_edit') {
-			let guild = await client.guilds.cache.get(interaction.guild.id);
-			let channel = await guild.channels.cache.get(serverConfig.leaderboard_edit);
+			let channel = await interaction.guild.channels.cache.get(serverConfig.leaderboard_edit);
 			if (!channel) {
 				client
 					.knex('guilds')

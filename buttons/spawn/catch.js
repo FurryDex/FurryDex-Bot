@@ -1,4 +1,4 @@
-const { ModalBuilder, TextInputStyle, ActionRowBuilder, TextInputBuilder, EmbedBuilder, ButtonBuilder, ButtonStyle } = require('discord.js');
+const { ModalBuilder, TextInputStyle, ActionRowBuilder, TextInputBuilder, EmbedBuilder, ButtonBuilder, ButtonStyle, MessageFlags } = require('discord.js');
 
 module.exports = {
 	name: 'catch',
@@ -29,12 +29,12 @@ module.exports = {
 		if (userData.ToS != 1) {
 			let embed = new EmbedBuilder()
 				.setTitle('Wait, wait, wait !')
-				.setDescription(`Sorry, but you need to accept the ToS for continue !\n\nLegal Documents (ToS & Privacy policy): https://flyzar73.github.io/legal/ \nBy clicking on "Accept", you accept the ToS`)
+				.setDescription(`Sorry, but you need to accept the ToS for continue !\n\nLegal Documents (ToS & Privacy policy): https://FurryDex.github.io/legal/ \nBy clicking on "Accept", you accept the ToS`)
 				.setColor('Green');
 
 			const buttonRow = new ActionRowBuilder().addComponents(new ButtonBuilder().setCustomId(`accept-tos`).setLabel('Accept').setStyle(ButtonStyle.Primary));
 
-			interaction.reply({ embeds: [embed], components: [buttonRow], ephemeral: true });
+			interaction.reply({ embeds: [embed], components: [buttonRow], flags: MessageFlags.Ephemeral });
 
 			return;
 		}

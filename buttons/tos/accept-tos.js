@@ -1,3 +1,5 @@
+const { MessageFlags } = require('discord.js');
+
 module.exports = {
 	name: 'accept-tos',
 	run: async (client, interaction) => {
@@ -9,7 +11,7 @@ module.exports = {
 				console.error(err);
 			})
 			.then(() => {
-				interaction.reply({ content: '✅ Thank you. Enjoy the bot !', ephemeral: true });
+				interaction.reply({ content: '✅ Thank you. Enjoy the bot !', flags: MessageFlags.Ephemeral });
 			});
 	},
 };

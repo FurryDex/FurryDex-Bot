@@ -1,4 +1,4 @@
-const { EmbedBuilder, ApplicationCommandOptionType } = require('discord.js');
+const { EmbedBuilder, ApplicationCommandOptionType, MessageFlags, InteractionContextType } = require('discord.js');
 const { readdirSync } = require('fs');
 const { examples } = require('./ping');
 const commandFolder = readdirSync('./commands');
@@ -30,6 +30,7 @@ module.exports = {
 	examples: ['help ping', 'help furries'],
 	description: 'Need help ?',
 	permissions: null,
+	contexts: [InteractionContextType.PrivateChannel, InteractionContextType.Guild, InteractionContextType.BotDM],
 	run: (client, message, args) => {},
 	options: [
 		{
@@ -58,14 +59,14 @@ module.exports = {
 					},
 				]);
 			}
-			return interaction.reply({ embeds: [noArgsEmbed], ephemeral: true });
+			return interaction.reply({ embeds: [noArgsEmbed], flags: MessageFlags.Ephemeral });
 		}
 
 		const cmd = client.commands.get(cmdName);
 		if (!cmd) return interaction.reply("This commands dosn't exist!");
 
 		return interaction.reply(
-			`\n\`\`\`makefile\n[Help: Command -> ${cmd.name}] ${cmd.ownerOnly ? '⚠️ Command reserved to bot owners ⚠️' : ''}\n\n${cmd.description}\n${
+			`\n\`\`\`makefile\n[Help: Command -> ${cmd.name}] ${cmd.ownerOnly ? "⚠️ Command reserved to bot's owner ⚠️" : cmd.staffOnly ? "🔰 Command reserved to bot's staff 🔰" : ''}\n\n${cmd.description}\n${
 				cmd.usage ? `\nUsage: ${prefix}${cmd.usage}${cmd.examples ? `Examples: ${prefix}${cmd.examples.join(` | ${prefix}`)}` : ``}\n` : ''
 			}\n- - -\n\n${prefix} = prefix used by the bot (/commands is also possible)\n{} = sub-command(s) possible | [] = required option(s) | <> = optional(s) option(s)\nDo not includes thes caracter -> {}, [] and <> in your commands\n\`\`\``
 		);

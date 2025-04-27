@@ -24,7 +24,7 @@ async function writePlayer(client, playerId, embed) {
 	if (!client.config.log.enable) return;
 	playerId = playerId.toString();
 
-	knex_channel = client.config.log.data;
+	knex_channel = client.config.log.mysql;
 
 	let color = require('../colors.json').find((x) => x.name == embed.color.toUpperCase());
 
@@ -33,13 +33,8 @@ async function writePlayer(client, playerId, embed) {
 		.first('*')
 		.where({ id: playerId })
 		.catch((err) => console.error(err));
-	let cardsDb = await client
-		.knex('user_cards')
-		.select('*')
-		.where({ user_id: playerId })
-		.catch((err) => console.error(err));
 	const user = await client.users.cache.get(playerId);
-	const logGuild = await client.guilds.cache.get(client.config.log.guild ?? client.config.bot.guild);
+	const logGuild = await client.guilds.cache.get(client.config.log.guild);
 	const category = await logGuild.channels.cache.get(categoryList['player']);
 
 	let playerEmbed = new EmbedBuilder()
@@ -53,7 +48,11 @@ async function writePlayer(client, playerId, embed) {
 			},
 			{
 				name: '[FD] Cards',
-				value: `${(cardsDb ?? []).length} cards`,
+				value: `${userDb.card_number} cards (${userDb.card_completion} %) `,
+			},
+			{
+				name: '[FD] Anti-cheat',
+				value: `${userDb.anticheat} %`,
 			},
 			{
 				name: 'Created at',
@@ -104,14 +103,17 @@ async function writePlayer(client, playerId, embed) {
 		.setDescription(embed.description || ' ')
 		.setFields(embed.info)
 		.setTimestamp();
-	channel.send({ embeds: [logEmbed] });
+
+	let content = !!embed.mention ? `<@${embed.mention}>` : '';
+
+	channel.send({ content, embeds: [logEmbed] });
 }
 
 async function writeServer(client, serverId, embed) {
 	const categoryList = client.config.log.category;
 	if (!client.config.log.enable) return;
 
-	knex_channel = client.config.log.data;
+	knex_channel = client.config.log.mysql;
 
 	let color = require('../colors.json').find((x) => x.name == embed.color.toUpperCase());
 

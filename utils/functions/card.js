@@ -44,7 +44,7 @@ async function cardEmbed(client, cardId, locale) {
 
 	let description = locales.embed.description[locale] ?? locales.embed.description['en-US'];
 	description = description
-		.replace('%author%', `<@${originalCardF.authorId}>`)
+		.replace('%author%', formatArrayToText((typeof JSON.parse(originalCardF.authorId) == 'number' ? [originalCardF.authorId.toString()] : JSON.parse(originalCardF.authorId)).map((x) => `<@${x}>`)))
 		.replace('%id%', cardF.id)
 		.replace('%name%', originalCardF.name)
 		.replace('%time%', `${time(date, TimestampStyles.LongDateTime)} (${time(date, TimestampStyles.RelativeTime)})`)
@@ -73,7 +73,7 @@ async function cardEmbed(client, cardId, locale) {
 			`${(locales.embed.birthday[locale] ?? locales.embed.birthday['en-US']).replace('%birthday%', `${time(birthday, TimestampStyles.ShortDateTime)} (${time(birthday, TimestampStyles.RelativeTime)}) → ${time(nextBirthday, TimestampStyles.RelativeTime)}`)}\n`
 		);
 	} else {
-		description = description.replace('%birthday%', ``).replace('%nextBirthday%', ``);
+		description = description.replace('%birthday%', ``);
 	}
 	let embed = new EmbedBuilder()
 		.setColor(color)
@@ -84,6 +84,32 @@ async function cardEmbed(client, cardId, locale) {
 		//%live%, originalCardF.live | %live_2%, cardF.live | %emoji_6%, <:atlanta_minecraft:598170502963396620> | %attacks%, originalCardF.attacks | %attacks_2%, cardF.attacks
 		.setImage(originalCardF.card);
 	return embed;
+}
+
+// Fonction pour récupérer les cartes possédées par un utilisateur
+async function getUserCards(client, userId) {
+	return await client
+		.knex('cards')
+		.whereIn('id', function () {
+			this.select('card_id').from('user_cards').where({ user_id: userId });
+		})
+		.select('*')
+		.catch((err) => {
+			console.error(err);
+		});
+}
+
+// Fonction pour récupérer les cartes que l'utilisateur n'a pas
+async function getMissingCards(client, userId, category = '') {
+	return await client
+		.knex('cards')
+		.whereNotIn('id', function () {
+			this.select('card_id').from('user_cards').where({ user_id: userId });
+		})
+		.select('*')
+		.catch((err) => {
+			console.error(err);
+		});
 }
 
 async function originalCard(client, cardId) {
@@ -121,4 +147,4 @@ function formatArrayToText(array) {
 	}
 }
 
-module.exports = { card, cardEmbed, originalCard };
+module.exports = { card, cardEmbed, originalCard, getMissingCards, getUserCards };

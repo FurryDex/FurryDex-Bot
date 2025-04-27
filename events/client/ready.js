@@ -14,10 +14,13 @@ module.exports = {
 			activities: [{ name: activity }],
 		});
 
-		client
-			.knex('guilds')
-			.update({ last_card: null })
-			.catch((err) => console.error(err));
+		client.guilds.cache.forEach((guild) => {
+			client
+				.knex('guilds')
+				.update({ last_card: null })
+				.where({ id: guild.id })
+				.catch((err) => {});
+		});
 
 		client.application.commands.set(client.commands.map((cmd) => cmd)).catch((err) => {
 			if (err) {
@@ -28,6 +31,7 @@ module.exports = {
 		Logger.succes(client, 'Bot démaré avec succès !');
 
 		require('../../utils/functions/leaderboard').leaderboard_start(client);
+		require('../../utils/functions/anticheat').anticheat_start(client);
 		require('../../utils/functions/update').upgrade_data(client);
 		require('../../utils/functions/update').update_data(client);
 	},

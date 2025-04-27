@@ -1,4 +1,4 @@
-const { EmbedBuilder, ButtonStyle, ActionRowBuilder, ButtonBuilder } = require('discord.js');
+const { EmbedBuilder, ButtonStyle, ActionRowBuilder, ButtonBuilder, MessageFlags } = require('discord.js');
 const Logger = require('../Logger.js');
 
 async function isXMinutesPassed(message, client) {
@@ -31,11 +31,15 @@ async function isXMinutesPassed(message, client) {
 				.catch((err) => console.error(err));
 		}
 
+		if (user.can_spawn != 1 && !bypass) {
+			return false; // Le joueur farm trop de cartes
+		}
+
 		if (!serverConfig || !serverConfig.enabled) {
 			if (bypass)
 				message.reply({
 					content: 'Sorry, the bot is not enable in this server',
-					ephemeral: true,
+					flags: MessageFlags.Ephemeral,
 				});
 			return false; // Le bot n'est pas activé pour ce serveur
 		}
@@ -44,7 +48,7 @@ async function isXMinutesPassed(message, client) {
 			if (bypass)
 				message.reply({
 					content: 'Sorry, the last card is not catch',
-					ephemeral: true,
+					flags: MessageFlags.Ephemeral,
 				});
 			return false; // Le bot n'est pas activé pour ce serveur
 		}
@@ -116,6 +120,7 @@ async function isXMinutesPassed(message, client) {
 				content: 'Spawning',
 			});
 			win(client, message);
+
 			return true;
 		} else {
 			return false;
@@ -154,7 +159,7 @@ async function win(client, message) {
 		let cartes;
 
 		if (!(serverConfig.premium == 1 && serverConfig.spawnAllCards == 1)) {
-			cartes = cards.filter((carte) => membres.has(carte.authorId.toString()));
+			cartes = cards.filter((carte) => membres.some((member) => (typeof JSON.parse(carte.authorId) == 'number' ? [carte.authorId.toString()] : JSON.parse(carte.authorId)).includes(member.id)));
 		} else {
 			cartes = cards;
 		}
@@ -216,7 +221,7 @@ async function win(client, message) {
 				new ButtonBuilder()
 					.setCustomId('catch')
 					.setDisabled(false)
-					.setEmoji('<:hunt:1284221526270410814>')
+					.setEmoji('<:Bug_hunt:1324413128817250457>')
 					.setLabel(locales.button.text[serverConfig.locale] ?? locales.button.text.default)
 					.setStyle(ButtonStyle.Danger)
 			);
@@ -228,10 +233,15 @@ async function win(client, message) {
 			if (is_event) embed.setDescription('### <:Warning_Blue:1324412874344632341> Event Card');
 			else if (is_nsfw) embed.setDescription('## <:Warning:1324412876185796689> Mature content');
 			if (!channel) return;
-			channel.send({ embeds: [embed], components: [button] }).then(async (message) => {
-				let channel = await guild.channels.cache.get(message.channelId);
+			channel.send({ embeds: [embed], components: [button] }).then(async (m) => {
+				let channel = await guild.channels.cache.get(m.channelId);
+				client
+					.knex('anti-cheat_messages')
+					.update({ spawnMessage: m.id })
+					.where({ message_id: message.id })
+					.catch((err) => console.error(err));
 				setTimeout(async () => {
-					let msg = await channel.messages.fetch(message.id);
+					let msg = await channel.messages.fetch(m.id);
 
 					serverConfig = await client
 						.knex('guilds')

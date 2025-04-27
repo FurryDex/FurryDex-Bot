@@ -57,15 +57,23 @@ async function locales() {
 				client.locales = await response.json();
 				fs.writeFileSync('./locales.json', JSON.stringify(client.locales));
 			}
-		} else no_locales('No locales API');
+		} else {
+			no_locales('No locales API');
+		}
 	} catch (err) {
 		no_locales(err);
 	}
 }
 
 async function no_locales(err) {
-	Logger.warn(client, `Error for Locales modules: ${err}`);
-	client.locales = JSON.parse(fs.readFileSync('./locales.json').catch((err) => console.error(err)));
+	Logger.warn(null, `Error for Locales modules: ${err}`);
+	if (err == 'No locales API') client.locales = require('./src/locales.js');
+	else
+		try {
+			client.locales = JSON.parse(fs.readFileSync('./locales.json'));
+		} catch (err) {
+			console.error(err);
+		}
 }
 
 locales().then(() => {
@@ -80,7 +88,8 @@ if (!debug) {
 		Logger.error(client, `${'uncaughtException'.toUpperCase()}: ${err}\nOrigin: ${String(origin)}`);
 	});
 	process.on('unhandledRejection', (reason, promise) => {
-		Logger.error(client, `${'unhandledRejection'.toUpperCase()}: ${reason}\n at`, promise);
+		console.log('Unhandled Rejection at:', promise, 'reason:', reason);
+		Logger.error(client, `${'unhandledRejection'.toUpperCase()}: at`, promise, 'reason:', reason);
 	});
 	process.on('warning', (...args) => Logger.warn(...args));
 	client.rest.on('rateLimited', (rateLimited) => {
@@ -119,10 +128,13 @@ client.login(client.config.bot.token);
 // --------- COG & SPAWN ----------
 
 client.on('messageCreate', (message) => {
-	if (client.config.bot.disable.bot) if (message.guild.members.cache.hasAny(client.config.bot.disable.bot) ?? '.') return;
+	if (message.channel.isDMBased()) return;
+	if (client.config.bot.disable.bot) if (message.guild.members.cache.hasAny(...client.config.bot.disable.bot)) return;
 	if (message.author.bot) return;
 
-	isXMinutesPassed(message, client);
+	isXMinutesPassed(message, client).then((result) => {
+		require('./utils/functions/anticheat.js').anticheat_message(client, message, message.author.id, result ? 1 : 0);
+	});
 });
 
 let callAmount = 0;
@@ -135,5 +147,3 @@ process.on('SIGINT', function () {
 
 	callAmount++;
 });
-
-module.exports = { client };

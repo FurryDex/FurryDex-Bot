@@ -1,4 +1,4 @@
-const { EmbedBuilder } = require('discord.js');
+const { EmbedBuilder, InteractionContextType } = require('discord.js');
 
 module.exports = {
 	name: 'ping',
@@ -9,6 +9,7 @@ module.exports = {
 	usage: 'ping',
 	examples: ['ping'],
 	permissions: null,
+	contexts: [InteractionContextType.PrivateChannel, InteractionContextType.Guild, InteractionContextType.BotDM],
 	run: (client, message, args) => {
 		message.reply('Pong❗ 🏓');
 	},

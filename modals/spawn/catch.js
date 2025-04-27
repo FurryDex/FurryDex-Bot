@@ -27,6 +27,17 @@ module.exports = {
 		if (card.possible_name.includes(guess)) {
 			let live = Math.round(Math.floor(Math.random() * (25 - -25)) + -25);
 			let attacks = Math.round(Math.floor(Math.random() * (25 - -25)) + -25);
+			let glitchCard = Math.random() > 0.999;
+			let hasGlitchCard = await client
+				.knex('user_cards')
+				.first('*')
+				.where({ user_id: interaction.user.id, card_id: 19 })
+				.catch((err) => console.error(err));
+			if (glitchCard && !hasGlitchCard) {
+				live = 0;
+				attacks = 0;
+				serverConfig.last_Card = 19;
+			}
 			let uuid = uid();
 			let user = await client
 				.knex('users')
@@ -99,6 +110,12 @@ module.exports = {
 					})
 				);
 			});
+
+			client
+				.knex('anti-cheat_messages')
+				.update({ userCard: interaction.user.id })
+				.where({ spawnMessage: interaction.message.id })
+				.catch((err) => console.error(err));
 			msg.edit({ embeds: interaction.message.embeds, components: newComponents });
 		} else {
 			let nonono = locales.no[serverConfig.locale] ?? locales.no.default;

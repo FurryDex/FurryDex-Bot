@@ -42,7 +42,7 @@ async function leaderboard_update(client) {
 				}
 				users.sort((a, b) => b.card_completion - a.card_completion).slice(0, 10);
 				embed.addFields([
-					{ name: `🥇 •  \`${users[0] ? await client.users.fetch(users[0].id).then((user) => user.displayName) : '---'}\``, value: `↪ ***${users[0] ? users[0].card_completion : '---'}%***` },
+					{ name: `🥇 • \`${users[0] ? await client.users.fetch(users[0].id).then((user) => user.displayName) : '---'}\``, value: `↪ ***${users[0] ? users[0].card_completion : '---'}%***` },
 					{ name: `🥈 • \`${users[1] ? await client.users.fetch(users[1].id).then((user) => user.displayName) : '---'}\``, value: `↪ ***${users[1] ? users[1].card_completion : '---'}%***` },
 					{ name: `🥉 • \`${users[2] ? await client.users.fetch(users[2].id).then((user) => user.displayName) : '---'}\``, value: `↪ ***${users[2] ? users[2].card_completion : '---'}%***` },
 					{ name: `4. • \`${users[3] ? await client.users.fetch(users[3].id).then((user) => user.displayName) : '---'}\``, value: `↪ ***${users[3] ? users[3].card_completion : '---'}%***` },
@@ -75,7 +75,7 @@ async function leaderboard_update(client) {
 				}
 				users.sort((a, b) => b.card_number - a.card_number).slice(0, 10);
 				embed.addFields([
-					{ name: `🥇 •  \`${users[0] ? await client.users.fetch(users[0].id).then((user) => user.displayName) : '---'}\``, value: `↪ ***${users[0] ? users[0].card_number : '---'}***` },
+					{ name: `🥇 • \`${users[0] ? await client.users.fetch(users[0].id).then((user) => user.displayName) : '---'}\``, value: `↪ ***${users[0] ? users[0].card_number : '---'}***` },
 					{ name: `🥈 • \`${users[1] ? await client.users.fetch(users[1].id).then((user) => user.displayName) : '---'}\``, value: `↪ ***${users[1] ? users[1].card_number : '---'}***` },
 					{ name: `🥉 • \`${users[2] ? await client.users.fetch(users[2].id).then((user) => user.displayName) : '---'}\``, value: `↪ ***${users[2] ? users[2].card_number : '---'}***` },
 					{ name: `4. • \`${users[3] ? await client.users.fetch(users[3].id).then((user) => user.displayName) : '---'}\``, value: `↪ ***${users[3] ? users[3].card_number : '---'}***` },
@@ -107,7 +107,7 @@ async function leaderboard_update(client) {
 				}
 				users.sort((a, b) => b.card_completion - a.card_completion).slice(0, 10);
 				embed.addFields([
-					{ name: `🥇 •  \`${users[0] ? await client.users.fetch(users[0].id).then((user) => user.displayName) : '---'}\``, value: `↪ ***${users[0] ? users[0].card_completion : '---'}%***` },
+					{ name: `🥇 • \`${users[0] ? await client.users.fetch(users[0].id).then((user) => user.displayName) : '---'}\``, value: `↪ ***${users[0] ? users[0].card_completion : '---'}%***` },
 					{ name: `🥈 • \`${users[1] ? await client.users.fetch(users[1].id).then((user) => user.displayName) : '---'}\``, value: `↪ ***${users[1] ? users[1].card_completion : '---'}%***` },
 					{ name: `🥉 • \`${users[2] ? await client.users.fetch(users[2].id).then((user) => user.displayName) : '---'}\``, value: `↪ ***${users[2] ? users[2].card_completion : '---'}%***` },
 					{ name: `4. • \`${users[3] ? await client.users.fetch(users[3].id).then((user) => user.displayName) : '---'}\``, value: `↪ ***${users[3] ? users[3].card_completion : '---'}%***` },
@@ -139,7 +139,7 @@ async function leaderboard_update(client) {
 				}
 				users.sort((a, b) => b.card_number - a.card_number).slice(0, 10);
 				embed.addFields([
-					{ name: `🥇 •  \`${users[0] ? await client.users.fetch(users[0].id).then((user) => user.displayName) : '---'}\``, value: `↪ ***${users[0] ? users[0].card_number : '---'}***` },
+					{ name: `🥇 • \`${users[0] ? await client.users.fetch(users[0].id).then((user) => user.displayName) : '---'}\``, value: `↪ ***${users[0] ? users[0].card_number : '---'}***` },
 					{ name: `🥈 • \`${users[1] ? await client.users.fetch(users[1].id).then((user) => user.displayName) : '---'}\``, value: `↪ ***${users[1] ? users[1].card_number : '---'}***` },
 					{ name: `🥉 • \`${users[2] ? await client.users.fetch(users[2].id).then((user) => user.displayName) : '---'}\``, value: `↪ ***${users[2] ? users[2].card_number : '---'}***` },
 					{ name: `4. • \`${users[3] ? await client.users.fetch(users[3].id).then((user) => user.displayName) : '---'}\``, value: `↪ ***${users[3] ? users[3].card_number : '---'}***` },
@@ -202,7 +202,7 @@ async function leaderboard_update(client) {
 									console.error(err);
 								});
 						});
-					else message.edit({ embeds });
+					} else message.edit({ embeds });
 				} else {
 					channel.send({ embeds }).then((msg) => {
 						message = msg;

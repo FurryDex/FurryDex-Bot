@@ -1,4 +1,4 @@
-const { InteractionType, EmbedBuilder } = require('discord.js');
+const { InteractionType, EmbedBuilder, MessageFlags } = require('discord.js');
 const Logger = require('../../utils/Logger.js');
 module.exports = {
 	name: 'interactionCreate',
@@ -18,22 +18,25 @@ module.exports = {
 				if (!interaction.member.permissions.has([cmd.permissions]))
 					return interaction.reply({
 						content: "You dosn't have the nescessary permission",
-						ephemeral: true,
+						flags: MessageFlags.Ephemeral,
 					});
 			}
 			if (cmd.ownerOnly) {
 				if (interaction.user.id != client.config.owner) return interaction.reply('You need to be the creator for execute this command.');
 			}
+			if (cmd.staffOnly) {
+				if (!client.config.staff.includes(interaction.user.id)) return interaction.reply('You need to be a staff for execute this command.');
+			}
 
 			cmd.runSlash(client, interaction);
 		} else if (interaction.isButton()) {
-			customId = interaction.customId.replace(/\d+/g, 'x').replace(/{.*}/g, 'y');
-			const btn = client.buttons.get(customId);
+			if (interaction.customId.includes('--')) return;
+			const btn = client.buttons.get(interaction.customId);
 			if (!btn) {
-				Logger.warn(client, `Button "${interaction.customId}" or "${customId}" dosn't exist`);
+				Logger.warn(client, `Button "${interaction.customId}" dosn't exist`);
 				return interaction.reply({
 					content: "Sorry, this *button* dosn't exit. Er0r: 404",
-					ephemeral: true,
+					flags: MessageFlags.Ephemeral,
 				});
 			}
 			interaction.customId = interaction.customId.replace(/{*}*/g, '');
@@ -44,7 +47,7 @@ module.exports = {
 				Logger.warn(client, `Modal "${interaction.customId}" dosn't exist`);
 				return interaction.reply({
 					content: "Sorry, this *form* dosn't exit. Er0r: 404",
-					ephemeral: true,
+					flags: MessageFlags.Ephemeral,
 				});
 			}
 			modal.run(client, interaction);
@@ -54,7 +57,7 @@ module.exports = {
 				Logger.warn(client, `Select "${interaction.customId}" dosn't exist`);
 				return interaction.reply({
 					content: "Sorry, this *select menu* dosn't exit. Er0r: 404",
-					ephemeral: true,
+					flags: MessageFlags.Ephemeral,
 				});
 			}
 			select.run(client, interaction);

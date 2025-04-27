@@ -1,5 +1,6 @@
-const { ApplicationCommandOptionType, StringSelectMenuBuilder, ActionRowBuilder, EmbedBuilder, ButtonBuilder, ButtonStyle } = require('discord.js');
+const { ApplicationCommandOptionType, StringSelectMenuBuilder, ActionRowBuilder, EmbedBuilder, ButtonBuilder, ButtonStyle, BaseInteraction, SelectMenuInteraction, MessageFlags, InteractionContextType } = require('discord.js');
 const fs = require('fs');
+const { cardEmbed } = require('../../utils/functions/card');
 
 module.exports = {
 	name: 'furry',
@@ -7,6 +8,7 @@ module.exports = {
 	category: 'furry',
 	fullyTranslated: true,
 	permissions: null,
+	contexts: [InteractionContextType.PrivateChannel, InteractionContextType.Guild, InteractionContextType.BotDM],
 	run: (client, message, args) => {},
 	options: [
 		{
@@ -145,18 +147,18 @@ module.exports = {
 		if (userData.ToS != 1) {
 			let embed = new EmbedBuilder()
 				.setTitle('Wait, wait, wait !')
-				.setDescription(`Sorry, but you need to accept the ToS for continue !\n\nLegal Documents (ToS & Privacy policy): https://flyzar73.github.io/legal/ \nBy clicking on "Accept", you accept the ToS`)
+				.setDescription(`Sorry, but you need to accept the ToS for continue !\n\nLegal Documents (ToS & Privacy policy): https://FurryDex.github.io/legal/ \nBy clicking on "Accept", you accept the ToS`)
 				.setColor('Green');
 
 			const buttonRow = new ActionRowBuilder().addComponents(new ButtonBuilder().setCustomId(`accept-tos`).setLabel('Accept').setStyle(ButtonStyle.Primary));
 
-			interaction.editReply({ embeds: [embed], components: [buttonRow], ephemeral: true });
+			interaction.editReply({ embeds: [embed], components: [buttonRow], flags: MessageFlags.Ephemeral });
 
 			return;
 		}
 
 		if (subcommand == 'list') {
-			if (user_cards.length == 0) return interaction.editReply({ content: locales.run['no-furry'][interaction.locale] ?? locales.run['no-furry'].default, ephemeral: true });
+			if (user_cards.length == 0) return interaction.editReply({ content: locales.run['no-furry'][interaction.locale] ?? locales.run['no-furry'].default, flags: MessageFlags.Ephemeral });
 			AllOptions = [];
 			user_cards.forEach(async (card, key) => {
 				let date = new Date(card.date);
@@ -179,7 +181,23 @@ module.exports = {
 						.replace('%date%', `${cd(date.getDate())}/${cd(date.getMonth())}/${cd(date.getFullYear())} ${cd(date.getHours())}H${cd(date.getMinutes())}`),
 				});
 				if (user_cards.length == key + 1) {
-					sendMenu(AllOptions, interaction, user.id, false, 0, 25, 'cards');
+					sendMenu(
+						AllOptions,
+						interaction,
+						async (params) => {
+							return await interaction.editReply(params);
+						},
+						0,
+						25,
+						'cards',
+						async (response) => {
+							cardEmbed(client, response.values[0], response.locale).then((embed) => {
+								response.update({ embeds: [embed], components: [], content: ' ' }).catch((err) => {
+									console.error(err, response.values[0]);
+								});
+							});
+						}
+					);
 				}
 			});
 		} else if (subcommand == 'completion') {
@@ -196,44 +214,26 @@ module.exports = {
 					const embed = new EmbedBuilder().setTitle(`Furry Dex Completion`).setDescription(`There no card in this category`).setColor('#FF9700').setTimestamp();
 					interaction.editReply({ embeds: [embed] });
 				}
-			}
-			let havedCards = [];
-			let notHavedCards = [];
+			} else category = undefined;
 			let cards = 0;
-			allCards.forEach(async (card, key) => {
-				let user_this_cards = await client
-					.knex('user_cards')
-					.select('*')
-					.where({ card_id: card.id, user_id: user.id })
-					.catch((err) => {
-						console.error(err);
-					});
-				if (user_this_cards.length != 0) {
-					havedCards.push({ id: card.id, emoji: card.emoji, number: user_this_cards.length });
-				} else {
-					notHavedCards.push({ id: card.id, emoji: card.emoji });
-				}
-				cards++;
-				if (allCards.length == key + 1) {
-					setTimeout(() => {
-						const embed = new EmbedBuilder()
-							.setTitle(`Furry Dex Completion`)
-							.setDescription(
-								`Dex of <@${user.id}>\nFurries Dex progression: *${Math.round((havedCards.length / cards) * 100)}%*\n\n__**Owned Furries Cards**__\n${havedCards
-									.map((card) => `${card.emoji} ${card.number == 1 ? '' : `x ${card.number}`}`)
-									.join(' ')}\n\n__**Missing Furries Cards**__\n${notHavedCards.map((card) => card.emoji).join(' ')}`
-							)
-							.setColor('#FF9700')
-							.setTimestamp();
-						interaction.editReply({ embeds: [embed] });
-					}, 1500);
-				}
-			});
+			let havedCards = await require('../../utils/functions/card').getUserCards(client, user.id, category);
+			let notHavedCards = await require('../../utils/functions/card').getMissingCards(client, user.id, category);
+
+			const embed = new EmbedBuilder()
+				.setTitle(`Furry Dex Completion`)
+				.setDescription(
+					`Dex of <@${user.id}>\nFurries Dex progression: *${Math.round((havedCards.length / allCards.length) * 100)}%*\n\n__**Owned Furries Cards**__\n${havedCards.map((card) => `${card.emoji}`).join(' ')}\n\n__**Missing Furries Cards**__\n${notHavedCards
+						.map((card) => card.emoji)
+						.join(' ')}`
+				)
+				.setColor('#FF9700')
+				.setTimestamp();
+			interaction.editReply({ embeds: [embed] });
 		} else if (subcommand == 'count') {
-			if (user_cards.length == 0) return interaction.editReply({ content: locales.run['no-furry'][interaction.locale] ?? locales.run['no-furry'].default, ephemeral: true });
+			if (user_cards.length == 0) return interaction.editReply({ content: locales.run['no-furry'][interaction.locale] ?? locales.run['no-furry'].default, flags: MessageFlags.Ephemeral });
 			return interaction.editReply({ content: `The deck got \`%number%\` cards`.replace('%number%', user_cards.length) });
 		} else if (subcommand == 'give') {
-			if (user_cards.length == 0) return interaction.editReply({ content: locales.run['no-furry'][interaction.locale] ?? locales.run['no-furry'].default, ephemeral: true });
+			if (user_cards.length == 0) return interaction.editReply({ content: locales.run['no-furry'][interaction.locale] ?? locales.run['no-furry'].default, flags: MessageFlags.Ephemeral });
 			let giveTo = interaction.options.getUser('give-to');
 			AllOptions = [];
 			user_cards.forEach(async (card, key) => {
@@ -249,7 +249,7 @@ module.exports = {
 					});
 				AllOptions.push({
 					label: `(#${card.id}) ${card_info.name}`,
-					value: `${card.id}_${giveTo.id}`,
+					value: `${card.id}`,
 					emoji: `${card_info.emoji}`,
 					description: description
 						.replace('%attacks%', card.attacks)
@@ -257,7 +257,82 @@ module.exports = {
 						.replace('%date%', `${cd(date.getDate())}/${cd(date.getMonth())}/${cd(date.getFullYear())} ${cd(date.getHours())}H${cd(date.getMinutes())}`),
 				});
 				if (user_cards.length == key + 1) {
-					sendMenu(AllOptions, interaction, user.id, false, 0, 25, 'giveTo', true);
+					sendMenu(
+						AllOptions,
+						interaction,
+						async (params) => {
+							return await interaction.editReply(params);
+						},
+						0,
+						25,
+						'giveTo',
+						async (response) => {
+							let user = await client
+								.knex('users')
+								.first('*')
+								.where({ id: giveTo.id })
+								.catch((err) => console.error(err));
+
+							if (!user) {
+								client
+									.knex('users')
+									.insert({ user_id: giveTo.id })
+									.catch((err) => console.error(err));
+							}
+
+							let card = await client
+								.knex('user_cards')
+								.first('*')
+								.where({ user_id: response.user.id, id: response.values[0] })
+								.catch((err) => console.error(err));
+
+							if (!card) return response.reply('You are not the owner of the card');
+
+							let date = new Date();
+							client
+								.knex('user_cards')
+								.update({ user_id: giveTo.id, gived: response.user.id, giveDate: date.toISOString() })
+								.where({ user_id: response.user.id, id: response.values[0] })
+								.catch((err) => console.error(err));
+
+							require('../../utils/functions/DiscordLogger').writePlayer(client, response.user.id, {
+								tag: 'GIVE',
+								color: 'PINK',
+								description: 'Card Give',
+								info: [
+									{ name: 'to', value: `<@${giveTo.id}>` },
+									{ name: 'card', value: `${response.values[0]}` },
+								],
+								content: 'Give',
+							});
+
+							require('../../utils/functions/DiscordLogger').writePlayer(client, giveTo.id, {
+								tag: 'GIVE',
+								color: 'PINK',
+								description: 'Card Recieved',
+								info: [
+									{ name: 'from', value: `${response.user.id}` },
+									{ name: 'card', value: `${response.values[0]}` },
+								],
+								content: 'Give',
+							});
+
+							let cardO = await client
+								.knex('cards')
+								.first('*')
+								.where({ id: card.card_id })
+								.catch((err) => console.error(err));
+
+							let message = '%cardEmoji% `%cardName%` (`#%cardId%`)';
+							response.reply(
+								`card ${message
+									.replace('%cardEmoji%', cardO.emoji)
+									.replace('%cardName%', cardO.name)
+									.replace('%cardId%', `${card.id}, ${card.live < 0 ? card.live : `+${card.live}`}%/${card.attacks < 0 ? card.attacks : `+${card.attacks}`}%`)
+									.replace('%@player%', `<@${response.user.id}>`)} from <@${response.user.id}> to <@${giveTo.id}> was give succefully`
+							);
+						}
+					);
 				}
 			});
 		} else {
@@ -269,38 +344,111 @@ module.exports = {
 	},
 };
 
-async function sendMenu(options, interaction, id, edit = false, page = 0, chunkSize = 25, customId, ephemeral = false) {
+/**
+ *
+ * @callback callback
+ * @param {Object}  options - List of options for the menu
+ * @param {BaseInteraction, Message}  interaction - The interaction
+ * @param {Boolean} isMessage - Is message ? (default false)
+ * @param {Number} page - The page (default 0)
+ * @param {Number} chunkSize - The chunk size (default 25, max 25)
+ * @param {String} customId - The customId
+ * @param {callback} callback - The callback
+ * @param {String} content - The content of the interaction / message
+ * @returns {Promise<SelectMenuInteraction>}
+ * @example
+ * sendMenu(options, interaction, message, page, chunkSize, customId, callback);
+ * @example
+ * sendMenu(options, interaction, false, 0, 25, 'cards', callback);
+ *
+ */
+
+async function sendMenu(options, interaction, update_command, page = 0, chunkSize = 25, customId, callback, content = 'Select a card: ') {
 	const chunkedOptions = chunkArray(options, chunkSize);
 	const currentOptions = chunkedOptions[page];
 
-	const row = new ActionRowBuilder().addComponents(new StringSelectMenuBuilder().setCustomId(customId).setPlaceholder('Select a card').addOptions(currentOptions));
+	const row = new ActionRowBuilder().addComponents(new StringSelectMenuBuilder().setCustomId(customId).addOptions(currentOptions));
+	if (!row) return;
+	let rows = [row];
 
-	const buttonRow = new ActionRowBuilder().addComponents(
-		new ButtonBuilder()
-			.setCustomId(`prev_${id}_${Number(page) - 1}_{${customId}}`)
-			.setLabel('«')
-			.setStyle(page == 0 ? ButtonStyle.Primary : ButtonStyle.Danger)
-			.setDisabled(page == 0),
-		new ButtonBuilder()
-			.setCustomId(`nothing`)
-			.setLabel(`${Number(page) + 1}`)
-			.setStyle(ButtonStyle.Success)
-			.setDisabled(chunkedOptions.length == 1),
-		new ButtonBuilder()
-			.setCustomId(`next_${id}_${Number(page) + 1}_{${customId}}`)
-			.setLabel('»')
-			.setStyle(page == chunkedOptions.length - 1 ? ButtonStyle.Primary : ButtonStyle.Danger)
-			.setDisabled(page == chunkedOptions.length - 1)
-	);
+	if (chunkedOptions.length == 0) return interaction.editReply({ content: 'No options to select', flags: MessageFlags.Ephemeral });
 
-	if (!edit) {
-		await interaction.editReply({ content: 'Please select a card:', components: [row, buttonRow], ephemeral });
-	} else {
-		await interaction.update({ components: [row, buttonRow] });
+	if (chunkedOptions.length > 1) {
+		const buttonRow = new ActionRowBuilder().addComponents(
+			new ButtonBuilder()
+				.setCustomId(`${customId}--prev`)
+				.setLabel('«')
+				.setStyle(page == 0 ? ButtonStyle.Danger : ButtonStyle.Primary)
+				.setDisabled(page == 0),
+			new ButtonBuilder()
+				.setCustomId(`${customId}--nothing`)
+				.setLabel(`${Number(page) + 1}`)
+				.setStyle(ButtonStyle.Success)
+				.setDisabled(chunkedOptions.length == 1),
+			new ButtonBuilder()
+				.setCustomId(`${customId}--next`)
+				.setLabel('»')
+				.setStyle(page == chunkedOptions.length - 1 ? ButtonStyle.Danger : ButtonStyle.Primary)
+				.setDisabled(page == chunkedOptions.length - 1)
+		);
+		rows.push(buttonRow);
 	}
-}
 
-// carte / carteTotal * 100
+	let message = await (update_command ?? interaction.editReply)({ content, components: rows }).catch((err) => {
+		console.error(err, currentOptions);
+	});
+
+	const response = await message.awaitMessageComponent().catch((err) => require('../../utils/Logger').error(client, err));
+	do {
+		if (!response.customId) return;
+		if (response.customId == `${customId}--prev`) {
+			return await sendMenu(
+				options,
+				interaction,
+				async (params) => {
+					response.update(params);
+					return response.message;
+				},
+				page - 1,
+				chunkSize,
+				customId,
+				callback,
+				content
+			);
+		} else if (response.customId == `${customId}--nothing`) {
+			return await sendMenu(
+				options,
+				interaction,
+				async () => {
+					response.reply({ content: `Eh! I have a secret told you!\n\n||There is no point in pressing a button in this range||`, flags: MessageFlags.Ephemeral });
+					return response.message;
+				},
+				page,
+				chunkSize,
+				customId,
+				callback,
+				content
+			);
+		} else if (response.customId == `${customId}--next`) {
+			return await sendMenu(
+				options,
+				interaction,
+				async (params) => {
+					response.update(params);
+					return response.message;
+				},
+				page + 1,
+				chunkSize,
+				customId,
+				callback,
+				content
+			);
+		} else if (response.customId == customId) {
+			callback(response);
+			return response;
+		}
+	} while (true);
+}
 function chunkArray(array, chunkSize = 25) {
 	const chunks = [];
 	for (let i = 0; i < array.length; i += chunkSize) {
@@ -308,5 +456,3 @@ function chunkArray(array, chunkSize = 25) {
 	}
 	return chunks;
 }
-
-//(3 - card.rarity) * 10
