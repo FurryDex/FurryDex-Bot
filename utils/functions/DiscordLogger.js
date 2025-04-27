@@ -14,6 +14,7 @@ async function write(client, destination, embed) {
 		.setTimestamp();
 	const logGuild = await client.guilds.cache.get(client.config.log.guild ?? client.config.bot.guild);
 	const category = await logGuild.channels.cache.get(categoryList[destination.category.forum]);
+	if (!category) return;
 	const channel = await category.threads.cache.get(destination.channel);
 	channel.send({ embeds: [logEmbed] });
 }
@@ -128,6 +129,7 @@ async function writeServer(client, serverId, embed) {
 
 	const logGuild = await client.guilds.cache.get(client.config.log.guild ?? client.config.bot.guild);
 	const category = await logGuild.channels.cache.get(categoryList['server']);
+	if (!category) return;
 
 	let guildEmbed = new EmbedBuilder()
 		.setTitle(`${guild.name} (${serverId})`)

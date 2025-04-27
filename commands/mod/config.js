@@ -261,23 +261,24 @@ module.exports = {
 		}
 		if (subcommand == 'leaderboard') {
 			let option = JSON.parse(
-				await client
+				(await client
 					.knex('guilds')
 					.update({ leaderboard: JSON.stringify(interaction.values) })
 					.where({ id: interaction.guild.id })
-					.catch((err) => console.log(err))
+					.catch((err) => console.log(err))) ?? '[]'
 			);
 			const row = new ActionRowBuilder().addComponents(
 				new StringSelectMenuBuilder()
 					.setCustomId('leaderboard')
 					.setPlaceholder('Select different leaderboards to show')
 					.addOptions([
-						{ label: `1. Cards completion Leaderboard`, value: `1`, default: option.has('1') },
-						{ label: `2. Cards Leaderboard`, value: `2`, default: option.has('2') },
-						{ label: `3. Global Cards completion Leaderboard`, value: `3`, default: option.has('3') },
-						{ label: `4. Global Cards Leaderboard`, value: `4`, default: option.has('4') },
+						{ label: `1. Cards completion Leaderboard`, value: `1`, default: option.includes('1') },
+						{ label: `2. Cards Leaderboard`, value: `2`, default: option.includes('2') },
+						{ label: `3. Global Cards completion Leaderboard`, value: `3`, default: option.includes('3') },
+						{ label: `4. Global Cards Leaderboard`, value: `4`, default: option.includes('4') },
+						{ label: `5. Server Cards Completion Leaderboard`, value: `5`, default: option.includes('5') },
 					])
-					.setMaxValues(4)
+					.setMaxValues(5)
 					.setMinValues(0)
 			);
 
