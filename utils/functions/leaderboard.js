@@ -22,7 +22,6 @@ async function leaderboard_update(client) {
 			if (!channel) return;
 			let embeds = [];
 			let leaderboard = JSON.parse(guildConfig.leaderboard);
-			console.log(1);
 			if (leaderboard.includes('1')) {
 				let embed = new EmbedBuilder().setDescription('# Cards completion Leaderboard').setColor('Orange').setTimestamp();
 				let users = await client.knex('users').catch((err) => Logger.error(err));
@@ -55,7 +54,6 @@ async function leaderboard_update(client) {
 				]);
 				embeds.push(embed);
 			}
-			console.log(2);
 			if (leaderboard.includes('2')) {
 				let embed = new EmbedBuilder().setDescription('# Cards Leaderboard').setColor('Orange').setTimestamp();
 				let users = await client.knex('users').catch((err) => Logger.error(err));
@@ -88,7 +86,6 @@ async function leaderboard_update(client) {
 				]);
 				embeds.push(embed);
 			}
-			console.log(3);
 			if (leaderboard.includes('3')) {
 				let embed = new EmbedBuilder().setDescription('# Global Cards completion Leaderboard').setColor('Blue').setTimestamp();
 				let users = await client.knex('users').catch((err) => Logger.error(err));
@@ -120,7 +117,6 @@ async function leaderboard_update(client) {
 				]);
 				embeds.push(embed);
 			}
-			console.log(4);
 			if (leaderboard.includes('4')) {
 				let embed = new EmbedBuilder().setDescription('# Global Cards Leaderboard').setColor('Blue').setTimestamp();
 				let users = await client.knex('users').catch((err) => Logger.error(err));
@@ -152,7 +148,6 @@ async function leaderboard_update(client) {
 				]);
 				embeds.push(embed);
 			}
-			console.log(5);
 			if (leaderboard.includes('5')) {
 				let embed = new EmbedBuilder().setDescription('# Server Cards completion Leaderboard').setColor('Red').setTimestamp();
 				let users = await client.knex('users').catch((err) => Logger.error(err));
@@ -165,7 +160,9 @@ async function leaderboard_update(client) {
 						.where({ user_id: user.id })
 						.catch((err) => Logger.error(err));
 					users[key].serverCompletion =
-						(user_cards.filter(async (card) => members.has((await client.knex('cards').first('*').where({ id: card.card_id })).authorId)).length / (await client.knex('cards')).filter(async (card) => members.has(card.authorId)).length) * 100;
+						(user_cards.filter(async (card) => members.has((await client.knex('cards').first('*').where({ id: card.card_id })).authorId) && [5, 9].includes(card.category)).length /
+							(await client.knex('cards')).filter(async (card) => members.has(card.authorId) && [5, 9].includes(card.category)).length) *
+						100;
 					done = key == users.length - 1;
 				});
 				while (!done) {
@@ -186,7 +183,6 @@ async function leaderboard_update(client) {
 				]);
 				embeds.push(embed);
 			}
-			console.log(1);
 			if (guildConfig.leaderboard_edit) {
 				if (guildConfig.leaderboard_msg) {
 					let message = await channel.messages.fetch(guildConfig.leaderboard_msg);
@@ -202,21 +198,20 @@ async function leaderboard_update(client) {
 									console.error(err);
 								});
 						});
-					} else message.edit({ embeds });
-				} else {
-					channel.send({ embeds }).then((msg) => {
-						message = msg;
-						client
-							.knex('guilds')
-							.update({ leaderboard_msg: msg.id })
-							.where({ id: guild.id })
-							.catch((err) => {
-								console.error(err);
-							});
-					});
-				}
-			} else channel.send({ embeds });
-		}
+				} else message.edit({ embeds });
+			} else {
+				channel.send({ embeds }).then((msg) => {
+					message = msg;
+					client
+						.knex('guilds')
+						.update({ leaderboard_msg: msg.id })
+						.where({ id: guild.id })
+						.catch((err) => {
+							console.error(err);
+						});
+				});
+			}
+		} else channel.send({ embeds });
 	});
 }
 
