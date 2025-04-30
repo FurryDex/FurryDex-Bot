@@ -1,13 +1,11 @@
-const { Client, Collection, Partials, GatewayIntentBits } = require('discord.js');
-const fs = require('fs');
+import { Client, Collection, Partials, GatewayIntentBits } from 'discord.js';
+const fs = require('node:fs');
 const process = require('node:process');
 const yaml = require('js-yaml');
 const client = new Client({
 	intents: [
 		GatewayIntentBits.Guilds,
 		GatewayIntentBits.GuildMembers,
-		GatewayIntentBits.GuildBans,
-		GatewayIntentBits.GuildEmojisAndStickers,
 		GatewayIntentBits.GuildIntegrations,
 		GatewayIntentBits.GuildWebhooks,
 		GatewayIntentBits.GuildInvites,
@@ -28,13 +26,21 @@ const client = new Client({
 		GatewayIntentBits.GuildVoiceStates,
 	],
 	partials: [Partials.User, Partials.Channel, Partials.GuildMember, Partials.Message, Partials.Reaction, Partials.GuildScheduledEvent, Partials.ThreadMember],
-});
-const Logger = require('./utils/Logger');
+}) as Client & {
+	config: any;
+	commands: Collection<any, any>;
+	buttons: Collection<any, any>;
+	selects: Collection<any, any>;
+	modals: Collection<any, any>;
+	locales: any;
+	knex: any;
+};
+import Logger from './utils/Logger';
 
 try {
 	client.config = yaml.load(fs.readFileSync('./config/config.yaml', 'utf8'));
 } catch (e) {
-	return console.error('Config file does not exist !', e);
+	console.error('Config file does not exist !', e);
 }
 const debug = client.config.dev.debug;
 
@@ -77,7 +83,7 @@ async function no_locales(err) {
 }
 
 locales().then(() => {
-	require(`./utils/handlers/CommandUtil.js`)(client);
+	require(`./utils/handlers/CommandUtil.ts`)(client);
 });
 
 if (!debug) {
@@ -91,7 +97,7 @@ if (!debug) {
 		console.log('Unhandled Rejection at:', promise, 'reason:', reason);
 		Logger.error(client, `${'unhandledRejection'.toUpperCase()}: at`, promise, 'reason:', reason);
 	});
-	process.on('warning', (...args) => Logger.warn(...args));
+	process.on('warning', (...args) => Logger.warn(args));
 	client.rest.on('rateLimited', (rateLimited) => {
 		Logger.warn(client, `${'rateLimited'.toUpperCase()}: ${rateLimited}`);
 	});

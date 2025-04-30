@@ -1,14 +1,11 @@
-const { PermissionFlagsBits, ApplicationCommandType, InteractionContextType } = require('discord.js');
-const { glob } = require('glob');
-const { promisify, isNull } = require('util');
-const Logger = require('../Logger');
+import { PermissionFlagsBits, InteractionContextType } from 'discord.js';
+import { glob } from 'glob';
+import Logger from '../Logger';
 const process = require('process');
 
-const pGlob = promisify(glob);
-
 module.exports = async (client) => {
-	(await pGlob(`./commands/*/*.js`)).map(async (cmdFile) => {
-		const cmd = require(cmdFile.replace('.', process.cwd()));
+	(await glob(`./commands/*/*.ts`)).map(async (cmdFile) => {
+		const cmd = require(`${process.cwd()}/${cmdFile}`);
 		if (!cmd.name) return Logger.warn(null, `Nom Non Definie\nFichier: ${cmdFile}`);
 		if (cmd.name == 'furry' && client.config.bot.base_command) cmd.name = client.config.bot.base_command;
 		if (!cmd.description) return Logger.warn(null, `Description Non Definie\nFichier: ${cmdFile}`);
@@ -19,7 +16,7 @@ module.exports = async (client) => {
 
 		try {
 			() => {
-				if (client.locales == {}) return;
+				if (!client.locales) return;
 				let locales = client.locales['commands'][cmd.name];
 				if (!locales) return Logger.warn(null, `Aucune traduction pour ${cmd.name}`);
 				cmd.nameLocalizations = locales.name ?? {};
@@ -29,7 +26,7 @@ module.exports = async (client) => {
 						option.nameLocalizations = locales.options[option.name]?.name ?? {};
 						option.descriptionLocalizations = locales.options[option.name]?.description ?? {};
 						if (option.choices && locales.options[option.name]?.choices) {
-							suboption.choices.forEach((optionchoices, indexchoices) => {
+							option.choices.forEach((optionchoices, indexchoices) => {
 								optionchoices.nameLocalizations = locales.options[option.name].choices[optionchoices.name] ?? {};
 							});
 						}
@@ -226,9 +223,6 @@ const permissionArray = {
 	},
 	SEND_MESSAGES_IN_THREADS: {
 		BigInt: PermissionFlagsBits.SendMessagesInThreads,
-	},
-	START_EMBEDDED_ACTIVITIES: {
-		BigInt: PermissionFlagsBits.START_EMBEDDED_ACTIVITIES,
 	},
 	MODERATE_MEMBERS: {
 		BigInt: PermissionFlagsBits.ModerateMembers,

@@ -71,7 +71,7 @@ module.exports = {
 					.replace('%cardId%', `${uuid}, ${live < 0 ? live : `+${live}`}%/${attacks < 0 ? attacks : `+${attacks}`}%`)
 					.replace('%@player%', `<@${interaction.user.id}>`)
 			);
-			require('../../utils/functions/DiscordLogger').writePlayer(client, interaction.user.id, {
+			require('../../utils/functions/DiscordLogger.ts').writePlayer(client, interaction.user.id, {
 				tag: 'SUCCES',
 				color: 'GREEN',
 				description: 'Card catch',
@@ -84,7 +84,7 @@ module.exports = {
 				],
 				content: 'Catch',
 			});
-			require('../../utils/functions/DiscordLogger').writeServer(client, interaction.guild.id, {
+			require('../../utils/functions/DiscordLogger.ts').writeServer(client, interaction.guild.id, {
 				tag: 'SUCCES',
 				color: 'GREEN',
 				description: 'Card catch',

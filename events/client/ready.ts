@@ -1,6 +1,4 @@
-const Logger = require('../../utils/Logger');
-const { REST, Routes } = require('discord.js');
-const fs = require('fs');
+import Logger from '../../utils/Logger';
 
 let activity = 'count my card ...';
 
@@ -32,7 +30,5 @@ module.exports = {
 
 		require('../../utils/functions/leaderboard').leaderboard_start(client);
 		require('../../utils/functions/anticheat').anticheat_start(client);
-		require('../../utils/functions/update').upgrade_data(client);
-		require('../../utils/functions/update').update_data(client);
 	},
 };

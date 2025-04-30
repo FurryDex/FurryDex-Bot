@@ -1,4 +1,4 @@
-const { ApplicationCommandOptionType, PermissionFlagsBits, MessageFlags } = require('discord.js');
+import { ApplicationCommandOptionType, PermissionFlagsBits, MessageFlags } from 'discord.js';
 
 module.exports = {
 	name: 'emit',

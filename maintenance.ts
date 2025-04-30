@@ -1,15 +1,8 @@
 const yaml = require('js-yaml');
 const fs = require('fs');
-let config = {};
+let config = yaml.load(fs.readFileSync('./config/config.yaml', 'utf8'));
 
-try {
-	const doc = yaml.load(fs.readFileSync('./config/config.yaml', 'utf8'));
-	config = doc;
-} catch (e) {
-	console.log(e);
-}
-
-const { Client, GatewayIntentBits, Partials, ActivityType, Status } = require('discord.js');
+import { Client, GatewayIntentBits, Partials, ActivityType, Collection } from 'discord.js';
 
 const client = new Client({
 	intents: [
@@ -37,10 +30,18 @@ const client = new Client({
 		GatewayIntentBits.GuildVoiceStates,
 	],
 	partials: [Partials.User, Partials.Channel, Partials.GuildMember, Partials.Message, Partials.Reaction, Partials.GuildScheduledEvent, Partials.ThreadMember],
-});
+}) as Client & {
+	config: any;
+	commands: Collection<any, any>;
+	buttons: Collection<any, any>;
+	selects: Collection<any, any>;
+	modals: Collection<any, any>;
+	locales: any;
+	knex: any;
+};
 
 client.login(config.bot.token);
-knex = require('knex')(config.database);
+let knex = require('knex')(config.database);
 
 client.on('ready', () => {
 	console.log('Bot is ready');
@@ -51,7 +52,7 @@ client.on('ready', () => {
 });
 
 async function TEST() {
-	guild = client.guilds.cache.get('1235970684556021890');
+	let guild = client.guilds.cache.get('1235970684556021890');
 
 	let userId = '643835326485233716';
 	console.log(

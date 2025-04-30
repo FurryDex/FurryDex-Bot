@@ -1,11 +1,9 @@
-const { glob } = require('glob');
-const { promisify } = require('util');
-const Logger = require('../Logger');
-const pGlob = promisify(glob);
+import { glob } from 'glob';
+import Logger from '../Logger';
 
 module.exports = async (client) => {
-	(await pGlob(`./events/*/*.js`)).map(async (eventFile) => {
-		const event = require(eventFile.replace('.', process.cwd()));
+	(await glob(`./events/*/*.ts`, {})).map(async (eventFile) => {
+		const event = require(`${process.cwd()}/${eventFile}`);
 
 		if (!eventList.includes(event.name) || !event.name) {
 			return Logger.warn(client, `Nom Non Derfinie\nFile: ${eventFile}`);

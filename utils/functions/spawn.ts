@@ -1,5 +1,5 @@
-const { EmbedBuilder, ButtonStyle, ActionRowBuilder, ButtonBuilder, MessageFlags } = require('discord.js');
-const Logger = require('../Logger.js');
+import { EmbedBuilder, ButtonStyle, ActionRowBuilder, ButtonBuilder, MessageFlags } from 'discord.js';
+import Logger from '../Logger';
 
 async function isXMinutesPassed(message, client) {
 	try {
@@ -106,7 +106,7 @@ async function isXMinutesPassed(message, client) {
 				})
 				.where({ id: message.guild.id })
 				.catch((err) => console.error(err));
-			require('./DiscordLogger').writeServer(client, message.guild.id, {
+			require('./DiscordLogger.ts').writeServer(client, message.guild.id, {
 				tag: 'INFO',
 				color: 'BLUE',
 				description: 'Card spawning ...',
@@ -210,7 +210,7 @@ async function win(client, message) {
 		if (card.event) is_event = true;
 
 		setTimeout(() => {
-			require('./DiscordLogger').writeServer(client, guild.id, {
+			require('./DiscordLogger.ts').writeServer(client, guild.id, {
 				tag: 'SUCCES',
 				color: 'GREEN',
 				description: 'Card spawn',

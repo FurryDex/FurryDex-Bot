@@ -1,4 +1,4 @@
-const { EmbedBuilder, InteractionContextType } = require('discord.js');
+import { EmbedBuilder, InteractionContextType } from 'discord.js';
 
 module.exports = {
 	name: 'ping',

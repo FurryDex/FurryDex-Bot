@@ -1,5 +1,4 @@
-const { ApplicationCommandOptionType, StringSelectMenuBuilder, ActionRowBuilder, PermissionFlagsBits, MessageFlags } = require('discord.js');
-const leaderboard = require('../../selects/mod/leaderboard');
+import { ApplicationCommandOptionType, StringSelectMenuBuilder, ActionRowBuilder, PermissionFlagsBits, MessageFlags } from 'discord.js';
 
 module.exports = {
 	name: 'config',

@@ -1,6 +1,5 @@
-const { ApplicationCommandOptionType, StringSelectMenuBuilder, ActionRowBuilder, EmbedBuilder, ButtonBuilder, ButtonStyle, BaseInteraction, SelectMenuInteraction, MessageFlags, InteractionContextType } = require('discord.js');
-const fs = require('fs');
-const { cardEmbed } = require('../../utils/functions/card');
+import { ApplicationCommandOptionType, StringSelectMenuBuilder, ActionRowBuilder, EmbedBuilder, ButtonBuilder, ButtonStyle, BaseInteraction, SelectMenuInteraction, MessageFlags, InteractionContextType } from 'discord.js';
+import { cardEmbed } from '../../utils/functions/card';
 
 module.exports = {
 	name: 'furry',
@@ -159,10 +158,10 @@ module.exports = {
 
 		if (subcommand == 'list') {
 			if (user_cards.length == 0) return interaction.editReply({ content: locales.run['no-furry'][interaction.locale] ?? locales.run['no-furry'].default, flags: MessageFlags.Ephemeral });
-			AllOptions = [];
+			let AllOptions: Array<{ label: string; value: string; emoji: string; description: string }> = [];
 			user_cards.forEach(async (card, key) => {
 				let date = new Date(card.date);
-				cd = (num) => num.toString().padStart(2, 0);
+				let cd: Function = (num) => num.toString().padStart(2, 0);
 				let description = locales.run.list[interaction.locale] ?? locales.run.list.default;
 				let card_info = await client
 					.knex('cards')
@@ -235,10 +234,10 @@ module.exports = {
 		} else if (subcommand == 'give') {
 			if (user_cards.length == 0) return interaction.editReply({ content: locales.run['no-furry'][interaction.locale] ?? locales.run['no-furry'].default, flags: MessageFlags.Ephemeral });
 			let giveTo = interaction.options.getUser('give-to');
-			AllOptions = [];
+			let AllOptions: Array<{ label: string; value: string; emoji: string; description: string }> = [];
 			user_cards.forEach(async (card, key) => {
 				let date = new Date(card.date);
-				cd = (num) => num.toString().padStart(2, 0);
+				let cd: Function = (num) => num.toString().padStart(2, 0);
 				let description = locales.run.list[interaction.locale] ?? locales.run.list.default;
 				let card_info = await client
 					.knex('cards')
@@ -295,7 +294,7 @@ module.exports = {
 								.where({ user_id: response.user.id, id: response.values[0] })
 								.catch((err) => console.error(err));
 
-							require('../../utils/functions/DiscordLogger').writePlayer(client, response.user.id, {
+							require('../../utils/functions/DiscordLogger.ts').writePlayer(client, response.user.id, {
 								tag: 'GIVE',
 								color: 'PINK',
 								description: 'Card Give',
@@ -306,7 +305,7 @@ module.exports = {
 								content: 'Give',
 							});
 
-							require('../../utils/functions/DiscordLogger').writePlayer(client, giveTo.id, {
+							require('../../utils/functions/DiscordLogger.ts').writePlayer(client, giveTo.id, {
 								tag: 'GIVE',
 								color: 'PINK',
 								description: 'Card Recieved',
@@ -398,7 +397,7 @@ async function sendMenu(options, interaction, update_command, page = 0, chunkSiz
 		console.error(err, currentOptions);
 	});
 
-	const response = await message.awaitMessageComponent().catch((err) => require('../../utils/Logger').error(client, err));
+	const response = await message.awaitMessageComponent().catch((err) => require('../../utils/Logger.ts').error(null, err));
 	do {
 		if (!response.customId) return;
 		if (response.customId == `${customId}--prev`) {

@@ -1,5 +1,5 @@
 const { EmbedBuilder } = require('discord.js');
-const Logger = require('../Logger');
+import Logger from '../Logger';
 
 function leaderboard_start(client) {
 	leaderboard_update(client);
@@ -198,10 +198,20 @@ async function leaderboard_update(client) {
 									console.error(err);
 								});
 						});
-				} else message.edit({ embeds });
+					else message.edit({ embeds });
+				} else {
+					channel.send({ embeds }).then((msg) => {
+						client
+							.knex('guilds')
+							.update({ leaderboard_msg: msg.id })
+							.where({ id: guild.id })
+							.catch((err) => {
+								console.error(err);
+							});
+					});
+				}
 			} else {
 				channel.send({ embeds }).then((msg) => {
-					message = msg;
 					client
 						.knex('guilds')
 						.update({ leaderboard_msg: msg.id })

@@ -5,7 +5,7 @@ let config;
 try {
 	config = yaml.load(fs.readFileSync('./config/config.yaml', 'utf8'));
 } catch (e) {
-	return console.error('Config file does not exist !', e);
+	console.error('Config file does not exist !', e);
 }
 
 if (config.bot.shard) {
@@ -15,11 +15,11 @@ if (config.bot.shard) {
 	try {
 		const manager = new ShardingManager('./bot.js', { token: config.bot.token });
 
-		manager.on('shardCreate', (shard) => require('./utils/Logger').shard(null, `Lancement de la shard #${shard.id}`));
+		manager.on('shardCreate', (shard) => require('./utils/Logger.ts').shard(null, `Lancement de la shard #${shard.id}`));
 
 		manager.spawn();
 	} catch (error) {
-		return require('./utils/Logger').error(null, 'Error au lancement de shard !', error);
+		require('./utils/Logger.ts').error(null, 'Error au lancement de shard !', error);
 	}
 } else {
 	require('./bot.js');

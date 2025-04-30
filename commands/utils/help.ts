@@ -1,6 +1,5 @@
-const { EmbedBuilder, ApplicationCommandOptionType, MessageFlags, InteractionContextType } = require('discord.js');
+import { EmbedBuilder, ApplicationCommandOptionType, MessageFlags, InteractionContextType } from 'discord.js';
 const { readdirSync } = require('fs');
-const { examples } = require('./ping');
 const commandFolder = readdirSync('./commands');
 const prefix = '/';
 

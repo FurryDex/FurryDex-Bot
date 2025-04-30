@@ -1,10 +1,34 @@
-const { EmbedBuilder, time, TimestampStyles } = require('discord.js');
-const Logger = require('../Logger');
+import { EmbedBuilder, time, TimestampStyles } from 'discord.js';
+import Logger from '../Logger';
 
-async function cardEmbed(client, cardId, locale) {
+export async function cardEmbed(client, cardId, locale) {
 	const locales = client.locales.utils.function.cards;
-	let cardF = {};
-	let originalCardF = {};
+	type cardF = {
+		id: string;
+		card_id: string;
+		user_id: string;
+		date: Date;
+		gived: string;
+		giveDate: Date;
+		live: number;
+		attacks: number;
+	};
+	type originalCardF = {
+		id: string;
+		card_id: string;
+		name: string;
+		authorId: string;
+		category: string;
+		birthday: Date;
+		live: number;
+		attacks: number;
+		card: string;
+		species: string;
+		color: string;
+		emoji: string;
+	};
+	let originalCardF: originalCardF;
+	let cardF: cardF;
 	await card(client, cardId).then((card) => {
 		cardF = card;
 	});
@@ -50,11 +74,11 @@ async function cardEmbed(client, cardId, locale) {
 		.replace('%time%', `${time(date, TimestampStyles.LongDateTime)} (${time(date, TimestampStyles.RelativeTime)})`)
 		.replace('%type%', type)
 		.replace('%species%', formatArrayToText(species))
-		.replace('%live%', cardF.live < 0 ? originalCardF.live - (originalCardF.live * cardF.live.replace('-', '')) / 100 : originalCardF.live + (originalCardF.live * cardF.live) / 100) //cardF.live < 0 ? originalCardF.live-(originalCardF.live*cardF.live/100) : originalCardF.live+(originalCardF.live*cardF.live/100)
+		.replace('%live%', cardF.live < 0 ? originalCardF.live - (originalCardF.live * Number(`${cardF.live}`.replace('-', ''))) / 100 : originalCardF.live + (originalCardF.live * cardF.live) / 100) //cardF.live < 0 ? originalCardF.live-(originalCardF.live*cardF.live/100) : originalCardF.live+(originalCardF.live*cardF.live/100)
 		.replace('%live_2%', cardF.live)
-		.replace('%attacks%', cardF.attacks < 0 ? originalCardF.attacks - (originalCardF.attacks * cardF.attacks.replace('-', '')) / 100 : originalCardF.attacks + (originalCardF.attacks * cardF.attacks) / 100) //cardF.attacks < 0 ? originalCardF.attacks-(originalCardF.attacks*cardF.attacks/100) : originalCardF.attacks+(originalCardF.attacks*cardF.attacks/100)
+		.replace('%attacks%', cardF.attacks < 0 ? originalCardF.attacks - (originalCardF.attacks * Number(`${cardF.attacks}`.replace('-', ''))) / 100 : originalCardF.attacks + (originalCardF.attacks * cardF.attacks) / 100) //cardF.attacks < 0 ? originalCardF.attacks-(originalCardF.attacks*cardF.attacks/100) : originalCardF.attacks+(originalCardF.attacks*cardF.attacks/100)
 		.replace('%attacks_2%', cardF.attacks);
-	if (cardF.gived != 0) {
+	if (cardF.gived != '0') {
 		let giveDate = new Date(cardF.giveDate);
 		description = description.replace(
 			'%gived%',
@@ -147,4 +171,4 @@ function formatArrayToText(array) {
 	}
 }
 
-module.exports = { card, cardEmbed, originalCard, getMissingCards, getUserCards };
+export default { card, cardEmbed, originalCard, getMissingCards, getUserCards };

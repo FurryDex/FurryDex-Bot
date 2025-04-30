@@ -1,5 +1,5 @@
-const { InteractionType, EmbedBuilder, MessageFlags } = require('discord.js');
-const Logger = require('../../utils/Logger.js');
+import { InteractionType, EmbedBuilder, MessageFlags } from 'discord.js';
+import Logger from '../../utils/Logger';
 module.exports = {
 	name: 'interactionCreate',
 	once: false,

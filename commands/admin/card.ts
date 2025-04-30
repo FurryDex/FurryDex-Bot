@@ -1,4 +1,4 @@
-const { ApplicationCommandOptionType, PermissionFlagsBits, MessageFlags, InteractionContextType } = require('discord.js');
+import { ApplicationCommandOptionType, PermissionFlagsBits, MessageFlags, InteractionContextType } from 'discord.js';
 
 module.exports = {
 	name: 'card',
