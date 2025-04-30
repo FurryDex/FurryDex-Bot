@@ -187,7 +187,6 @@ async function leaderboard_update(client) {
 			if (guildConfig.leaderboard_edit) {
 				if (guildConfig.leaderboard_msg) {
 					let message = await channel.messages.fetch(guildConfig.leaderboard_msg);
-					console.log(message);
 					if (!message)
 						channel.send({ embeds }).then((msg) => {
 							message = msg;

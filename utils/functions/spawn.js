@@ -241,22 +241,24 @@ async function win(client, message) {
 					.where({ message_id: message.id })
 					.catch((err) => console.error(err));
 				setTimeout(async () => {
-					let msg = await channel.messages.fetch(m.id);
+					try {
+						let msg = await channel.messages.fetch(m.id);
 
-					serverConfig = await client
-						.knex('guilds')
-						.update({ last_Card: null })
-						.where({ id: guild.id })
-						.catch((err) => console.error(err));
-					serverConfig.last_Card = null;
-					const newComponents = msg.components.map((row) => {
-						return new ActionRowBuilder().addComponents(
-							row.components.map((button) => {
-								return new ButtonBuilder().setCustomId(button.customId).setLabel(button.label).setStyle(button.style).setDisabled(true); // Toggle the disabled state
-							})
-						);
-					});
-					msg.edit({ embeds: msg.embeds, components: newComponents }).catch(() => {});
+						serverConfig = await client
+							.knex('guilds')
+							.update({ last_Card: null })
+							.where({ id: guild.id })
+							.catch((err) => console.error(err));
+						serverConfig.last_Card = null;
+						const newComponents = msg.components.map((row) => {
+							return new ActionRowBuilder().addComponents(
+								row.components.map((button) => {
+									return new ButtonBuilder().setCustomId(button.customId).setLabel(button.label).setStyle(button.style).setDisabled(true); // Toggle the disabled state
+								})
+							);
+						});
+						msg.edit({ embeds: msg.embeds, components: newComponents }).catch(() => {});
+					} catch (err) {}
 				}, 300_000);
 			});
 		}, Math.floor(Math.random() * (7500 - 2500) + 2500));
