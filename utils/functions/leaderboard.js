@@ -183,6 +183,7 @@ async function leaderboard_update(client) {
 				]);
 				embeds.push(embed);
 			}
+			if (!channel) return;
 			if (guildConfig.leaderboard_edit) {
 				if (guildConfig.leaderboard_msg) {
 					let message = await channel.messages.fetch(guildConfig.leaderboard_msg);
