@@ -212,7 +212,7 @@ async function leaderboard_update(client) {
 						});
 				});
 			}
-		} else channel.send({ embeds });
+		} else channel?.send({ embeds });
 	});
 }
 
