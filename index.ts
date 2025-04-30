@@ -19,7 +19,7 @@ if (config.bot.shard) {
 
 		manager.spawn();
 	} catch (error) {
-		require('./utils/Logger').error(null, 'Error au lancement de shard !', error);
+		require('./utils/Logger').error(null, 'Erreur au lancement de shard !', error);
 	}
 } else {
 	require('./bot.ts');
