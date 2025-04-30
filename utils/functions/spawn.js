@@ -264,29 +264,4 @@ async function win(client, message) {
 		}, Math.floor(Math.random() * (7500 - 2500) + 2500));
 	} while (!done);
 }
-
-function filtrerCartesParServeur(client, enableFilter, cartes, guildId) {
-	try {
-		// Récupère tous les membres du serveur dans le cache (en cas de besoin, fetch pour actualiser le cache)
-		const guild = client.guilds.cache.get(guildId);
-		const membres = guild.members.fetch();
-
-		// Filtre les cartes en vérifiant si l'authorId (converti en chaîne) est présent parmi les membres
-		let cartesFiltrees;
-
-		console.log(membres);
-		console.log(membres.has('643835326485233716'));
-		if (enableFilter) {
-			cartesFiltrees = cartes.filter((carte) => membres.has(carte.authorId.toString()));
-		} else {
-			cartesFiltrees = cartes;
-		}
-
-		return cartesFiltrees;
-	} catch (error) {
-		console.error('Erreur lors de la récupération des membres:', error);
-		return [];
-	}
-}
-
 module.exports = { isXMinutesPassed, win };
