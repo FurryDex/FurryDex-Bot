@@ -1,4 +1,4 @@
-const { ModalBuilder, TextInputStyle, ActionRowBuilder, TextInputBuilder, EmbedBuilder, ButtonBuilder, ButtonStyle, MessageFlags } = require('discord.js');
+import { ModalBuilder, TextInputStyle, ActionRowBuilder, TextInputBuilder, EmbedBuilder, ButtonBuilder, ButtonStyle, MessageFlags, ModalActionRowComponentBuilder } from 'discord.js';
 
 module.exports = {
 	name: 'catch',
@@ -43,7 +43,7 @@ module.exports = {
 			.setTitle(locales.modal.title[interaction.locale] ?? locales.modal.title.default)
 			.setCustomId('catch')
 			.setComponents(
-				new ActionRowBuilder().addComponents(
+				new ActionRowBuilder<ModalActionRowComponentBuilder>().addComponents(
 					new TextInputBuilder()
 						.setCustomId('guess')
 						.setLabel(locales.modal.question[interaction.locale] ?? locales.modal.question.default)
