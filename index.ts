@@ -16,7 +16,7 @@ if (config.bot.shard) {
 	try {
 		const manager = new ShardingManager('./bot.ts', { token: config.bot.token });
 
-		manager.on('shardCreate', (shard: any) =>() Logger.shard(null, `Lancement de la shard #${shard.id}`));
+		manager.on('shardCreate', (shard: any) => Logger.shard(null, `Lancement de la shard #${shard.id}`));
 
 		manager.spawn();
 	} catch (error) {
