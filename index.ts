@@ -1,5 +1,5 @@
 import yaml from 'js-yaml';
-const fs = require('fs');
+import fs from 'fs';
 
 let config;
 try {
