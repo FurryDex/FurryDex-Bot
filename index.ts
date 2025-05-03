@@ -10,7 +10,7 @@ try {
 }
 
 if (config.bot.shard) {
-	if (config.bot.api.enable) require('./api/server.js');
+	//if (config.bot.api.enable) require('./api/server.js');
 
 	try {
 		const manager = new ShardingManager('./bot.ts', { token: config.bot.token });
