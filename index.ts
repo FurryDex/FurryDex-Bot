@@ -1,4 +1,4 @@
-const yaml = require('js-yaml');
+import yaml from 'js-yaml';
 const fs = require('fs');
 
 let config;
@@ -15,7 +15,7 @@ if (config.bot.shard) {
 	try {
 		const manager = new ShardingManager('./bot.ts', { token: config.bot.token });
 
-		manager.on('shardCreate', (shard) => require('./utils/Logger').shard(null, `Lancement de la shard #${shard.id}`));
+		manager.on('shardCreate', (shard: any) => require('./utils/Logger').shard(null, `Lancement de la shard #${shard.id}`));
 
 		manager.spawn();
 	} catch (error) {

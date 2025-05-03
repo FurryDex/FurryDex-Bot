@@ -1,5 +1,19 @@
-import { ApplicationCommandOptionType, StringSelectMenuBuilder, ActionRowBuilder, EmbedBuilder, ButtonBuilder, ButtonStyle, BaseInteraction, SelectMenuInteraction, MessageFlags, InteractionContextType } from 'discord.js';
+import {
+	ApplicationCommandOptionType,
+	StringSelectMenuBuilder,
+	ActionRowBuilder,
+	EmbedBuilder,
+	ButtonBuilder,
+	ButtonStyle,
+	BaseInteraction,
+	SelectMenuInteraction,
+	MessageFlags,
+	InteractionContextType,
+	CommandInteraction,
+	CommandInteractionOptionResolver,
+} from 'discord.js';
 import { cardEmbed } from '../../utils/functions/card';
+import { FDClient } from '../../bot';
 
 module.exports = {
 	name: 'furry',
@@ -8,7 +22,6 @@ module.exports = {
 	fullyTranslated: true,
 	permissions: null,
 	contexts: [InteractionContextType.PrivateChannel, InteractionContextType.Guild, InteractionContextType.BotDM],
-	run: (client, message, args) => {},
 	options: [
 		{
 			name: 'list',
@@ -102,22 +115,22 @@ module.exports = {
 		//	type: ApplicationCommandOptionType.Subcommand,
 		//},
 	],
-	runSlash: async (client, interaction) => {
+	runSlash: async (client: FDClient, interaction: CommandInteraction) => {
 		await interaction.deferReply();
 		const locales = client.locales.commands.furry;
-		const subcommand = interaction.options.getSubcommand();
-		let user = interaction.options.getUser('user') ?? interaction.user;
+		const subcommand = (interaction.options as CommandInteractionOptionResolver as CommandInteractionOptionResolver).getSubcommand();
+		let user = (interaction.options as CommandInteractionOptionResolver as CommandInteractionOptionResolver).getUser('user') ?? interaction.user;
 		let user_cards = await client
 			.knex('user_cards')
 			.select('*')
 			.where({ user_id: user.id })
-			.catch((err) => {
+			.catch((err: any) => {
 				console.error(err);
 			});
 		let allCards = await client
 			.knex('cards')
 			.select('*')
-			.catch((err) => {
+			.catch((err: any) => {
 				console.error(err);
 			});
 
@@ -125,7 +138,7 @@ module.exports = {
 			.knex('users')
 			.first('*')
 			.where({ id: interaction.user.id })
-			.catch((err) => {
+			.catch((err: any) => {
 				console.error(err);
 			});
 
@@ -133,12 +146,12 @@ module.exports = {
 			client
 				.knex('users')
 				.insert({ id: interaction.user.id })
-				.catch((err) => console.error(err));
+				.catch((err: any) => console.error(err));
 			userData = await client
 				.knex('users')
 				.first('*')
 				.where({ id: interaction.user.id })
-				.catch((err) => {
+				.catch((err: any) => {
 					console.error(err);
 				});
 		}
@@ -149,15 +162,21 @@ module.exports = {
 				.setDescription(`Sorry, but you need to accept the ToS for continue !\n\nLegal Documents (ToS & Privacy policy): https://FurryDex.github.io/legal/ \nBy clicking on "Accept", you accept the ToS`)
 				.setColor('Green');
 
-			const buttonRow = new ActionRowBuilder().addComponents(new ButtonBuilder().setCustomId(`accept-tos`).setLabel('Accept').setStyle(ButtonStyle.Primary));
+			const buttonRow = new ActionRowBuilder<ButtonBuilder>().addComponents(new ButtonBuilder().setCustomId(`accept-tos`).setLabel('Accept').setStyle(ButtonStyle.Primary));
 
-			interaction.editReply({ embeds: [embed], components: [buttonRow], flags: MessageFlags.Ephemeral });
+			interaction.editReply({
+				embeds: [embed],
+				components: [buttonRow], //flags: MessageFlags.Ephemeral
+			});
 
 			return;
 		}
 
 		if (subcommand == 'list') {
-			if (user_cards.length == 0) return interaction.editReply({ content: locales.run['no-furry'][interaction.locale] ?? locales.run['no-furry'].default, flags: MessageFlags.Ephemeral });
+			if (user_cards.length == 0)
+				return interaction.editReply({
+					content: locales.run['no-furry'][interaction.locale] ?? locales.run['no-furry'].default, //flags: MessageFlags.Ephemeral
+				});
 			let AllOptions: Array<{ label: string; value: string; emoji: string; description: string }> = [];
 			user_cards.forEach(async (card, key) => {
 				let date = new Date(card.date);
@@ -167,7 +186,7 @@ module.exports = {
 					.knex('cards')
 					.first('*')
 					.where({ id: card.card_id })
-					.catch((err) => {
+					.catch((err: any) => {
 						console.error(err);
 					});
 				AllOptions.push({
@@ -191,7 +210,7 @@ module.exports = {
 						'cards',
 						async (response) => {
 							cardEmbed(client, response.values[0], response.locale).then((embed) => {
-								response.update({ embeds: [embed], components: [], content: ' ' }).catch((err) => {
+								response.update({ embeds: [embed], components: [], content: ' ' }).catch((err: any) => {
 									console.error(err, response.values[0]);
 								});
 							});
@@ -200,13 +219,13 @@ module.exports = {
 				}
 			});
 		} else if (subcommand == 'completion') {
-			let category = interaction.options.getString('category') ?? '';
+			let category = (interaction.options as CommandInteractionOptionResolver).getString('category') ?? '';
 			if (category) {
 				allCards = await client
 					.knex('cards')
 					.select('*')
 					.where({ category })
-					.catch((err) => {
+					.catch((err: any) => {
 						console.error(err);
 					});
 				if (allCards.length == 0) {
@@ -229,11 +248,17 @@ module.exports = {
 				.setTimestamp();
 			interaction.editReply({ embeds: [embed] });
 		} else if (subcommand == 'count') {
-			if (user_cards.length == 0) return interaction.editReply({ content: locales.run['no-furry'][interaction.locale] ?? locales.run['no-furry'].default, flags: MessageFlags.Ephemeral });
+			if (user_cards.length == 0)
+				return interaction.editReply({
+					content: locales.run['no-furry'][interaction.locale] ?? locales.run['no-furry'].default, //flags: MessageFlags.Ephemeral
+				});
 			return interaction.editReply({ content: `The deck got \`%number%\` cards`.replace('%number%', user_cards.length) });
 		} else if (subcommand == 'give') {
-			if (user_cards.length == 0) return interaction.editReply({ content: locales.run['no-furry'][interaction.locale] ?? locales.run['no-furry'].default, flags: MessageFlags.Ephemeral });
-			let giveTo = interaction.options.getUser('give-to');
+			if (user_cards.length == 0)
+				return interaction.editReply({
+					content: locales.run['no-furry'][interaction.locale] ?? locales.run['no-furry'].default, //flags: MessageFlags.Ephemeral
+				});
+			let giveTo = (interaction.options as CommandInteractionOptionResolver).getUser('give-to');
 			let AllOptions: Array<{ label: string; value: string; emoji: string; description: string }> = [];
 			user_cards.forEach(async (card, key) => {
 				let date = new Date(card.date);
@@ -243,7 +268,7 @@ module.exports = {
 					.knex('cards')
 					.first('*')
 					.where({ id: card.card_id })
-					.catch((err) => {
+					.catch((err: any) => {
 						console.error(err);
 					});
 				AllOptions.push({
@@ -337,7 +362,7 @@ module.exports = {
 		} else {
 			return interaction.editReply({
 				content: 'Sorry, this *command* is disable. Er0r: 403',
-				ephemerel: true,
+				//ephemerel: true,
 			});
 		}
 	},
@@ -393,7 +418,7 @@ async function sendMenu(options, interaction, update_command, page = 0, chunkSiz
 		rows.push(buttonRow);
 	}
 
-	let message = await (update_command ?? interaction.editReply)({ content, components: rows }).catch((err) => {
+	let message = await (update_command ?? interaction.editReply)({ content, components: rows }).catch((err: any) => {
 		console.error(err, currentOptions);
 	});
 

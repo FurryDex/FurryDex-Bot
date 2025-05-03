@@ -1,4 +1,5 @@
-import { ApplicationCommandOptionType, PermissionFlagsBits, MessageFlags, InteractionContextType } from 'discord.js';
+import { ApplicationCommandOptionType, MessageFlags, InteractionContextType, Message, CommandInteraction, CommandInteractionOptionResolver } from 'discord.js';
+import { FDClient } from '../../bot';
 
 module.exports = {
 	name: 'card',
@@ -6,7 +7,6 @@ module.exports = {
 	category: 'admin',
 	staffOnly: true,
 	contexts: [InteractionContextType.PrivateChannel, InteractionContextType.Guild, InteractionContextType.BotDM],
-	run: (client, message, args) => {},
 	options: [
 		{
 			name: 'by-id',
@@ -35,18 +35,18 @@ module.exports = {
 			],
 		},
 	],
-	runSlash: async (client, interaction) => {
-		await interaction.deferReply({ falgs: MessageFlags.Ephemeral });
-		const subcommand = interaction.options.getSubcommand();
+	runSlash: async (client: FDClient, interaction: CommandInteraction) => {
+		await interaction.deferReply({ flags: MessageFlags.Ephemeral });
+		const subcommand = (interaction.options as CommandInteractionOptionResolver).getSubcommand();
 
 		if (subcommand == 'by-id') {
-			const cardId = interaction.options.getNumber('card-id');
+			const cardId = (interaction.options as CommandInteractionOptionResolver).getNumber('card-id');
 			const card = await client.knex('cards').where({ id: cardId }).first();
 			if (!card) return interaction.editReply('No card found with this ID.');
 			return interaction.editReply(`Card:\n\`\`\`json\n${JSON.stringify(card, null, 2)}\n\`\`\``);
 		}
 		if (subcommand == 'by-user-card-id') {
-			const userCardId = interaction.options.getString('user-card-id');
+			const userCardId = (interaction.options as CommandInteractionOptionResolver).getString('user-card-id');
 			const user_cards = await client.knex('user_cards').where({ id: userCardId }).first();
 			if (!user_cards) return interaction.editReply('No card found with this ID.');
 			const card = await client.knex('cards').where({ id: user_cards.card_id }).first();

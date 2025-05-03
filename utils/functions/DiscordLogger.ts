@@ -1,7 +1,10 @@
-const { EmbedBuilder, ThreadAutoArchiveDuration } = require('discord.js');
-let knex_channel, type;
+import { CategoryChannel, ForumChannel, Snowflake } from 'discord.js';
+import { FDClient } from '../../bot';
 
-export async function write(client, destination, embed) {
+const { EmbedBuilder, ThreadAutoArchiveDuration } = require('discord.js');
+let knex_channel: string, type: string;
+
+export async function write(client: FDClient, destination: any, embed: any): Promise<void> {
 	const categoryList = client.config.log.category;
 	if (!client.config.log.enable) return;
 	let color = require('../colors.json').find((x) => x.name == embed.color.toUpperCase());
@@ -13,13 +16,13 @@ export async function write(client, destination, embed) {
 		.setFields(embed.info)
 		.setTimestamp();
 	const logGuild = await client.guilds.cache.get(client.config.log.guild ?? client.config.bot.guild);
-	const category = await logGuild.channels.cache.get(categoryList[destination.category.forum]);
+	const category = (await logGuild.channels.cache.get(categoryList[destination.category.forum])) as ForumChannel;
 	if (!category) return;
 	const channel = await category.threads.cache.get(destination.channel);
 	channel.send({ embeds: [logEmbed] });
 }
 
-export async function writePlayer(client, playerId, embed) {
+export async function writePlayer(client: FDClient, playerId: Snowflake, embed: any): Promise<void> {
 	const categoryList = client.config.log.category;
 	if (!client.config.log.enable) return;
 	playerId = playerId.toString();
@@ -35,7 +38,7 @@ export async function writePlayer(client, playerId, embed) {
 		.catch((err) => console.error(err));
 	const user = await client.users.cache.get(playerId);
 	const logGuild = await client.guilds.cache.get(client.config.log.guild);
-	const category = await logGuild.channels.cache.get(categoryList['player']);
+	const category = (await logGuild.channels.cache.get(categoryList['player'])) as ForumChannel;
 
 	let playerEmbed = new EmbedBuilder()
 		.setTitle(`${user.displayName} (${playerId})`)
@@ -109,7 +112,7 @@ export async function writePlayer(client, playerId, embed) {
 	channel.send({ content, embeds: [logEmbed] });
 }
 
-export async function writeServer(client, serverId, embed) {
+export async function writeServer(client, serverId, embed): Promise<void> {
 	const categoryList = client.config.log.category;
 	if (!client.config.log.enable) return;
 
@@ -211,3 +214,9 @@ export async function writeServer(client, serverId, embed) {
 		.setTimestamp();
 	channel.send({ embeds: [logEmbed] });
 }
+
+export default {
+	write,
+	writePlayer,
+	writeServer,
+};

@@ -1,7 +1,8 @@
 import { glob } from 'glob';
 import Logger from '../Logger';
+import { FDClient } from '../../bot';
 
-module.exports = async (client) => {
+module.exports = async (client: FDClient) => {
 	(await glob(`./modals/*/*.ts`)).map(async (modalFile) => {
 		const modal = require(`${process.cwd()}/${modalFile}`);
 		if (!modal.name) return Logger.warn(client, `Nom Non Definie\nFile: ${modalFile}`);

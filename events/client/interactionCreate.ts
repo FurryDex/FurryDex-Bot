@@ -1,21 +1,22 @@
-import { InteractionType, EmbedBuilder, MessageFlags } from 'discord.js';
+import { InteractionType, EmbedBuilder, MessageFlags, Interaction, GuildMember } from 'discord.js';
 import Logger from '../../utils/Logger';
+import { FDClient } from '../../bot';
 module.exports = {
 	name: 'interactionCreate',
 	once: false,
-	async execute(client, interaction) {
+	async execute(client: FDClient, interaction: Interaction) {
 		if (interaction.type === InteractionType.ApplicationCommand) {
 			const cmd = client.commands.get(interaction.commandName);
 			if (!cmd) {
 				Logger.warn(client, `Command "${interaction.commandName}" dosn't exist`);
 				return interaction.reply({
 					content: "Sorry, this *command* dosn't exit. Er0r: 404",
-					ephemerel: true,
+					//ephemerel: true,
 				});
 			}
 
 			if (cmd.permissions) {
-				if (!interaction.member.permissions.has([cmd.permissions]))
+				if (!(interaction.member as GuildMember)?.permissions.has([cmd.permissions]))
 					return interaction.reply({
 						content: "You dosn't have the nescessary permission",
 						flags: MessageFlags.Ephemeral,

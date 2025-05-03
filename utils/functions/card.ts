@@ -1,84 +1,90 @@
-import { EmbedBuilder, time, TimestampStyles } from 'discord.js';
+import { EmbedBuilder, Locale, Snowflake, time, TimestampStyles } from 'discord.js';
 import Logger from '../Logger';
+import { FDClient } from '../../bot';
 
-export async function cardEmbed(client, cardId, locale) {
+export interface OriginalCard {
+	id: number;
+	name: string;
+	rarety: number;
+	emoji: string;
+	image: string;
+	card: string;
+	author: string;
+	authorId: Snowflake | 'Snowflake[]';
+	live: number;
+	attacks: number;
+	color: string;
+	possible_name: 'string[]';
+	category: string;
+	species: 'number[]';
+	birthday: Date | null;
+	album: string;
+	nsfw: boolean | 1 | 0; // 1 = true, 0 = false
+	event: boolean | 1 | 0; // 1 = true, 0 = false
+}
+
+export interface Card {
+	id: string;
+	user_id: Snowflake;
+	card_id: number;
+	guild: Snowflake;
+	date: Date;
+	live: number;
+	attacks: number;
+	gived: Snowflake | '0'; // '0' = not given
+	giveDate: Date | null;
+	OrignialCard: OriginalCard | null;
+}
+
+export async function cardEmbed(client: FDClient, cardId: string | number, locale: Locale) {
 	const locales = client.locales.utils.function.cards;
-	type cardF = {
-		id: string;
-		card_id: string;
-		user_id: string;
-		date: Date;
-		gived: string;
-		giveDate: Date;
-		live: number;
-		attacks: number;
-	};
-	type originalCardF = {
-		id: string;
-		card_id: string;
-		name: string;
-		authorId: string;
-		category: string;
-		birthday: Date;
-		live: number;
-		attacks: number;
-		card: string;
-		species: string;
-		color: string;
-		emoji: string;
-	};
-	let originalCardF: originalCardF;
-	let cardF: cardF;
-	await card(client, cardId).then((card) => {
-		cardF = card;
-	});
-	await originalCard(client, cardF.card_id).then((card) => {
-		originalCardF = card;
-	});
+	let cardF = (await card(client, cardId)) as Card;
+	let originalCardF = (await originalCard(client, cardF.card_id)) as OriginalCard;
 	//let creator = client.users.fetch(originalCardF.author);
-	let species = [];
-	await JSON.parse(originalCardF.species).forEach(async (species_id) => {
+	let speciesNames: string[] = [];
+	await JSON.parse(originalCardF.species).forEach(async (species_id: number) => {
 		let species_name = await client
 			.knex('species')
 			.first('*')
 			.where({ id: species_id })
-			.catch((err) => {
+			.catch((err: any) => {
 				console.error(err);
 			});
-		species.push(species_name.name);
+		speciesNames.push(species_name.name);
 	});
 
 	let data_type = await client
 		.knex('category')
 		.first('*')
 		.where({ id: originalCardF.category })
-		.catch((err) => {
+		.catch((err: any) => {
 			console.error(err);
 		});
 	let temp_type = data_type.name;
 	let type = temp_type.charAt(0).toUpperCase() + temp_type.slice(1);
 
-	let color = require('../colors.json').find((color) => color.name == (data_type.color ?? originalCardF.color))?.hex ?? '#000000';
+	let color = require('../colors.json').find((color: { name: string }) => color.name == (data_type.color ?? originalCardF.color))?.hex ?? '#000000';
 
 	if (color == '#000000') {
-		Logger.warn('Color Error at card ' + cardF.card_id);
+		Logger.warn(null, 'Color Error at card ' + cardF.card_id);
 	}
 
 	let date = new Date(cardF.date);
 
 	let description = locales.embed.description[locale] ?? locales.embed.description['en-US'];
 	description = description
-		.replace('%author%', formatArrayToText((typeof JSON.parse(originalCardF.authorId) == 'number' ? [originalCardF.authorId.toString()] : JSON.parse(originalCardF.authorId)).map((x) => `<@${x}>`)))
+		.replace('%author%', formatArrayToText((typeof JSON.parse(originalCardF.authorId) == 'number' ? [originalCardF.authorId.toString()] : JSON.parse(originalCardF.authorId)).map((x: Snowflake) => `<@${x}>`)))
 		.replace('%id%', cardF.id)
 		.replace('%name%', originalCardF.name)
 		.replace('%time%', `${time(date, TimestampStyles.LongDateTime)} (${time(date, TimestampStyles.RelativeTime)})`)
 		.replace('%type%', type)
-		.replace('%species%', formatArrayToText(species))
+		.replace('%species%', formatArrayToText(speciesNames))
 		.replace('%live%', cardF.live < 0 ? originalCardF.live - (originalCardF.live * Number(`${cardF.live}`.replace('-', ''))) / 100 : originalCardF.live + (originalCardF.live * cardF.live) / 100) //cardF.live < 0 ? originalCardF.live-(originalCardF.live*cardF.live/100) : originalCardF.live+(originalCardF.live*cardF.live/100)
 		.replace('%live_2%', cardF.live)
 		.replace('%attacks%', cardF.attacks < 0 ? originalCardF.attacks - (originalCardF.attacks * Number(`${cardF.attacks}`.replace('-', ''))) / 100 : originalCardF.attacks + (originalCardF.attacks * cardF.attacks) / 100) //cardF.attacks < 0 ? originalCardF.attacks-(originalCardF.attacks*cardF.attacks/100) : originalCardF.attacks+(originalCardF.attacks*cardF.attacks/100)
 		.replace('%attacks_2%', cardF.attacks);
 	if (cardF.gived != '0') {
+		if (cardF.giveDate == null) return;
 		let giveDate = new Date(cardF.giveDate);
 		description = description.replace(
 			'%gived%',
@@ -111,52 +117,52 @@ export async function cardEmbed(client, cardId, locale) {
 }
 
 // Fonction pour récupérer les cartes possédées par un utilisateur
-async function getUserCards(client, userId) {
+async function getUserCards(client: FDClient, userId: Snowflake): Promise<OriginalCard[]> {
 	return await client
 		.knex('cards')
-		.whereIn('id', function () {
-			this.select('card_id').from('user_cards').where({ user_id: userId });
-		})
+		.whereIn('id', (knexInstance: any) => knexInstance.select('card_id').from('user_cards').where({ user_id: userId }))
 		.select('*')
-		.catch((err) => {
+		.catch((err: any) => {
 			console.error(err);
+			return null;
 		});
 }
 
 // Fonction pour récupérer les cartes que l'utilisateur n'a pas
-async function getMissingCards(client, userId, category = '') {
+async function getMissingCards(client: FDClient, userId: Snowflake, category: string = ''): Promise<OriginalCard[]> {
 	return await client
 		.knex('cards')
-		.whereNotIn('id', function () {
-			this.select('card_id').from('user_cards').where({ user_id: userId });
-		})
+		.whereNotIn('id', (knexInstance: any) => knexInstance.select('card_id').from('user_cards').where({ user_id: userId }))
 		.select('*')
-		.catch((err) => {
+		.catch((err: any) => {
 			console.error(err);
+			return null;
 		});
 }
 
-async function originalCard(client, cardId) {
+async function originalCard(client: FDClient, cardId: string | number): Promise<OriginalCard | null> {
 	return await client
 		.knex('cards')
 		.first('*')
 		.where({ id: cardId })
-		.catch((err) => {
+		.catch((err: any) => {
 			console.error(err);
+			return null;
 		});
 }
 
-async function card(client, cardId) {
+async function card(client: FDClient, cardId: string | number): Promise<Card | null> {
 	return await client
 		.knex('user_cards')
 		.first('*')
 		.where({ id: cardId })
-		.catch((err) => {
+		.catch((err: any) => {
 			console.error(err);
+			return null;
 		});
 }
 
-function formatArrayToText(array) {
+function formatArrayToText(array: string[]): string {
 	if (array.length === 0) return '';
 
 	// Met la première lettre de chaque mot en majuscule

@@ -1,4 +1,5 @@
-import { ApplicationCommandOptionType, PermissionFlagsBits, MessageFlags } from 'discord.js';
+import { ApplicationCommandOptionType, PermissionFlagsBits, MessageFlags, CommandInteraction, CommandInteractionOptionResolver, Guild, GuildMember } from 'discord.js';
+import { FDClient } from '../../bot';
 
 module.exports = {
 	name: 'emit',
@@ -6,7 +7,6 @@ module.exports = {
 	category: 'admin',
 	permissions: PermissionFlagsBits.Administrator,
 	ownerOnly: true,
-	run: (client, message, args) => {},
 	options: [
 		{
 			name: 'event',
@@ -25,15 +25,15 @@ module.exports = {
 			],
 		},
 	],
-	runSlash: (client, interaction) => {
-		const eventChoices = interaction.options.getString('event');
+	runSlash: (client: FDClient, interaction: CommandInteraction) => {
+		const eventChoices = (interaction.options as CommandInteractionOptionResolver).getString('event');
 
 		if (eventChoices == 'guildMemberAdd') {
-			client.emit('guildMemberAdd', interaction.member);
+			client.emit('guildMemberAdd', interaction.member as GuildMember);
 			interaction.reply({ content: 'Event Emis !', flags: MessageFlags.Ephemeral });
 		}
 		if (eventChoices == 'guildMemberRemove') {
-			client.emit('guildMemberRemove', interaction.member);
+			client.emit('guildMemberRemove', interaction.member as GuildMember);
 			interaction.reply({ content: 'Event Emis !', flags: MessageFlags.Ephemeral });
 		}
 	},

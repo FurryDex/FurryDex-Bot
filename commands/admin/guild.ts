@@ -1,4 +1,5 @@
-import { PermissionFlagsBits, MessageFlags } from 'discord.js';
+import { PermissionFlagsBits, MessageFlags, CommandInteraction } from 'discord.js';
+import { FDClient } from '../../bot';
 
 module.exports = {
 	name: 'guild',
@@ -6,8 +7,7 @@ module.exports = {
 	category: 'admin',
 	permissions: PermissionFlagsBits.Administrator,
 	ownerOnly: true,
-	run: (client, message, args) => {},
-	runSlash: (client, interaction) => {
+	runSlash: (client: FDClient, interaction: CommandInteraction) => {
 		interaction.reply({ content: `Guild: ${client.guilds.cache.map((guild, index) => `\n> [${index}] ${guild.name} (${guild.memberCount})`).join('')}`, flags: MessageFlags.Ephemeral });
 	},
 };

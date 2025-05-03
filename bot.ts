@@ -2,6 +2,18 @@ import { Client, Collection, Partials, GatewayIntentBits } from 'discord.js';
 const fs = require('node:fs');
 const process = require('node:process');
 const yaml = require('js-yaml');
+
+export interface FDClient extends Client {
+	config: any;
+	commands: Collection<any, any>;
+	buttons: Collection<any, any>;
+	selects: Collection<any, any>;
+	modals: Collection<any, any>;
+	string: Collection<any, any>;
+	locales: any;
+	knex: any;
+}
+
 const client = new Client({
 	intents: [
 		GatewayIntentBits.Guilds,
@@ -26,15 +38,7 @@ const client = new Client({
 		GatewayIntentBits.GuildVoiceStates,
 	],
 	partials: [Partials.User, Partials.Channel, Partials.GuildMember, Partials.Message, Partials.Reaction, Partials.GuildScheduledEvent, Partials.ThreadMember],
-}) as Client & {
-	config: any;
-	commands: Collection<any, any>;
-	buttons: Collection<any, any>;
-	selects: Collection<any, any>;
-	modals: Collection<any, any>;
-	locales: any;
-	knex: any;
-};
+}) as FDClient;
 import Logger from './utils/Logger';
 
 try {
@@ -48,7 +52,6 @@ if (!client.config.bot.shard && client.config.bot.api.enable) require('./api/ser
 
 const { isXMinutesPassed } = require('./utils/functions/spawn');
 
-['commands', 'buttons', 'selects', 'modals'].forEach((x) => (client[x] = new Collection()));
 ['EventUtil', 'ButtonUtil', 'ModalUtil', 'SelectMenuUtil'].forEach((handler) => {
 	require(`./utils/handlers/${handler}`)(client);
 });
@@ -66,12 +69,12 @@ async function locales() {
 		} else {
 			no_locales('No locales API');
 		}
-	} catch (err) {
+	} catch (err: string | any) {
 		no_locales(err);
 	}
 }
 
-async function no_locales(err) {
+async function no_locales(err: Error | string) {
 	Logger.warn(null, `Error for Locales modules: ${err}`);
 	if (err == 'No locales API') client.locales = require('./src/locales.js');
 	else
@@ -87,17 +90,17 @@ locales().then(() => {
 });
 
 if (!debug) {
-	process.on('exit', (code) => {
+	process.on('exit', (code: any) => {
 		Logger.error(client, `Bot stopped with code: ${code}`);
 	});
-	process.on('uncaughtException', (err, origin) => {
+	process.on('uncaughtException', (err: any, origin: any) => {
 		Logger.error(client, `${'uncaughtException'.toUpperCase()}: ${err}\nOrigin: ${String(origin)}`);
 	});
-	process.on('unhandledRejection', (reason, promise) => {
+	process.on('unhandledRejection', (reason: any, promise: any) => {
 		console.log('Unhandled Rejection at:', promise, 'reason:', reason);
 		Logger.error(client, `${'unhandledRejection'.toUpperCase()}: at`, promise, 'reason:', reason);
 	});
-	process.on('warning', (...args) => Logger.warn(args));
+	process.on('warning', (...args: any[]) => Logger.warn(null, ...args));
 	client.rest.on('rateLimited', (rateLimited) => {
 		Logger.warn(client, `${'rateLimited'.toUpperCase()}: ${rateLimited}`);
 	});
@@ -135,10 +138,10 @@ client.login(client.config.bot.token);
 
 client.on('messageCreate', (message) => {
 	if (message.channel.isDMBased()) return;
-	if (client.config.bot.disable.bot) if (message.guild.members.cache.hasAny(...client.config.bot.disable.bot)) return;
+	if (client.config.bot.disable.bot) if (message.guild?.members.cache.hasAny(...client.config.bot.disable.bot)) return;
 	if (message.author.bot) return;
 
-	isXMinutesPassed(message, client).then((result) => {
+	isXMinutesPassed(message, client).then((result: boolean | any) => {
 		require('./utils/functions/anticheat.js').anticheat_message(client, message, message.author.id, result ? 1 : 0);
 	});
 });

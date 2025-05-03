@@ -2,7 +2,8 @@
 	"name": "furry_dex-bot",
 	"version": "1.2.1",
 	"description": "",
-	"main": "bot.ts",
+	"main": "index.ts",
+	"type": "module",
 	"scripts": {
 		"dev": "npx nodemon . ",
 		"start": "node index.ts --global --location=global"
@@ -13,12 +14,12 @@
 	"dependencies": {
 		"@dotenvx/dotenvx": "^0.37.1",
 		"better-sqlite3": "^8.0.1",
-		"chalk": "4.1.2",
+		"chalk": "^5.4.1",
 		"cookie-parser": "^1.4.7",
 		"cors": "^2.8.5",
 		"dayjs": "^1.11.7",
 		"discord-giveaways": "^6.0.1",
-		"discord.js": "^14.15.3",
+		"discord.js": "^14.19.2",
 		"discordjs-logger": "^4.0.1",
 		"dotenv": "^16.0.1",
 		"express": "^4.18.2",
@@ -39,6 +40,9 @@
 	"devDependencies": {
 		"@types/js-yaml": "^4.0.9",
 		"nodemon": "^3.1.3",
-		"ts-migrate": "^0.1.35"
+		"ts-migrate": "^0.1.35",
+		"ts-node": "^10.9.2",
+		"tsx": "^4.19.4",
+		"typescript": "^5.8.3"
 	}
 }

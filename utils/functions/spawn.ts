@@ -1,7 +1,8 @@
-import { EmbedBuilder, ButtonStyle, ActionRowBuilder, ButtonBuilder, MessageFlags } from 'discord.js';
+import { EmbedBuilder, ButtonStyle, ActionRowBuilder, ButtonBuilder, Message, Guild, GuildTextBasedChannel, TextChannel, GuildBasedChannel } from 'discord.js';
 import Logger from '../Logger';
+import { FDClient } from '../../bot';
 
-async function isXMinutesPassed(message, client) {
+async function isXMinutesPassed(message: Message, client: FDClient) {
 	try {
 		if (message.content.length <= 3) return;
 		const date = new Date();
@@ -9,26 +10,26 @@ async function isXMinutesPassed(message, client) {
 		// Admin bypass system
 		let bypass = false;
 		let AdminGuild = client.guilds.cache.get('1235970684556021890');
-		let members = AdminGuild.members.cache.filter((x) => x.roles.cache.has('1235970972650311752'));
-		if (message.content === '!spawn' && members.has(message.author.id)) bypass = true;
+		let members = AdminGuild?.members.cache.filter((x) => x.roles.cache.has('1235970972650311752'));
+		if (message.content === '!spawn' && members?.has(message.author.id)) bypass = true;
 
 		// Trouver la configuration pour le serveur actuel
 		let serverConfig = await client
 			.knex('guilds')
 			.first('*')
-			.where({ id: await message.guild.id })
-			.catch((...err) => console.error(err));
+			.where({ id: await message.guild?.id })
+			.catch((...err: any[]) => console.error(err));
 		let user = await client
 			.knex('users')
 			.first('*')
 			.where({ id: message.author.id })
-			.catch((err) => console.error(err));
+			.catch((err: any) => console.error(err));
 
 		if (!user) {
 			client
 				.knex('users')
 				.insert({ id: message.author.id })
-				.catch((err) => console.error(err));
+				.catch((err: any) => console.error(err));
 		}
 
 		if (user.can_spawn != 1 && !bypass) {
@@ -39,7 +40,7 @@ async function isXMinutesPassed(message, client) {
 			if (bypass)
 				message.reply({
 					content: 'Sorry, the bot is not enable in this server',
-					flags: MessageFlags.Ephemeral,
+					//	flags: MessageFlags.Ephemeral,
 				});
 			return false; // Le bot n'est pas activé pour ce serveur
 		}
@@ -48,7 +49,7 @@ async function isXMinutesPassed(message, client) {
 			if (bypass)
 				message.reply({
 					content: 'Sorry, the last card is not catch',
-					flags: MessageFlags.Ephemeral,
+					//	flags: MessageFlags.Ephemeral,
 				});
 			return false; // Le bot n'est pas activé pour ce serveur
 		}
@@ -63,18 +64,18 @@ async function isXMinutesPassed(message, client) {
 					time: in1Hour.toISOString(),
 					First_Check: new Date().toISOString(),
 				})
-				.where({ id: message.guild.id })
-				.catch((err) => console.error(err));
+				.where({ id: message.guild?.id })
+				.catch((err: any) => console.error(err));
 		}
 
 		serverConfig = await client
 			.knex('guilds')
 			.first('*')
-			.where({ id: message.guild.id })
-			.catch((err) => console.error(err));
+			.where({ id: message.guild?.id })
+			.catch((err: any) => console.error(err));
 
 		// Récupérer le nombre de membres dans le serveur
-		const memberCount = message.guild.memberCount;
+		const memberCount = message.guild?.memberCount;
 
 		// Calculer le temps en minutes en fonction du nombre de membres
 		//serverConfig.time = parseInt(serverConfig.time - (Math.floor(Math.random() * (250 - 10) + 10) * (message.content.length / 15)) / memberCount); //FIXME Don't calculate the good time
@@ -85,14 +86,14 @@ async function isXMinutesPassed(message, client) {
 			client
 				.knex('guilds')
 				.update({ time: dateFirstCheck10.toISOString() })
-				.where({ id: message.guild.id })
-				.catch((err) => console.error(err));
+				.where({ id: message.guild?.id })
+				.catch((err: any) => console.error(err));
 
 		serverConfig = await client
 			.knex('guilds')
 			.first('*')
-			.where({ id: message.guild.id })
-			.catch((err) => console.error(err));
+			.where({ id: message.guild?.id })
+			.catch((err: any) => console.error(err));
 
 		let time = new Date(serverConfig.time);
 
@@ -104,9 +105,9 @@ async function isXMinutesPassed(message, client) {
 					time: in1Hour.toISOString(),
 					First_Check: new Date().toISOString(),
 				})
-				.where({ id: message.guild.id })
-				.catch((err) => console.error(err));
-			require('./DiscordLogger.ts').writeServer(client, message.guild.id, {
+				.where({ id: message.guild?.id })
+				.catch((err: any) => console.error(err));
+			require('./DiscordLogger.ts').writeServer(client, message.guild?.id, {
 				tag: 'INFO',
 				color: 'BLUE',
 				description: 'Card spawning ...',
@@ -131,24 +132,24 @@ async function isXMinutesPassed(message, client) {
 	}
 }
 
-async function win(client, message) {
+async function win(client: FDClient, message: Message) {
 	const locales = client.locales.utils.function.spawn;
 	let serverConfig = await client
 		.knex('guilds')
 		.first('*')
-		.where({ id: message.guild.id })
-		.catch((err) => console.error(err));
-	const guild = message.guild;
-	const channel = await guild.channels.cache.get(serverConfig.spawn_channel);
+		.where({ id: message.guild?.id })
+		.catch((err: any) => console.error(err));
+	const guild: Guild = message.guild as Guild;
+	const channel = (await guild.channels.cache.get(serverConfig.spawn_channel)) as TextChannel & GuildBasedChannel;
 
 	let card;
 
-	if (message.channel.members.size <= guild.members.size * (1 / 2)) return;
+	if ((message.channel as TextChannel).members.size <= guild.members.cache.size * (1 / 2)) return;
 
 	let cards = await client
 		.knex('cards')
 		.select('*')
-		.catch((err) => console.error(err));
+		.catch((err: any) => console.error(err));
 
 	let i = 1;
 	try {
@@ -159,12 +160,12 @@ async function win(client, message) {
 		let cartes;
 
 		if (!(serverConfig.premium == 1 && serverConfig.spawnAllCards == 1)) {
-			cartes = cards.filter((carte) => membres.some((member) => (typeof JSON.parse(carte.authorId) == 'number' ? [carte.authorId.toString()] : JSON.parse(carte.authorId)).includes(member.id)));
+			cartes = cards.filter((carte: any) => membres.some((member) => (typeof JSON.parse(carte.authorId) == 'number' ? [carte.authorId.toString()] : JSON.parse(carte.authorId)).includes(member.id)));
 		} else {
 			cartes = cards;
 		}
 
-		const sommeRaretés = cartes.reduce((acc, carte) => acc + Number(carte.rarity), 0);
+		const sommeRaretés = cartes.reduce((acc: any, carte: any) => acc + Number(carte.rarity), 0);
 
 		// Générer un nombre aléatoire entre 0 et la somme des raretés
 		let random = Math.random() * sommeRaretés;
@@ -191,8 +192,8 @@ async function win(client, message) {
 		client
 			.knex('guilds')
 			.update({ last_Card: card.id })
-			.where({ id: message.guild.id })
-			.catch((err) => console.error(err));
+			.where({ id: guild.id })
+			.catch((err: any) => console.error(err));
 
 		let is_nsfw = false;
 		let is_event = false;
@@ -217,7 +218,7 @@ async function win(client, message) {
 				info: [{ name: 'Card', value: `${card.name} (${card.id})` }],
 				content: 'Spawn',
 			});
-			const button = new ActionRowBuilder().addComponents(
+			const button = new ActionRowBuilder<ButtonBuilder>().addComponents(
 				new ButtonBuilder()
 					.setCustomId('catch')
 					.setDisabled(false)
@@ -228,18 +229,18 @@ async function win(client, message) {
 			let title = locales.embed.title[serverConfig.locale] ?? locales.embed.title.default;
 			const embed = new EmbedBuilder()
 				.setTitle(title)
-				.setColor(require('../colors.json').find((color) => (color.name = 'RED')).hex)
+				.setColor(require('../colors.json').find((color: { name: string }) => (color.name = 'RED')).hex)
 				.setImage(card.image);
 			if (is_event) embed.setDescription('### <:Warning_Blue:1324412874344632341> Event Card');
 			else if (is_nsfw) embed.setDescription('## <:Warning:1324412876185796689> Mature content');
 			if (!channel) return;
 			channel.send({ embeds: [embed], components: [button] }).then(async (m) => {
-				let channel = await guild.channels.cache.get(m.channelId);
+				let channel = (await guild.channels.cache.get(m.channelId)) as TextChannel & GuildBasedChannel;
 				client
 					.knex('anti-cheat_messages')
 					.update({ spawnMessage: m.id })
 					.where({ message_id: message.id })
-					.catch((err) => console.error(err));
+					.catch((err: any) => console.error(err));
 				setTimeout(async () => {
 					try {
 						let msg = await channel.messages.fetch(m.id);
@@ -248,11 +249,11 @@ async function win(client, message) {
 							.knex('guilds')
 							.update({ last_Card: null })
 							.where({ id: guild.id })
-							.catch((err) => console.error(err));
+							.catch((err: any) => console.error(err));
 						serverConfig.last_Card = null;
-						const newComponents = msg.components.map((row) => {
-							return new ActionRowBuilder().addComponents(
-								row.components.map((button) => {
+						const newComponents = msg.components.map((row: any) => {
+							return new ActionRowBuilder<ButtonBuilder>().addComponents(
+								row.components.map((button: any) => {
 									return new ButtonBuilder().setCustomId(button.customId).setLabel(button.label).setStyle(button.style).setDisabled(true); // Toggle the disabled state
 								})
 							);

@@ -1,17 +1,18 @@
-const { ActionRowBuilder, ButtonBuilder } = require('discord.js');
+import { ButtonBuilder, ActionRowBuilder, Guild, Message, ModalSubmitInteraction } from 'discord.js';
+import { FDClient } from '../../bot';
 const uid = function () {
 	return Date.now().toString(36) + Math.random().toString(36).substr(2);
 };
 module.exports = {
 	name: 'catch',
-	async run(client, interaction) {
+	async run(client: FDClient, interaction: ModalSubmitInteraction) {
 		const guess = interaction.fields.getTextInputValue('guess').toLowerCase();
 		const locales = client.locales.modals.catch;
 		let serverConfig = await client
 			.knex('guilds')
 			.first('*')
-			.where({ id: interaction.guild.id })
-			.catch((err) => console.error(err));
+			.where({ id: (interaction.guild as Guild).id })
+			.catch((err: any) => console.error(err));
 		if (serverConfig.last_Card == null) {
 			let message = locales.already[serverConfig.locale] ?? locales.already.default;
 			interaction.reply(message.replace('%@player%', `<@${interaction.user.id}>`));
@@ -22,7 +23,7 @@ module.exports = {
 			.knex('cards')
 			.first('*')
 			.where({ id: serverConfig.last_Card })
-			.catch((err) => console.error(err));
+			.catch((err: any) => console.error(err));
 
 		if (card.possible_name.includes(guess)) {
 			let live = Math.round(Math.floor(Math.random() * (25 - -25)) + -25);
@@ -32,7 +33,7 @@ module.exports = {
 				.knex('user_cards')
 				.first('*')
 				.where({ user_id: interaction.user.id, card_id: 19 })
-				.catch((err) => console.error(err));
+				.catch((err: any) => console.error(err));
 			if (glitchCard && !hasGlitchCard) {
 				live = 0;
 				attacks = 0;
@@ -43,13 +44,13 @@ module.exports = {
 				.knex('users')
 				.first('*')
 				.where({ id: interaction.user.id })
-				.catch((err) => console.error(err));
+				.catch((err: any) => console.error(err));
 
 			if (!user) {
 				client
 					.knex('users')
 					.insert({ user_id: interaction.user.id })
-					.catch((err) => console.error(err));
+					.catch((err: any) => console.error(err));
 			}
 			client
 				.knex('user_cards')
@@ -57,12 +58,12 @@ module.exports = {
 					id: uuid,
 					user_id: interaction.user.id,
 					card_id: serverConfig.last_Card,
-					guild: interaction.guild.id,
+					guild: (interaction.guild as Guild).id,
 					date: new Date().toISOString(),
 					live: `${live < 0 ? live : `+${live}`}`,
 					attacks: `${attacks < 0 ? attacks : `+${attacks}`}`,
 				})
-				.catch((err) => console.error(err));
+				.catch((err: any) => console.error(err));
 			let message = locales.congrat[serverConfig.locale] ?? locales.congrat.default;
 			interaction.reply(
 				message
@@ -78,13 +79,13 @@ module.exports = {
 				info: [
 					{ name: 'Card', value: `${card.name} (${card.id})` },
 					{ name: 'UUID', value: uuid },
-					{ name: 'Guild', value: `${interaction.guild.name} (${interaction.guild.id})` },
+					{ name: 'Guild', value: `${(interaction.guild as Guild).name} (${(interaction.guild as Guild).id})` },
 					{ name: 'Live', value: `${live < 0 ? live : `+${live}`}` },
 					{ name: 'Attacks', value: `${attacks < 0 ? attacks : `+${attacks}`}` },
 				],
 				content: 'Catch',
 			});
-			require('../../utils/functions/DiscordLogger.ts').writeServer(client, interaction.guild.id, {
+			require('../../utils/functions/DiscordLogger.ts').writeServer(client, (interaction.guild as Guild).id, {
 				tag: 'SUCCES',
 				color: 'GREEN',
 				description: 'Card catch',
@@ -100,12 +101,12 @@ module.exports = {
 			client
 				.knex('guilds')
 				.update({ last_Card: null })
-				.where({ id: interaction.guild.id })
-				.catch((err) => console.error(err));
-			let msg = interaction.message;
-			const newComponents = msg.components.map((row) => {
-				return new ActionRowBuilder().addComponents(
-					row.components.map((button) => {
+				.where({ id: (interaction.guild as Guild).id })
+				.catch((err: any) => console.error(err));
+			let msg = interaction.message as Message;
+			const newComponents = msg.components.map((row: any) => {
+				return new ActionRowBuilder<ButtonBuilder>().addComponents(
+					row.components.map((button: any) => {
 						return new ButtonBuilder().setCustomId(button.customId).setLabel(button.label).setStyle(button.style).setDisabled(true); // Toggle the disabled state
 					})
 				);
@@ -114,9 +115,9 @@ module.exports = {
 			client
 				.knex('anti-cheat_messages')
 				.update({ userCard: interaction.user.id })
-				.where({ spawnMessage: interaction.message.id })
-				.catch((err) => console.error(err));
-			msg.edit({ embeds: interaction.message.embeds, components: newComponents });
+				.where({ spawnMessage: (interaction.message as Message).id })
+				.catch((err: any) => console.error(err));
+			msg.edit({ embeds: (interaction.message as Message).embeds, components: newComponents });
 		} else {
 			let nonono = locales.no[serverConfig.locale] ?? locales.no.default;
 			interaction.reply(nonono.replace('%guess%', guess).replace('%@player%', `<@${interaction.user.id}>`));

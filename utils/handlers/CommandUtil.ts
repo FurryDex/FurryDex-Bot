@@ -1,9 +1,10 @@
 import { PermissionFlagsBits, InteractionContextType } from 'discord.js';
 import { glob } from 'glob';
 import Logger from '../Logger';
+import { FDClient } from '../../bot';
 const process = require('process');
 
-module.exports = async (client) => {
+module.exports = async (client: FDClient) => {
 	(await glob(`./commands/*/*.ts`)).map(async (cmdFile) => {
 		const cmd = require(`${process.cwd()}/${cmdFile}`);
 		if (!cmd.name) return Logger.warn(null, `Nom Non Definie\nFichier: ${cmdFile}`);
@@ -22,20 +23,20 @@ module.exports = async (client) => {
 				cmd.nameLocalizations = locales.name ?? {};
 				cmd.descriptionLocalizations = locales.description ?? {};
 				if (cmd.options && locales.options) {
-					cmd.options.forEach((option, index) => {
+					cmd.options.forEach((option: { nameLocalizations: { [key: string]: string }; name: string; descriptionLocalizations: { [key: string]: string }; choices?: any[]; options?: any[] }) => {
 						option.nameLocalizations = locales.options[option.name]?.name ?? {};
 						option.descriptionLocalizations = locales.options[option.name]?.description ?? {};
 						if (option.choices && locales.options[option.name]?.choices) {
-							option.choices.forEach((optionchoices, indexchoices) => {
+							option.choices.forEach((optionchoices: { nameLocalizations: { [key: string]: string }; name: string }) => {
 								optionchoices.nameLocalizations = locales.options[option.name].choices[optionchoices.name] ?? {};
 							});
 						}
 						if (option.options && locales.options[option.name]?.options) {
-							option.options.forEach((suboption, subindex) => {
+							option.options.forEach((suboption: { nameLocalizations: { [key: string]: string }; name: string; descriptionLocalizations: { [key: string]: string }; choices?: any[]; options?: any[] }) => {
 								suboption.nameLocalizations = locales.options[option.name].options[suboption.name]?.name ?? {};
 								suboption.descriptionLocalizations = locales.options[option.name].options[suboption.name]?.description ?? {};
 								if (suboption.choices && locales.options[option.name].options[suboption.name].choices) {
-									suboption.choices.forEach((suboptionchoices, subindexchoices) => {
+									suboption.choices.forEach((suboptionchoices: { nameLocalizations: { [key: string]: string }; name: string }) => {
 										suboptionchoices.nameLocalizations = locales.options[option.name].options[suboption.name].choices[suboptionchoices.name] ?? {};
 									});
 								}

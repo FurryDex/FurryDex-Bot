@@ -1,7 +1,8 @@
 import { glob } from 'glob';
 import Logger from '../Logger';
+import { FDClient } from '../../bot';
 
-module.exports = async (client) => {
+module.exports = async (client: FDClient) => {
 	(await glob(`./events/*/*.ts`, {})).map(async (eventFile) => {
 		const event = require(`${process.cwd()}/${eventFile}`);
 
@@ -10,9 +11,9 @@ module.exports = async (client) => {
 		}
 
 		if (event.once) {
-			client.once(event.name, (...args) => event.execute(client, ...args));
+			client.once(event.name, (...args: any[]) => event.execute(client, ...args));
 		} else {
-			client.on(event.name, (...args) => event.execute(client, ...args));
+			client.on(event.name, (...args: any[]) => event.execute(client, ...args));
 		}
 
 		Logger.event(null, `Chargé: ${event.name}`);

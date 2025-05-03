@@ -1,4 +1,5 @@
-import { ApplicationCommandOptionType, PermissionFlagsBits } from 'discord.js';
+import { CommandInteraction, PermissionFlagsBits } from 'discord.js';
+import { FDClient } from '../../bot';
 
 module.exports = {
 	name: 'generate-id',
@@ -6,8 +7,7 @@ module.exports = {
 	category: 'admin',
 	permissions: PermissionFlagsBits.Administrator,
 	ownerOnly: true,
-	run: (client, message, args) => {},
-	runSlash: (client, interaction) => {
+	runSlash: (client: FDClient, interaction: CommandInteraction) => {
 		const uid = function () {
 			return Date.now().toString(36) + Math.random().toString(36).substr(2);
 		};
