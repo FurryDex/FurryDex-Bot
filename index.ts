@@ -1,5 +1,6 @@
 import yaml from 'js-yaml';
 import fs from 'fs';
+import { ShardingManager } from 'discord.js';
 
 let config;
 try {
@@ -9,7 +10,6 @@ try {
 }
 
 if (config.bot.shard) {
-	const { ShardingManager } = require('discord.js');
 	if (config.bot.api.enable) require('./api/server');
 
 	try {
