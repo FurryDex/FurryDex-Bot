@@ -1,6 +1,7 @@
 import yaml from 'js-yaml';
 import fs from 'fs';
 import { ShardingManager } from 'discord.js';
+import Logger from './utils/Logger';
 
 let config;
 try {
@@ -15,7 +16,7 @@ if (config.bot.shard) {
 	try {
 		const manager = new ShardingManager('./bot.ts', { token: config.bot.token });
 
-		manager.on('shardCreate', (shard: any) => require('./utils/Logger').shard(null, `Lancement de la shard #${shard.id}`));
+		manager.on('shardCreate', (shard: any) =>() Logger.shard(null, `Lancement de la shard #${shard.id}`));
 
 		manager.spawn();
 	} catch (error) {
