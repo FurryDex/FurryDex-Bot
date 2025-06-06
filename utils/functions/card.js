@@ -14,27 +14,13 @@ async function cardEmbed(client, cardId, locale) {
 	//let creator = client.users.fetch(originalCardF.author);
 	let species = [];
 	await JSON.parse(originalCardF.species).forEach(async (species_id) => {
-		let species_name = await client
-			.knex('species')
-			.first('*')
-			.where({ id: species_id })
-			.catch((err) => {
-				console.error(err);
-			});
-		species.push(species_name.name);
+		species.push(client.locales.utils.cards.species[species_id][locale] ?? client.locales.utils.cards.species[species_id]['en-US']);
 	});
 
-	let data_type = await client
-		.knex('category')
-		.first('*')
-		.where({ id: originalCardF.category })
-		.catch((err) => {
-			console.error(err);
-		});
-	let temp_type = data_type.name;
+	let temp_type = client.locales.utils.cards.category[originalCardF.category][locale] ?? client.locales.utils.cards.category[originalCardF.category]['en-US'];
 	let type = temp_type.charAt(0).toUpperCase() + temp_type.slice(1);
 
-	let color = require('../colors.json').find((color) => color.name == (data_type.color ?? originalCardF.color))?.hex ?? '#000000';
+	let color = require('../colors.json').find((color) => color.name == originalCardF.color)?.hex ?? '#000000';
 
 	if (color == '#000000') {
 		Logger.warn('Color Error at card ' + cardF.card_id);
@@ -75,6 +61,30 @@ async function cardEmbed(client, cardId, locale) {
 	} else {
 		description = description.replace('%birthday%', ``);
 	}
+	if (originalCardF.gender) {
+		description = description.replace(
+			'%gender%',
+			`${(locales.embed.gender[locale] ?? locales.embed.gender['en-US']).replace(
+				'%gender%',
+				`${formatArrayToText(
+					(originalCardF.gender.toString().split('', 1)[1] != '[' ? [originalCardF.gender.toString()] : JSON.parse(originalCardF.gender)).map((x) => `${client.locales.utils.cards.gender[x][locale] ?? client.locales.utils.cards.gender[x]['en-US']}`)
+				)}`
+			)}\n`
+		);
+		if (originalCardF.sexuality) {
+			description = description.replace(
+				'%sexuality%',
+				`(${(originalCardF.authorId.toString().split('', 1)[1] != '[' ? [originalCardF.sexuality.toString()] : JSON.parse(originalCardF.sexuality)).map(
+					(x) => `${client.locales.utils.cards.sexuality[x][locale] ?? client.locales.utils.cards.sexuality[x]['en-US']}`
+				)})`
+			);
+		} else {
+			description = description.replace('%sexuality%', ``);
+		}
+	} else {
+		description = description.replace('%gender%', ``);
+	}
+
 	let embed = new EmbedBuilder()
 		.setColor(color)
 		.setTitle(`${originalCardF.emoji} ${originalCardF.name}`)

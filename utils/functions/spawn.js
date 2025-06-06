@@ -44,6 +44,19 @@ async function isXMinutesPassed(message, client) {
 			return false; // Le bot n'est pas activé pour ce serveur
 		}
 
+		if (serverConfig.can_spawn != 1 && !bypass) {
+			return false; // Le serveur n'est pas activé pour spawn des cartes, cause de l'anti-cheat
+		}
+
+		if (message.guild.memberCount < 100 && !bypass) {
+			if (serverConfig['card/message'] > serverConfig['cmmax'] * 100) return false;
+		}
+		if (message.guild.memberCount < 50 && !bypass) {
+			var dividend = 5 - Math.round(5 - message.guild.memberCount / 10);
+			var ichkomme = Math.floor(Math.random());
+			if (ichkomme < dividend) return false;
+		}
+
 		if (serverConfig.last_Card != null) {
 			if (bypass)
 				message.reply({

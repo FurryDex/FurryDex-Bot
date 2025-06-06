@@ -51,29 +51,11 @@ client.locales = {};
 
 async function locales() {
 	try {
-		if (client.config.third_party.crowdin.Crowdin_to_Discord_API) {
-			const response = await fetch(client.config.third_party.crowdin.Crowdin_to_Discord_API);
-			if (response) {
-				client.locales = await response.json();
-				fs.writeFileSync('./locales.json', JSON.stringify(client.locales));
-			}
-		} else {
-			no_locales('No locales API');
-		}
+		await require('./utils/locales/index.js')();
+		client.locales = JSON.parse(fs.readFileSync('./locales.json'));
 	} catch (err) {
-		no_locales(err);
+		console.error(err);
 	}
-}
-
-async function no_locales(err) {
-	Logger.warn(null, `Error for Locales modules: ${err}`);
-	if (err == 'No locales API') client.locales = require('./src/locales.js');
-	else
-		try {
-			client.locales = JSON.parse(fs.readFileSync('./locales.json'));
-		} catch (err) {
-			console.error(err);
-		}
 }
 
 locales().then(() => {
