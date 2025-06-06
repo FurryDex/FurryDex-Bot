@@ -29,6 +29,7 @@ async function anticheat_update(client) {
 	});
 
 	let users = await client.knex('users').catch((err) => console.error(err));
+	let guilds = await client.knex('guilds').catch((err) => console.error(err));
 
 	users.forEach(async (user) => {
 		let messages = await client
@@ -63,12 +64,32 @@ async function anticheat_update(client) {
 			.where({ id: user.id })
 			.catch((err) => console.error(err));
 	});
+
+	guilds.forEach(async (guild) => {
+		let messages = await client
+			.knex('anti-cheat_messages')
+			.select('*')
+			.where({ guild: guild.id })
+			.catch((err) => console.error(err));
+		if (!messages.length) return;
+
+		if (messages.length <= 7) return; // Pas assez de messages pour calculer le pourcentage
+		let pourcent = ([...messages.map((x) => x.have_spawn_card)]?.reduce((a, b) => a + b, 0) / messages.length) * 100;
+		pourcent = pourcent > 100 ? 100 : pourcent < 0 ? 0 : pourcent;
+		if (!pourcent) return;
+
+		client
+			.knex('guilds')
+			.update({ anticheat: pourcent, can_spawn: pourcent < 65 ? 1 : pourcent >= 75 ? 0 : undefined, 'card/message': pourcent })
+			.where({ id: guild.id })
+			.catch((err) => console.error(err));
+	});
 }
 
 function anticheat_message(client, message, user_id, have_spawn_card = 0, expire = 720) {
 	client
 		.knex('anti-cheat_messages')
-		.insert({ message_id: message.id, user_id, have_spawn_card, expire: expire })
+		.insert({ message_id: message.id, user_id, have_spawn_card, expire, guild: message.guild.id })
 		.catch((err) => console.error(err));
 }
 
