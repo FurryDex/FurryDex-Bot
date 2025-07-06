@@ -52,8 +52,9 @@ async function isXMinutesPassed(message, client) {
 			if (serverConfig['card/message'] > serverConfig['cmmax'] * 100) return false;
 		}
 		if (message.guild.memberCount < 50 && !bypass) {
-			var dividend = 5 - Math.round(5 - message.guild.memberCount / 10);
-			var ichkomme = Math.floor(Math.random());
+			var dividend = 0.3;
+			// Why Ichkomme ? don't ask me, I don't know
+			let ichkomme = Math.random();
 			if (ichkomme < dividend) return false;
 		}
 
