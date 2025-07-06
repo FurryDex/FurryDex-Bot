@@ -1,4 +1,4 @@
-const { EmbedBuilder, ButtonStyle, ActionRowBuilder, ButtonBuilder, MessageFlags } = require('discord.js');
+const { EmbedBuilder, ButtonStyle, ActionRowBuilder, ButtonBuilder, MessageFlags, ContainerBuilder } = require('discord.js');
 const Logger = require('../Logger.js');
 
 async function isXMinutesPassed(message, client) {
@@ -52,8 +52,9 @@ async function isXMinutesPassed(message, client) {
 			if (serverConfig['card/message'] > serverConfig['cmmax'] * 100) return false;
 		}
 		if (message.guild.memberCount < 50 && !bypass) {
-			var dividend = 5 - Math.round(5 - message.guild.memberCount / 10);
-			var ichkomme = Math.floor(Math.random());
+			var dividend = 0.3;
+			// Why Ichkomme ? don't ask me, I don't know
+			let ichkomme = Math.random();
 			if (ichkomme < dividend) return false;
 		}
 
@@ -171,7 +172,7 @@ async function win(client, message) {
 		// Filtre les cartes en vérifiant si l'authorId (converti en chaîne) est présent parmi les membres
 		let cartes;
 
-		if (!(serverConfig.premium == 1 && serverConfig.spawnAllCards == 1)) {
+		if (!(serverConfig.premium == 1 && serverConfig.spawnAllCards == 1) || cards.length == 1) {
 			cartes = cards.filter((carte) => membres.some((member) => (typeof JSON.parse(carte.authorId) == 'number' ? [carte.authorId.toString()] : JSON.parse(carte.authorId)).includes(member.id)));
 		} else {
 			cartes = cards;
@@ -230,23 +231,27 @@ async function win(client, message) {
 				info: [{ name: 'Card', value: `${card.name} (${card.id})` }],
 				content: 'Spawn',
 			});
-			const button = new ActionRowBuilder().addComponents(
-				new ButtonBuilder()
-					.setCustomId('catch')
-					.setDisabled(false)
-					.setEmoji('<:Bug_hunt:1324413128817250457>')
-					.setLabel(locales.button.text[serverConfig.locale] ?? locales.button.text.default)
-					.setStyle(ButtonStyle.Danger)
-			);
-			let title = locales.embed.title[serverConfig.locale] ?? locales.embed.title.default;
-			const embed = new EmbedBuilder()
-				.setTitle(title)
-				.setColor(require('../colors.json').find((color) => (color.name = 'RED')).hex)
-				.setImage(card.image);
-			if (is_event) embed.setDescription('### <:Warning_Blue:1324412874344632341> Event Card');
-			else if (is_nsfw) embed.setDescription('## <:Warning:1324412876185796689> Mature content');
-			if (!channel) return;
-			channel.send({ embeds: [embed], components: [button] }).then(async (m) => {
+
+			// V2
+			const catchContainer = new ContainerBuilder()
+				.addTextDisplayComponents((textDisplay) =>
+					textDisplay.setContent(`# ${locales.embed.title[serverConfig.locale] ?? locales.embed.title.default}${is_event ? '\n\n## <:Warning_Blue:1324412874344632341> Event Card' : is_nsfw ? '\n\n## <:Warning:1324412876185796689> Mature content' : ''}`)
+				)
+				.addSeparatorComponents((separator) => separator)
+				.addMediaGalleryComponents((mediaGallery) => mediaGallery.addItems((mediaGalleryItem) => mediaGalleryItem.setURL(card.image).setSpoiler(is_nsfw ?? false)))
+				.addSeparatorComponents((separator) => separator)
+				.addActionRowComponents((actionRow) =>
+					actionRow.setComponents(
+						new ButtonBuilder()
+							.setCustomId('catch')
+							.setDisabled(false)
+							.setEmoji('<:Bug_hunt:1324413128817250457>')
+							.setLabel(locales.button.text[serverConfig.locale] ?? locales.button.text.default)
+							.setStyle(ButtonStyle.Primary)
+					)
+				);
+
+			channel.send({ components: [catchContainer], flags: MessageFlags.IsComponentsV2 }).then(async (m) => {
 				let channel = await guild.channels.cache.get(m.channelId);
 				client
 					.knex('anti-cheat_messages')
@@ -262,17 +267,13 @@ async function win(client, message) {
 							.update({ last_Card: null })
 							.where({ id: guild.id })
 							.catch((err) => console.error(err));
-						serverConfig.last_Card = null;
-						const newComponents = msg.components.map((row) => {
-							return new ActionRowBuilder().addComponents(
-								row.components.map((button) => {
-									return new ButtonBuilder().setCustomId(button.customId).setLabel(button.label).setStyle(button.style).setDisabled(true); // Toggle the disabled state
-								})
-							);
-						});
-						msg.edit({ embeds: msg.embeds, components: newComponents }).catch(() => {});
-					} catch (err) {}
-				}, 300_000);
+						const newCatchContainer = m.components[0];
+						newCatchContainer.components[4].components[0].data.disabled = true;
+						msg.edit({ components: [newCatchContainer], flags: MessageFlags.IsComponentsV2 }).catch((err) => console.error(err));
+					} catch (err) {
+						console.error(err);
+					}
+				}, 1000); //300_000);
 			});
 		}, Math.floor(Math.random() * (7500 - 2500) + 2500));
 	} while (!done);

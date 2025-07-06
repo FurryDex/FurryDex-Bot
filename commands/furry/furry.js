@@ -1,6 +1,6 @@
 const { ApplicationCommandOptionType, StringSelectMenuBuilder, ActionRowBuilder, EmbedBuilder, ButtonBuilder, ButtonStyle, BaseInteraction, SelectMenuInteraction, MessageFlags, InteractionContextType } = require('discord.js');
 const fs = require('fs');
-const { cardEmbed } = require('../../utils/functions/card');
+const { cardContainer } = require('../../utils/functions/card');
 
 module.exports = {
 	name: 'furry',
@@ -191,8 +191,8 @@ module.exports = {
 						25,
 						'cards',
 						async (response) => {
-							cardEmbed(client, response.values[0], response.locale).then((embed) => {
-								response.update({ embeds: [embed], components: [], content: ' ' }).catch((err) => {
+							cardContainer(client, response.values[0], response.locale).then((container) => {
+								response.update({ embeds: null, components: [container], content: null, flags: MessageFlags.IsComponentsV2 }).catch((err) => {
 									console.error(err, response.values[0]);
 								});
 							});

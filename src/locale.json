@@ -245,6 +245,19 @@
 					"giveBy": "❇️ • Offered by %giver% the %giveTime%",
 					"birthday": "✨ • Birthday: %birthday%",
 					"gender": "👤 • Gender: %gender% %sexuality%"
+				},
+				"container": {
+					"author": "Card by",
+					"id": "ID",
+					"name": "Name",
+					"time": "Caught on",
+					"type": "Type",
+					"species": "Species",
+					"birthday": "Birthday",
+					"gender": "Gender",
+					"live": "HP",
+					"attacks": "ATK",
+					"giveBy": "Offered by"
 				}
 			},
 			"spawn": {
