@@ -273,7 +273,7 @@ async function win(client, message) {
 					} catch (err) {
 						console.error(err);
 					}
-				}, 1000); //300_000);
+				}, 300_000);
 			});
 		}, Math.floor(Math.random() * (7500 - 2500) + 2500));
 	} while (!done);
