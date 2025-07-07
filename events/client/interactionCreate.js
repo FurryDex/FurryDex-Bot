@@ -32,34 +32,18 @@ module.exports = {
 		} else if (interaction.isButton()) {
 			if (interaction.customId.includes('--')) return;
 			const btn = client.buttons.get(interaction.customId);
-			if (!btn) {
-				Logger.warn(client, `Button "${interaction.customId}" dosn't exist`);
-				return interaction.reply({
-					content: "Sorry, this *button* dosn't exit. Er0r: 404",
-					flags: MessageFlags.Ephemeral,
-				});
-			}
+			if (!btn) return;
 			interaction.customId = interaction.customId.replace(/{*}*/g, '');
 			btn.run(client, interaction);
 		} else if (interaction.type === InteractionType.ModalSubmit) {
 			const modal = client.modals.get(interaction.customId);
-			if (!modal) {
-				Logger.warn(client, `Modal "${interaction.customId}" dosn't exist`);
-				return interaction.reply({
-					content: "Sorry, this *form* dosn't exit. Er0r: 404",
-					flags: MessageFlags.Ephemeral,
-				});
-			}
+			if (!modal) return;
+
 			modal.run(client, interaction);
 		} else if (interaction.isStringSelectMenu()) {
 			const select = client.selects.get(interaction.customId);
-			if (!select) {
-				Logger.warn(client, `Select "${interaction.customId}" dosn't exist`);
-				return interaction.reply({
-					content: "Sorry, this *select menu* dosn't exit. Er0r: 404",
-					flags: MessageFlags.Ephemeral,
-				});
-			}
+			if (!select) return;
+
 			select.run(client, interaction);
 		}
 	},
