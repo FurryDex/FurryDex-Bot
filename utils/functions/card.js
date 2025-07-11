@@ -1,7 +1,8 @@
-const { EmbedBuilder, time, TimestampStyles } = require('discord.js');
+const { EmbedBuilder, time, TimestampStyles, ContainerBuilder, AttachmentBuilder, MessageFlags } = require('discord.js');
 const Logger = require('../Logger');
+const { text } = require('express');
 
-async function cardEmbed(client, cardId, locale) {
+async function cardContainer(client, cardId, locale) {
 	const locales = client.locales.utils.function.cards;
 	let cardF = {};
 	let originalCardF = {};
@@ -20,80 +21,74 @@ async function cardEmbed(client, cardId, locale) {
 	let temp_type = client.locales.utils.cards.category[originalCardF.category][locale] ?? client.locales.utils.cards.category[originalCardF.category]['en-US'];
 	let type = temp_type.charAt(0).toUpperCase() + temp_type.slice(1);
 
-	let color = require('../colors.json').find((color) => color.name == originalCardF.color)?.hex ?? '#000000';
+	let color = require('../colors.json').find((color) => color.name == originalCardF.color)?.rgb ?? 'RGB(0, 0, 0)';
 
-	if (color == '#000000') {
+	if (color == 'RGB(0, 0, 0)') {
 		Logger.warn('Color Error at card ' + cardF.card_id);
 	}
 
+	color = color
+		.replace('RGB(', '')
+		.split(',')
+		.map((x) => parseInt(x.trim()));
+
 	let date = new Date(cardF.date);
 
-	let description = locales.embed.description[locale] ?? locales.embed.description['en-US'];
-	description = description
-		.replace('%author%', formatArrayToText((typeof JSON.parse(originalCardF.authorId) == 'number' ? [originalCardF.authorId.toString()] : JSON.parse(originalCardF.authorId)).map((x) => `<@${x}>`)))
-		.replace('%id%', cardF.id)
-		.replace('%name%', originalCardF.name)
-		.replace('%time%', `${time(date, TimestampStyles.LongDateTime)} (${time(date, TimestampStyles.RelativeTime)})`)
-		.replace('%type%', type)
-		.replace('%species%', formatArrayToText(species))
-		.replace('%live%', cardF.live < 0 ? originalCardF.live - (originalCardF.live * cardF.live.replace('-', '')) / 100 : originalCardF.live + (originalCardF.live * cardF.live) / 100) //cardF.live < 0 ? originalCardF.live-(originalCardF.live*cardF.live/100) : originalCardF.live+(originalCardF.live*cardF.live/100)
-		.replace('%live_2%', cardF.live)
-		.replace('%attacks%', cardF.attacks < 0 ? originalCardF.attacks - (originalCardF.attacks * cardF.attacks.replace('-', '')) / 100 : originalCardF.attacks + (originalCardF.attacks * cardF.attacks) / 100) //cardF.attacks < 0 ? originalCardF.attacks-(originalCardF.attacks*cardF.attacks/100) : originalCardF.attacks+(originalCardF.attacks*cardF.attacks/100)
-		.replace('%attacks_2%', cardF.attacks);
-	if (cardF.gived != 0) {
-		let giveDate = new Date(cardF.giveDate);
-		description = description.replace(
-			'%gived%',
-			`${(locales.embed.giveBy[locale] ?? locales.embed.giveBy['en-US']).replace('%giver%', `<@${cardF.gived}>`).replace('%giveTime%', `${time(giveDate, TimestampStyles.LongDateTime)} (${time(giveDate, TimestampStyles.RelativeTime)})`)}\n`
-		);
-	} else {
-		description = description.replace('%gived%', ``);
-	}
-	if (originalCardF.birthday) {
-		let birthday = new Date(originalCardF.birthday);
-		let nextBirthday = new Date(originalCardF.birthday);
-		nextBirthday.setFullYear(new Date().getFullYear());
-		if (nextBirthday < new Date()) nextBirthday.setFullYear(new Date().getFullYear() + 1);
-		description = description.replace(
-			'%birthday%',
-			`${(locales.embed.birthday[locale] ?? locales.embed.birthday['en-US']).replace('%birthday%', `${time(birthday, TimestampStyles.ShortDateTime)} (${time(birthday, TimestampStyles.RelativeTime)}) → ${time(nextBirthday, TimestampStyles.RelativeTime)}`)}\n`
-		);
-	} else {
-		description = description.replace('%birthday%', ``);
-	}
-	if (originalCardF.gender) {
-		description = description.replace(
-			'%gender%',
-			`${(locales.embed.gender[locale] ?? locales.embed.gender['en-US']).replace(
-				'%gender%',
-				`${formatArrayToText(
-					(originalCardF.gender.toString().split('', 1)[1] != '[' ? [originalCardF.gender.toString()] : JSON.parse(originalCardF.gender)).map((x) => `${client.locales.utils.cards.gender[x][locale] ?? client.locales.utils.cards.gender[x]['en-US']}`)
-				)}`
-			)}\n`
-		);
-		if (originalCardF.sexuality) {
-			description = description.replace(
-				'%sexuality%',
-				`(${(originalCardF.authorId.toString().split('', 1)[1] != '[' ? [originalCardF.sexuality.toString()] : JSON.parse(originalCardF.sexuality)).map(
-					(x) => `${client.locales.utils.cards.sexuality[x][locale] ?? client.locales.utils.cards.sexuality[x]['en-US']}`
-				)})`
-			);
-		} else {
-			description = description.replace('%sexuality%', ``);
+	let image = originalCardF.card;
+	let name = originalCardF.name;
+
+	let furrcard = await client
+		.knex('furrcard')
+		.first('*')
+		.where({ fd_id: originalCardF.id })
+		.catch((err) => {
+			console.error(err);
+		});
+	if (furrcard) {
+		let response = await fetch(`https://${furrcard.user}.furrcard.com/.well-known/fursona.json`);
+		let data = await response.json();
+		let sona = data.sonas[furrcard.sona_id];
+		name = sona.name ?? name;
+		if (furrcard.use_image) {
+			image = sona.avatar ?? image;
 		}
-	} else {
-		description = description.replace('%gender%', ``);
 	}
 
-	let embed = new EmbedBuilder()
-		.setColor(color)
-		.setTitle(`${originalCardF.emoji} ${originalCardF.name}`)
-		.setDescription(description)
-		//%emoji_1%, <:atlanta_crown:598174064183607317> | %author%, originalCardF.author | %emoji_2%, <:atlanta_id:598162717232332811> | %id%, cardF.id | %emoji_3%, 🪪
-		//%name%`, originalCardF.name | %emoji_4%, 📅 | %time%, ${time(date, TimestampStyles.LongDateTime)} (${time(date, TimestampStyles.RelativeTime)}) | %emoji_5%, ❤️
-		//%live%, originalCardF.live | %live_2%, cardF.live | %emoji_6%, <:atlanta_minecraft:598170502963396620> | %attacks%, originalCardF.attacks | %attacks_2%, cardF.attacks
-		.setImage(originalCardF.card);
-	return embed;
+	let firstText = `👑 • ${locales.container.author[locale] ?? locales.container.author['en-US']}: ${formatArrayToText(
+		(typeof JSON.parse(originalCardF.authorId) == 'number' ? [originalCardF.authorId.toString()] : JSON.parse(originalCardF.authorId)).map((x) => `<@${x}>`)
+	)}\n🆔 • ${locales.container.id[locale] ?? locales.container.id['en-US']}: \`#${cardF.id}\`\n🪪 • ${locales.container.name[locale] ?? locales.container.name['en-US']}: \`${name}\`\n📅 • ${
+		locales.container.time[locale] ?? locales.container.time['en-US']
+	}: ${time(date, TimestampStyles.LongDateTime)} (${time(date, TimestampStyles.RelativeTime)})\n🔧 • ${locales.container.type[locale] ?? locales.container.type['en-US']}: \`${type}\`\n🐺 • ${
+		locales.container.species[locale] ?? locales.container.species['en-US']
+	}: \`${formatArrayToText(species)}\`${
+		originalCardF.birthday
+			? `\n✨ • ${locales.container.birthday[locale] ?? locales.container.birthday['en-US']}: ${time(new Date(originalCardF.birthday), TimestampStyles.ShortDateTime)} (${time(new Date(originalCardF.birthday), TimestampStyles.RelativeTime)})`
+			: ''
+	}${originalCardF.gender ? `\n👤 • ${locales.container.gender[locale] ?? locales.container.gender['en-US']}: ${originalCardF.gender} ${originalCardF.sexuality ? `(${originalCardF.sexuality})` : ''}` : ''}`;
+
+	let secondText = `❤️ • ${locales.container.live[locale] ?? locales.container.live['en-US']}: \`${
+		cardF.live < 0 ? originalCardF.live - (originalCardF.live * cardF.live.replace('-', '')) / 100 : originalCardF.live + (originalCardF.live * cardF.live) / 100
+	}%\` (\`${cardF.live}\%$\`)\n⚔️ • ${locales.container.attacks[locale] ?? locales.container.attacks['en-US']}: \`${
+		cardF.attacks < 0 ? originalCardF.attacks - (originalCardF.attacks * cardF.attacks.replace('-', '')) / 100 : originalCardF.attacks + (originalCardF.attacks * cardF.attacks) / 100
+	}%\` (\`${cardF.attacks}\%$\`)${
+		cardF.gived != 0
+			? `\n❇️ • ${locales.container.giveBy[locale] ?? locales.container.giveBy['en-US']}: <@${cardF.gived}> the ${time(new Date(cardF.giveDate), TimestampStyles.LongDateTime)} (${time(new Date(cardF.giveDate), TimestampStyles.RelativeTime)})`
+			: ''
+	}`;
+
+	const cardContainer = new ContainerBuilder()
+		.setAccentColor(color)
+		.addTextDisplayComponents((textDisplay) => textDisplay.setContent(`# ${name}\n${firstText}`))
+		.addSeparatorComponents((separator) => separator)
+		.addTextDisplayComponents((textDisplay) => textDisplay.setContent(secondText))
+		.addSeparatorComponents((separator) => separator)
+		.addMediaGalleryComponents((mediaGallery) => mediaGallery.addItems((mediaGalleryItem) => mediaGalleryItem.setURL(image).setSpoiler(Boolean(originalCardF.nsfw) ?? false)));
+
+	if (furrcard) {
+		cardContainer.addTextDisplayComponents((textDisplay) => textDisplay.setContent(`-# <:furrcard:1391396091026477096> Card from [FurrCard](https://${furrcard.user}.furrcard.com/)`));
+	}
+
+	return cardContainer;
 }
 
 // Fonction pour récupérer les cartes possédées par un utilisateur
@@ -157,4 +152,4 @@ function formatArrayToText(array) {
 	}
 }
 
-module.exports = { card, cardEmbed, originalCard, getMissingCards, getUserCards };
+module.exports = { card, cardContainer, originalCard, getMissingCards, getUserCards };

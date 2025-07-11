@@ -100,7 +100,48 @@
 				"changedChan": "The channel have been set to `%channel%`",
 				"changedEna": "The bot is now `%enable%`",
 				"changedLeaderEna": "The edit function for leaderboard is now %enable%",
-				"changedLeaderChan": "The channel for Leaderboard have been set to %channel%"
+				"changedLeaderChan": "The channel for Leaderboard have been set to %channel%",
+
+				"title": "Configuration",
+				"enable": {
+					"title": "Enable",
+					"description": "Enable or disable the card spawn.",
+					"button": {
+						"enable": "Enable",
+						"disable": "Disable"
+					}
+				},
+				"channel": {
+					"title": "Channel",
+					"description": "Channel where the card will spawn.",
+					"placeholder": "Select a channel"
+				},
+				"locale": {
+					"title": "Locale",
+					"description": "Set the base-lang for the server.",
+					"button": "Change Locale",
+					"placeholder": "Select a language",
+					"list": {
+						"de": "German",
+						"en-US": "English",
+						"es": "Spanish",
+						"fr": "French",
+						"it": "Italian",
+						"du": "Dutch",
+						"no": "Norwegian",
+						"pl": "Polish",
+						"pt-BR": "Portugese",
+						"ro": "Romanian",
+						"fi": "Finish",
+						"sv-SE": "Swedish",
+						"bg": "Bulgarian",
+						"ru": "Russian",
+						"uk": "Ukrainian",
+						"zh-CN": "Chinese",
+						"ja": "Japanese",
+						"ko": "Korean"
+					}
+				}
 			}
 		},
 		"generate-id": {
@@ -245,6 +286,19 @@
 					"giveBy": "❇️ • Offered by %giver% the %giveTime%",
 					"birthday": "✨ • Birthday: %birthday%",
 					"gender": "👤 • Gender: %gender% %sexuality%"
+				},
+				"container": {
+					"author": "Card by",
+					"id": "ID",
+					"name": "Name",
+					"time": "Caught on",
+					"type": "Type",
+					"species": "Species",
+					"birthday": "Birthday",
+					"gender": "Gender",
+					"live": "HP",
+					"attacks": "ATK",
+					"giveBy": "Offered by"
 				}
 			},
 			"spawn": {

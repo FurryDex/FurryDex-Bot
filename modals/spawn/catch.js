@@ -103,20 +103,15 @@ module.exports = {
 				.where({ id: interaction.guild.id })
 				.catch((err) => console.error(err));
 			let msg = interaction.message;
-			const newComponents = msg.components.map((row) => {
-				return new ActionRowBuilder().addComponents(
-					row.components.map((button) => {
-						return new ButtonBuilder().setCustomId(button.customId).setLabel(button.label).setStyle(button.style).setDisabled(true); // Toggle the disabled state
-					})
-				);
-			});
+			const newCatchContainer = msg.components[0];
+			newCatchContainer.components[4].components[0].data.disabled = true;
 
 			client
 				.knex('anti-cheat_messages')
 				.update({ userCard: interaction.user.id })
 				.where({ spawnMessage: interaction.message.id })
 				.catch((err) => console.error(err));
-			msg.edit({ embeds: interaction.message.embeds, components: newComponents });
+			msg.edit({ components: [newCatchContainer], flags: MessageFlags.IsComponentsV2 });
 		} else {
 			let nonono = locales.no[serverConfig.locale] ?? locales.no.default;
 			interaction.reply(nonono.replace('%guess%', guess).replace('%@player%', `<@${interaction.user.id}>`));

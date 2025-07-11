@@ -77,10 +77,11 @@ async function anticheat_update(client) {
 		let pourcent = ([...messages.map((x) => x.have_spawn_card)]?.reduce((a, b) => a + b, 0) / messages.length) * 100;
 		pourcent = pourcent > 100 ? 100 : pourcent < 0 ? 0 : pourcent;
 		if (!pourcent) return;
+		let cpm = [...messages.map((x) => x.have_spawn_card)].reduce((a, b) => a + b, 0) / messages.length;
 
 		client
 			.knex('guilds')
-			.update({ anticheat: pourcent, can_spawn: pourcent < 65 ? 1 : pourcent >= 75 ? 0 : undefined, 'card/message': pourcent })
+			.update({ anticheat: pourcent, can_spawn: pourcent < 65 ? 1 : pourcent >= 75 ? 0 : undefined, 'card/message': cpm })
 			.where({ id: guild.id })
 			.catch((err) => console.error(err));
 	});
