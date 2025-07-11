@@ -12,7 +12,8 @@ function downloadTranslations() {
 		const downloadLink = await translationsApi.buildProjectFileTranslation(projectId, fileId, {
 			targetLanguageId: language,
 		});
-		const response = await fetch(downloadLink.data.url);
+		const response = await fetch(downloadLink.data.url).catch((err) => console.log(err));
+		if (!response) return;
 		const translations = await response.json();
 		fs.writeFileSync(`./src/locales/locale_${language}.json`, JSON.stringify(translations));
 	});
