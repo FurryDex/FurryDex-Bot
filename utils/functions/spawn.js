@@ -8,9 +8,11 @@ async function isXMinutesPassed(message, client) {
 
 		// Admin bypass system
 		let bypass = false;
-		let AdminGuild = client.guilds.cache.get('1235970684556021890');
-		let members = AdminGuild.members.cache.filter((x) => x.roles.cache.has('1235970972650311752'));
-		if (message.content === '!spawn' && members.has(message.author.id)) bypass = true;
+		if (message.content === '!spawn') {
+			let AdminGuild = client.guilds.cache.get('1235970684556021890');
+			let members = AdminGuild.members.cache.filter((x) => x.roles.cache.has('1235970972650311752'));
+			if (members.has(message.author.id)) bypass = true;
+		}
 
 		// Trouver la configuration pour le serveur actuel
 		let serverConfig = await client
@@ -88,7 +90,7 @@ async function isXMinutesPassed(message, client) {
 			.catch((err) => console.error(err));
 
 		// Récupérer le nombre de membres dans le serveur
-		const memberCount = message.guild.memberCount;
+		//const memberCount = message.guild.memberCount;
 
 		// Calculer le temps en minutes en fonction du nombre de membres
 		//serverConfig.time = parseInt(serverConfig.time - (Math.floor(Math.random() * (250 - 10) + 10) * (message.content.length / 15)) / memberCount); //FIXME Don't calculate the good time

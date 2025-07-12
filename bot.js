@@ -51,7 +51,6 @@ client.locales = {};
 
 async function locales() {
 	try {
-		await require('./utils/locales/index.js')();
 		client.locales = JSON.parse(fs.readFileSync('./locales.json'));
 	} catch (err) {
 		console.error(err);

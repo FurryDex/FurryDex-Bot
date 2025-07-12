@@ -8,6 +8,7 @@ try {
 	return console.error('Config file does not exist !', e);
 }
 
+require('./utils/locales/index.js')();
 if (config.bot.shard) {
 	const { ShardingManager } = require('discord.js');
 	if (config.bot.api.enable) require('./api/server');
@@ -18,6 +19,12 @@ if (config.bot.shard) {
 		manager.on('shardCreate', (shard) => require('./utils/Logger').shard(null, `Lancement de la shard #${shard.id}`));
 
 		manager.spawn();
+
+		setInterval(() => {
+			if (manager.totalShards - manager.shards.size !== 0) {
+				manager.spawn({ amount: manager.totalShards - manager.shards.size });
+			}
+		}, 1000 * 60 * 60 * 24); // every day
 	} catch (error) {
 		return require('./utils/Logger').error(null, 'Error au lancement de shard !', error);
 	}
