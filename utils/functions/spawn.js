@@ -50,10 +50,28 @@ async function isXMinutesPassed(message, client) {
 			return false; // Le serveur n'est pas activé pour spawn des cartes, cause de l'anti-cheat
 		}
 
-		if (message.guild.memberCount < 100 && !bypass) {
-			if (serverConfig['card/message'] > serverConfig['cmmax'] * 100) return false;
+		let memberCount = undefined;
+
+		try {
+			memberCount = message.guild.memberCount;
+		} catch (err) {
+			Logger.error(client, `Error fetching member count: ${err}`);
 		}
-		if (message.guild.memberCount < 50 && !bypass) {
+
+		if (memberCount && !bypass) {
+			if (memberCount < 100 && !bypass) {
+				if (serverConfig['card/message'] > serverConfig['cmmax'] * 100) return false;
+			}
+
+			if (memberCount < 50 && !bypass) {
+				var dividend = 0.3;
+				// Why Ichkomme ? don't ask me, I don't know
+				let ichkomme = Math.random();
+				if (ichkomme < dividend) return false;
+			}
+		} else if (!bypass) {
+			if (serverConfig['card/message'] > serverConfig['cmmax'] * 100) return false;
+
 			var dividend = 0.3;
 			// Why Ichkomme ? don't ask me, I don't know
 			let ichkomme = Math.random();
