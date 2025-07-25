@@ -3,7 +3,12 @@ const fs = require('fs');
 const process = require('node:process');
 const yaml = require('js-yaml');
 const client = new Client({
-	intents: [GatewayIntentBits.NON_PRIVILEGED, GatewayIntentBits.GuildMembers, GatewayIntentBits.GuildMessages, GatewayIntentBits.MessageContent],
+	intents: [
+		//GatewayIntentBits.NON_PRIVILEGED,
+		GatewayIntentBits.GuildMembers,
+		GatewayIntentBits.GuildMessages,
+		GatewayIntentBits.MessageContent,
+	],
 	partials: [Partials.User, Partials.Channel, Partials.GuildMember, Partials.Message],
 });
 const Logger = require('./utils/Logger');
