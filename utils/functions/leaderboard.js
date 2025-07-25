@@ -217,4 +217,4 @@ async function leaderboard_update(client) {
 }
 */
 
-module.exports = { leaderboard_start, leaderboard_update };
+module.exports = { leaderboard_start() {}, leaderboard_update() {} };
