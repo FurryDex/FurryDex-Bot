@@ -1,6 +1,7 @@
 const { EmbedBuilder, ThreadAutoArchiveDuration } = require('discord.js');
 let knex_channel, type;
 
+/*
 async function write(client, destination, embed) {
 	const categoryList = client.config.log.category;
 	if (!client.config.log.enable) return;
@@ -214,5 +215,16 @@ async function writeServer(client, serverId, embed) {
 
 //{ category: "other", channel: "1284433362307780658" },
 //{ tag: tag, color: bgTagColor, description: "", info: {}, content: content }
+*/
+
+function write(...args) {
+	return true;
+}
+function writePlayer(...args) {
+	return true;
+}
+function writeServer(...args) {
+	return true;
+}
 
 module.exports = { write, writePlayer, writeServer };

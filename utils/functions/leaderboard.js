@@ -1,6 +1,7 @@
 const { EmbedBuilder } = require('discord.js');
 const Logger = require('../Logger');
 
+/*
 function leaderboard_start(client) {
 	leaderboard_update(client);
 	setInterval(async () => {
@@ -214,5 +215,6 @@ async function leaderboard_update(client) {
 		}
 	});
 }
+*/
 
 module.exports = { leaderboard_start, leaderboard_update };
