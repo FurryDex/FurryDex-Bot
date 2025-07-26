@@ -5,6 +5,7 @@ const yaml = require('js-yaml');
 const client = new Client({
 	intents: [
 		//GatewayIntentBits.NON_PRIVILEGED,
+		GatewayIntentBits.Guilds,
 		GatewayIntentBits.GuildMembers,
 		GatewayIntentBits.GuildMessages,
 		GatewayIntentBits.MessageContent,
@@ -12,6 +13,9 @@ const client = new Client({
 	partials: [Partials.User, Partials.Channel, Partials.GuildMember, Partials.Message],
 });
 const Logger = require('./utils/Logger');
+const winston = require('winston');
+var logger = new winston.Logger({ transports: [new winston.transports.File({ filename: `./logs/${new Date().toISOString().replace(/:/g, '-').replace(/\..+/, '').split('T')[0]}.log` })] });
+client.logger = logger;
 
 try {
 	client.config = yaml.load(fs.readFileSync('./config/config.yaml', 'utf8'));
@@ -23,6 +27,7 @@ const debug = client.config.dev.debug;
 if (!client.config.bot.shard && client.config.bot.api.enable) require('./api/server');
 
 const { isXMinutesPassed } = require('./utils/functions/spawn');
+const { cp } = require('node:fs');
 
 ['commands', 'buttons', 'selects', 'modals'].forEach((x) => (client[x] = new Collection()));
 ['EventUtil', 'ButtonUtil', 'ModalUtil', 'SelectMenuUtil'].forEach((handler) => {
@@ -91,9 +96,12 @@ client.login(client.config.bot.token);
 // --------- COG & SPAWN ----------
 
 client.on('messageCreate', (message) => {
-	if (message.channel.isDMBased()) return;
-	if (client.config.bot.disable.bot) if (message.guild.members.cache.hasAny(...client.config.bot.disable.bot)) return;
-	if (message.author.bot) return;
+	if (message.author.id == client.user.id) return;
+	client.logger.log('info', `/ Message received... Processing card spawning process...`);
+	if (message.channel.isDMBased()) return client.logger.log('info', `\ DM channel detected. Ignoring message.`);
+	if (client.config.bot.disable.bot) if (message.guild.members.cache.hasAny(...client.config.bot.disable.bot)) return client.logger.log('info', `\ Blacklisted bot in the guild. Ignoring message.`);
+	if (message.author.bot) return client.logger.log('info', `\ Message from a bot detected. Ignoring message.`);
+	client.logger.log('info', `| Message passed firsts checks. Proceeding to check if card spawning is allowed...`);
 
 	isXMinutesPassed(message, client).then((result) => {
 		require('./utils/functions/anticheat.js').anticheat_message(client, message, message.author.id, result ? 1 : 0);

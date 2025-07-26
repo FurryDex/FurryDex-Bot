@@ -1,5 +1,6 @@
 const { EmbedBuilder, ButtonStyle, ActionRowBuilder, ButtonBuilder, MessageFlags, ContainerBuilder } = require('discord.js');
 const Logger = require('../Logger.js');
+const { cli } = require('winston/lib/winston/config/index.js');
 
 async function isXMinutesPassed(message, client) {
 	try {
@@ -11,7 +12,10 @@ async function isXMinutesPassed(message, client) {
 		if (message.content === '!spawn') {
 			let AdminGuild = client.guilds.cache.get('1235970684556021890');
 			let members = AdminGuild.members.cache.filter((x) => x.roles.cache.has('1235970972650311752'));
-			if (members.has(message.author.id)) bypass = true;
+			if (members.has(message.author.id)) {
+				bypass = true;
+				client.logger.log('info', `| Admin bypass detected. Proceeding to spawn card...`);
+			}
 		}
 
 		// Trouver la configuration pour le serveur actuel
@@ -34,6 +38,7 @@ async function isXMinutesPassed(message, client) {
 		}
 
 		if (user.can_spawn != 1 && !bypass) {
+			client.logger.log('info', `\ User ${message.author.id} is not allowed to spawn cards.`);
 			return false; // Le joueur farm trop de cartes
 		}
 
@@ -43,10 +48,12 @@ async function isXMinutesPassed(message, client) {
 					content: 'Sorry, the bot is not enable in this server',
 					flags: MessageFlags.Ephemeral,
 				});
+			client.logger.log('info', `\ Server ${message.guild.id} is not enabled for card spawning.`);
 			return false; // Le bot n'est pas activé pour ce serveur
 		}
 
 		if (serverConfig.can_spawn != 1 && !bypass) {
+			client.logger.log('info', `\ Server ${message.guild.id} is not allowed to spawn cards.`);
 			return false; // Le serveur n'est pas activé pour spawn des cartes, cause de l'anti-cheat
 		}
 
@@ -55,27 +62,28 @@ async function isXMinutesPassed(message, client) {
 		try {
 			memberCount = message.guild.memberCount;
 		} catch (err) {
+			client.logger.log('warn', `| ⚠️ Error fetching member count: ${err}`);
 			Logger.error(client, `Error fetching member count: ${err}`);
 		}
 
 		if (memberCount && !bypass) {
 			if (memberCount < 100 && !bypass) {
-				if (serverConfig['card/message'] > serverConfig['cmmax'] * 100) return false;
+				if (serverConfig['card/message'] > serverConfig['cmmax'] * 100) return false && client.logger.log('info', `\ Card spawning is not allowed (< 100 member check) (${memberCount}).`);
 			}
 
 			if (memberCount < 50 && !bypass) {
 				var dividend = 0.3;
 				// Why Ichkomme ? don't ask me, I don't know
 				let ichkomme = Math.random();
-				if (ichkomme < dividend) return false;
+				if (ichkomme < dividend) return false && client.logger.log('info', `\ Card spawning is not allowed (< 50 member check) (${memberCount}).`);
 			}
 		} else if (!bypass) {
-			if (serverConfig['card/message'] > serverConfig['cmmax'] * 100) return false;
+			if (serverConfig['card/message'] > serverConfig['cmmax'] * 100) return false && client.logger.log('info', `\ Card spawning is not allowed (< 100 member check).`);
 
 			var dividend = 0.3;
 			// Why Ichkomme ? don't ask me, I don't know
 			let ichkomme = Math.random();
-			if (ichkomme < dividend) return false;
+			if (ichkomme < dividend) return false && client.logger.log('info', `\ Card spawning is not allowed (< 50 member check).`);
 		}
 
 		if (serverConfig.last_Card != null) {
@@ -84,7 +92,7 @@ async function isXMinutesPassed(message, client) {
 					content: 'Sorry, the last card is not catch',
 					flags: MessageFlags.Ephemeral,
 				});
-			return false; // Le bot n'est pas activé pour ce serveur
+			return false && client.logger.log('info', `\ Card spawning is not allowed (last card not caught).`); // Le bot n'est pas activé pour ce serveur
 		}
 
 		let in1Hour = new Date();
@@ -153,11 +161,12 @@ async function isXMinutesPassed(message, client) {
 				],
 				content: 'Spawning',
 			});
+			client.logger.log('info', `| Card spawning is allowed (X minutes passed). Proceeding to spawn card...`);
 			win(client, message);
 
 			return true;
 		} else {
-			return false;
+			return false && client.logger.log('info', `\ Card spawning is not allowed (X minutes not passed).`);
 		}
 	} catch (error) {
 		Logger.error(client, `Error reading Text: ${error}`);
@@ -272,6 +281,7 @@ async function win(client, message) {
 				);
 
 			channel.send({ components: [catchContainer], flags: MessageFlags.IsComponentsV2 }).then(async (m) => {
+				client.logger.log('info', `\ Card spawned: ${card.name} (${card.id}) in ${guild.name} (${guild.id})`);
 				let channel = await guild.channels.cache.get(m.channelId);
 				client
 					.knex('anti-cheat_messages')
