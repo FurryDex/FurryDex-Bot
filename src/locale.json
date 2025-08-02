@@ -281,12 +281,6 @@
 	"utils": {
 		"function": {
 			"cards": {
-				"embed": {
-					"description": "👑 • Card by %author%\n🆔 • ID: `#%id%`\n🪪 • Name: `%name%`\n📅 • Caught on %time%\n🔧 • Type: `%type%`\n🐺 • Species: `%species%`\n%gived%%birthday%%gender%\n❤️ • HP: `%live%` (`%live_2%`)\n⚔️ • ATK: `%attacks%` (`%attacks_2%`)",
-					"giveBy": "❇️ • Offered by %giver% the %giveTime%",
-					"birthday": "✨ • Birthday: %birthday%",
-					"gender": "👤 • Gender: %gender% %sexuality%"
-				},
 				"container": {
 					"author": "Card by",
 					"id": "ID",
