@@ -1,5 +1,5 @@
 const { MessageFlags } = require('discord.js');
-const uid = function () {
+const idGenerator = function () {
 	return Date.now().toString(36) + Math.random().toString(36).substr(2);
 };
 module.exports = {
@@ -38,7 +38,7 @@ module.exports = {
 				attacks = 0;
 				serverConfig.last_Card = 19;
 			}
-			let uuid = uid();
+			let ID = idGenerator();
 			let user = await client
 				.knex('users')
 				.first('*')
@@ -54,7 +54,7 @@ module.exports = {
 			client
 				.knex('user_cards')
 				.insert({
-					id: uuid,
+					id: ID,
 					user_id: interaction.user.id,
 					card_id: serverConfig.last_Card,
 					guild: interaction.guild.id,
@@ -68,7 +68,7 @@ module.exports = {
 				message
 					.replace('%cardEmoji%', card.emoji)
 					.replace('%cardName%', card.name)
-					.replace('%cardId%', `${uuid}, ${live < 0 ? live : `+${live}`}%/${attacks < 0 ? attacks : `+${attacks}`}%`)
+					.replace('%cardId%', `${ID}, ${live < 0 ? live : `+${live}`}%/${attacks < 0 ? attacks : `+${attacks}`}%`)
 					.replace('%@player%', `<@${interaction.user.id}>`)
 			);
 			require('../../utils/functions/DiscordLogger').writePlayer(client, interaction.user.id, {
@@ -77,7 +77,7 @@ module.exports = {
 				description: 'Card catch',
 				info: [
 					{ name: 'Card', value: `${card.name} (${card.id})` },
-					{ name: 'UUID', value: uuid },
+					{ name: 'ID', value: ID },
 					{ name: 'Guild', value: `${interaction.guild.name} (${interaction.guild.id})` },
 					{ name: 'Live', value: `${live < 0 ? live : `+${live}`}` },
 					{ name: 'Attacks', value: `${attacks < 0 ? attacks : `+${attacks}`}` },
@@ -90,7 +90,7 @@ module.exports = {
 				description: 'Card catch',
 				info: [
 					{ name: 'Card', value: `${card.name} (${card.id})` },
-					{ name: 'UUID', value: uuid },
+					{ name: 'ID', value: ID },
 					{ name: 'User', value: `${interaction.user.displayName} (${interaction.user.id})` },
 					{ name: 'Live', value: `${live < 0 ? live : `+${live}`}` },
 					{ name: 'Attacks', value: `${attacks < 0 ? attacks : `+${attacks}`}` },
