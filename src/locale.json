@@ -113,13 +113,13 @@
 				},
 				"channel": {
 					"title": "Channel",
-					"description": "Channel where the card will spawn.",
+					"description": "Channel where cards will spawn.",
 					"placeholder": "Select a channel"
 				},
 				"locale": {
 					"title": "Locale",
-					"description": "Set the base-lang for the server.",
-					"button": "Change Locale",
+					"description": "Define the Server language.",
+					"button": "Change language",
 					"placeholder": "Select a language",
 					"list": {
 						"de": "German",
@@ -194,7 +194,7 @@
 								"Furry Dex": "Furry Dex",
 								"Furry Dex Special": "Furry Dex Special",
 								"Director": "Director",
-								"Tiktok": "Tiktok",
+								"Tiktok": "TikTok",
 								"Instagram": "Instagram",
 								"Celebration": "Celebration",
 								"Youtuber": "Youtuber",
@@ -282,7 +282,7 @@
 		"function": {
 			"cards": {
 				"embed": {
-					"description": "👑 • Card by %author%\n🆔 • ID: `#%id%`\n🪪 • Name: `%name%`\n📅 • Caught on %time%\n🔧 • Type: `%type%`\n🐺 • Species: `%species%`\n%gived%%birthday%%gender%\n❤️ • HP: `%live%` (`%live_2%%`)\n⚔️ • ATK: `%attacks%` (`%attacks_2%%`)",
+					"description": "👑 • Card by %author%\n🆔 • ID: `#%id%`\n🪪 • Name: `%name%`\n📅 • Caught on %time%\n🔧 • Type: `%type%`\n🐺 • Species: `%species%`\n%gived%%birthday%%gender%\n❤️ • HP: `%live%` (`%live_2%`)\n⚔️ • ATK: `%attacks%` (`%attacks_2%`)",
 					"giveBy": "❇️ • Offered by %giver% the %giveTime%",
 					"birthday": "✨ • Birthday: %birthday%",
 					"gender": "👤 • Gender: %gender% %sexuality%"
