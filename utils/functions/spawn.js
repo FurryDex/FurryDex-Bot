@@ -37,10 +37,11 @@ async function isXMinutesPassed(message, client) {
 				.catch((err) => console.error(err));
 		}
 
-		if (user.can_spawn != 1 && !bypass) {
-			client.logger.log('info', `\ User ${message.author.id} is not allowed to spawn cards.`);
-			return false; // Le joueur farm trop de cartes
-		}
+		if (user)
+			if (user.can_spawn != 1 && !bypass) {
+				client.logger.log('info', `\ User ${message.author.id} is not allowed to spawn cards.`);
+				return false; // Le joueur farm trop de cartes
+			}
 
 		if (!serverConfig || !serverConfig.enabled) {
 			if (bypass)
