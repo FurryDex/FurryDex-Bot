@@ -51,55 +51,55 @@ locales().then(() => {
 if (!debug) {
 	process.on('exit', (code) => {
 		if (code === 0) return logger.log('info', `Process exited successfully.`);
-		logger.error(`Process exited with code: ${code}`);
+		logger.log('error', `Process exited with code: ${code}`);
 		Logger.error(client, `Bot stopped with code: ${code}`);
 	});
 	process.on('uncaughtException', (err, origin) => {
-		logger.error(`Uncaught Exception: ${err}\nOrigin: ${String(origin)}`);
+		logger.log('error', `Uncaught Exception: ${err}\nOrigin: ${String(origin)}`);
 		Logger.error(client, `${'uncaughtException'.toUpperCase()}: ${err}\nOrigin: ${String(origin)}`);
 	});
 	process.on('unhandledRejection', (reason, promise) => {
-		logger.error(`Unhandled Rejection at: ${promise}\nReason: ${reason}`);
+		logger.log('error', `Unhandled Rejection at: ${promise}\nReason: ${reason}`);
 		Logger.error(client, `${'unhandledRejection'.toUpperCase()}: at ${promise}\nReason: ${reason}`);
 	});
 	process.on('warning', (...args) => {
-		logger.warn(...args);
+		logger.log('warn', ...args);
 		Logger.warn(...args);
 	});
 	client.rest.on('rateLimited', (rateLimited) => {
-		logger.warn(`Rate limited: ${JSON.stringify(rateLimited)}`);
+		logger.log('warn', `Rate limited: ${JSON.stringify(rateLimited)}`);
 		Logger.warn(client, `${'rateLimited'.toUpperCase()}: ${rateLimited}`);
 	});
 	client.rest.on('invalidRequestWarning', (invalidRequestWarningData) => {
-		logger.warn(`Invalid request warning: ${JSON.stringify(invalidRequestWarningData)}`);
+		logger.log('warn', `Invalid request warning: ${JSON.stringify(invalidRequestWarningData)}`);
 		Logger.warn(client, `${'invalidRequestWarning'.toUpperCase()}: ${invalidRequestWarningData}`);
 	});
 	client.on('warn', (info) => {
-		logger.warn(info);
+		logger.log('warn', info);
 		Logger.warn(client, `${'warn'.toUpperCase()}: ${info}`);
 	});
 	client.on('error', (info) => {
-		logger.error(info);
+		logger.log('error', info);
 		Logger.error(client, `${'error'.toUpperCase()}: ${info}`);
 	});
 	client.on('shardDisconnect', (event, id) => {
-		logger.error(`Shard disconnected: ID ${id}, Event: ${JSON.stringify(event)}`);
+		logger.log('error', `Shard disconnected: ID ${id}, Event: ${JSON.stringify(event)}`);
 		Logger.shard(client, `${'shardDisconnect'.toUpperCase()} - ID: ${id}: ${event}`);
 	});
 	client.on('shardError', (event, id) => {
-		logger.error(`Shard error: ID ${id}, Event: ${JSON.stringify(event)}`);
+		logger.log('error', `Shard error: ID ${id}, Event: ${JSON.stringify(event)}`);
 		Logger.error(client, `${'shardError'.toUpperCase()} - ID: ${id}: ${event}`);
 	});
 	client.on('shardReady', (event, id) => {
-		logger.info(`Shard ready: ID ${id}, Event: ${JSON.stringify(event)}`);
+		logger.log('info', `Shard ready: ID ${id}, Event: ${JSON.stringify(event)}`);
 		Logger.shard(client, `${'shardReady'.toUpperCase()} - ID: ${id}: ${event}`);
 	});
 	client.on('shardReconnecting', (id) => {
-		logger.info(`Shard reconnecting: ID ${id}`);
+		logger.log('info', `Shard reconnecting: ID ${id}`);
 		Logger.shard(client, `${'shardReconnecting'.toUpperCase()} - ID: ${id}`);
 	});
 	client.on('shardResume', (id, event) => {
-		logger.info(`Shard resumed: ID ${id}, Event: ${JSON.stringify(event)}`);
+		logger.log('info', `Shard resumed: ID ${id}, Event: ${JSON.stringify(event)}`);
 		Logger.shard(client, `${'shardResume'.toUpperCase()} - ID: ${id}: ${event}`);
 	});
 }
