@@ -29,6 +29,11 @@ module.exports = {
 		});
 
 		Logger.succes(client, 'Bot démaré avec succès !');
+		try {
+			client.logger.log('info', `Bot started with ${client.guilds.cache.size} guilds and ${client.users.cache.size} users.`);
+		} catch (e) {
+			client.logger.log('info', `Bot started`);
+		}
 
 		require('../../utils/functions/leaderboard').leaderboard_start(client);
 		require('../../utils/functions/anticheat').anticheat_start(client);
