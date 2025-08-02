@@ -50,6 +50,7 @@ locales().then(() => {
 
 if (!debug) {
 	process.on('exit', (code) => {
+		if (code === 0) return;
 		Logger.error(client, `Bot stopped with code: ${code}`);
 	});
 	process.on('uncaughtException', (err, origin) => {
