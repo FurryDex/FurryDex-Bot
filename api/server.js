@@ -22,18 +22,6 @@ app.use(cors(corsOptions));
 app.use(express.json());
 app.use(cookieParser('afaab2d4-adbd-4f43-8e19-b0950d6da709'));
 
-app.get('/', function (req, res) {
-	res.sendFile(path.join(__dirname, '/index.html'));
-});
-
-app.get('/index.css', function (req, res) {
-	res.sendFile(path.join(__dirname, '/index.css'));
-});
-
-app.get('/index.js', function (req, res) {
-	res.sendFile(path.join(__dirname, '/index.js'));
-});
-
 app.get('/info.json', function (req, res) {
 	res.send({ version: require('../package.json').version, status: '🟢 Online' });
 });
