@@ -59,8 +59,8 @@ if (!debug) {
 		Logger.error(client, `${'uncaughtException'.toUpperCase()}: ${err}\nOrigin: ${String(origin)}`);
 	});
 	process.on('unhandledRejection', (reason, promise) => {
-		logger.log('error', `Unhandled Rejection at: ${promise}\nReason: ${reason}`);
-		Logger.error(client, `${'unhandledRejection'.toUpperCase()}: at ${promise}\nReason: ${reason}`);
+		logger.log('error', `Unhandled Rejection at: ${Promise.resolve(promise)}\nReason: ${reason}`);
+		Logger.error(client, `${'unhandledRejection'.toUpperCase()}: at ${Promise.resolve(promise)}\nReason: ${reason}`);
 	});
 	process.on('warning', (...args) => {
 		logger.log('warn', ...args);
